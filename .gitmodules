@@ -1,0 +1,6 @@
+[submodule "zlib"]
+	path = zlib
+    url = https://github.com/cuberite/zlib.git
+[submodule "json"]
+    path = json
+    url = https://github.com/nlohmann/json
