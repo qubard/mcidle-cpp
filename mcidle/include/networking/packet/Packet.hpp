@@ -9,12 +9,13 @@ class Packet
 {
 public:
 	Packet() : m_Id(-1), m_Compression(-1),
-		m_Protocol(-1), m_FieldBuf(std::make_unique<ByteBuffer>()) 
+		m_Protocol(-1), m_FieldBuf(std::make_unique<ByteBuffer>()),
+		m_RawRecBuf(nullptr)
 	{
 	}
 	
-	Packet(std::unique_ptr<ByteBuffer>& fieldBuf) : m_Id(-1), m_Compression(-1),
-		m_Protocol(-1), m_FieldBuf(std::move(fieldBuf))
+	Packet(std::shared_ptr<ByteBuffer> fieldBuf) : m_Id(-1), m_Compression(-1),
+		m_Protocol(-1), m_FieldBuf(fieldBuf), m_RawRecBuf(nullptr)
 	{
 	}
 
@@ -24,6 +25,10 @@ public:
 	Packet& SetCompression(s32);
 	Packet& SetProtocol(s32);
 	Packet& SetId(s32);
+	Packet& SetRawBuffer(std::shared_ptr<ByteBuffer>);
+	Packet& SetFieldBuffer(std::shared_ptr<ByteBuffer>);
+
+	std::shared_ptr<ByteBuffer> RawBuffer();
 
 	// Serialize the packet's fields into `m_Buf`
 	virtual Packet& Serialize();
@@ -33,11 +38,11 @@ public:
 	// Reserve space in `m_FieldBuf`
 	Packet& Reserve(std::size_t);
 
-	// Instead of exposing a boost::asio::mutable_buffer
-	// we can expose a pointer to the complete packet
-	std::shared_ptr<ByteBuffer> Buffer();
+	// Exposes a pointer to the serialized buffer
+	std::shared_ptr<ByteBuffer>	Buffer();
+	std::shared_ptr<ByteBuffer> FieldBuffer();
 
-	std::string Hex();
+	s32 Id();
 
 	// Write the packet and compress if necessary
 	void Write();
@@ -50,11 +55,13 @@ protected:
 	// Compress the buffer with zlib given the threshold
 	inline void Compress(ByteBuffer& buf);
 	// The field or data buffer for serialization
-	std::unique_ptr<ByteBuffer> m_FieldBuf;
-
+	std::shared_ptr<ByteBuffer> m_FieldBuf;
+	
 private:
-	// The final packet buffer that gets sent outbound
+	// The final serialized outbound packet buffer
 	std::shared_ptr<ByteBuffer> m_PacketBuf;
+	// The raw inbound packet buffer
+	std::shared_ptr<ByteBuffer> m_RawRecBuf;
 };
 
 }

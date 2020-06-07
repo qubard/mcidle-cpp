@@ -26,12 +26,13 @@ public:
 
 	// Read a packet from the socket as a buffer
 	// This is a raw packet, still needs to be decompressed
-	std::unique_ptr<ByteBuffer> ReadPacket();
+	std::unique_ptr<Packet> ReadPacket();
+	std::shared_ptr<ByteBuffer> ReadBuffer();
 private:
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
-	// Decompress a packet byte buffer and return the decompressed buffer
-	inline std::unique_ptr<ByteBuffer> Decompress(std::unique_ptr<ByteBuffer>&);
+	// Decompress a byte buffer and return the decompressed buffer
+	inline std::shared_ptr<ByteBuffer> Decompress(std::shared_ptr<ByteBuffer>&);
 
 	std::unique_ptr<Protocol> m_Protocol;
 	std::unique_ptr<TCPSocket> m_Socket;

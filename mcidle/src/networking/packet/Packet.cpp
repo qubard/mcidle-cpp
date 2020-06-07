@@ -41,15 +41,37 @@ std::shared_ptr<ByteBuffer> Packet::Buffer()
 	return m_PacketBuf;
 }
 
-std::string Packet::Hex()
-{
-	return m_PacketBuf->Hex();
-}
-
 Packet& Packet::Reserve(std::size_t capacity)
 {
 	m_FieldBuf->Reserve(capacity);
 	return *this;
+}
+
+Packet& Packet::SetRawBuffer(std::shared_ptr<ByteBuffer> buf)
+{
+	m_RawRecBuf = buf;
+	return *this;
+}
+
+Packet& Packet::SetFieldBuffer(std::shared_ptr<ByteBuffer> buf)
+{
+	m_FieldBuf = buf;
+	return *this;
+}
+
+std::shared_ptr<ByteBuffer> Packet::RawBuffer()
+{
+	return m_RawRecBuf;
+}
+
+std::shared_ptr<ByteBuffer> Packet::FieldBuffer()
+{
+	return m_FieldBuf;
+}
+
+s32 Packet::Id()
+{
+	return m_Id;
 }
 
 // Assume that Serialize() has already been called
