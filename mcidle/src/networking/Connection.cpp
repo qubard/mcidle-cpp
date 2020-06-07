@@ -89,7 +89,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	{
 		s32 extra = packetLen.Value() - remaining;
 
-		m_ReadBuf.Read(packetBuf->Front(), remaining + lenSize);
+		m_ReadBuf.Read(*packetBuf, remaining + lenSize);
 
 		// Read bytes into the back until we have enough
 		ByteBuffer extraBuf;
@@ -104,18 +104,18 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 		{
 			auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
 			// Combine the output buffer with the rest of the decrypted bytes
-			decrypt->Read(packetBuf->Front() + remaining + lenSize, decrypt->Size());
+			decrypt->Read(*packetBuf, decrypt->Size());
 		}
 		else
 		{
 			// Packet isn't encrypted, append the raw bytes
-			extraBuf.Read(packetBuf->Front() + remaining + lenSize, extraBuf.Size());
+			extraBuf.Read(*packetBuf, extraBuf.Size());
 		}
 	}
 	else
 	{
 		// Packet fits in the buffer, copy the bytes over
-		m_ReadBuf.Read(packetBuf->Front(), packetLen.Value() + lenSize);
+		m_ReadBuf.Read(*packetBuf, packetLen.Value() + lenSize);
 	}
 
 	// Seek off the length so it doesn't have to be read later

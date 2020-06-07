@@ -7,34 +7,35 @@
 
 namespace mcidle {
 
-ByteBuffer::ByteBuffer() : m_BigEndian(true), m_ReadOffset(0)
+ByteBuffer::ByteBuffer() : m_BigEndian(true), m_ReadOffset(0), m_WriteOffset(0)
 {
 }
 
-ByteBuffer::ByteBuffer(std::vector<u8>& data) : m_BigEndian(true), m_ReadOffset(0)
+ByteBuffer::ByteBuffer(std::vector<u8>& data) : m_BigEndian(true), m_ReadOffset(0),
+m_WriteOffset(0)
 {
 	m_Data = std::move(data);
 }
 
 
 ByteBuffer::ByteBuffer(bool bigEndian=true): m_BigEndian(bigEndian),
-m_ReadOffset(0)
+m_ReadOffset(0), m_WriteOffset(0)
 {
 }
 
 ByteBuffer::ByteBuffer(ByteBuffer&& buf) : m_BigEndian(buf.m_BigEndian), 
-m_ReadOffset(buf.m_ReadOffset), m_Data(std::move(buf.m_Data)) 
+m_ReadOffset(buf.m_ReadOffset), m_Data(std::move(buf.m_Data)), m_WriteOffset(buf.m_WriteOffset)
 {
 }
 
 ByteBuffer::ByteBuffer(std::size_t capacity, bool bigEndian=true): m_BigEndian(bigEndian), 
-m_ReadOffset(0)
+m_ReadOffset(0), m_WriteOffset(0)
 {
 	// Reserve `capacity` bytes
 	m_Data.reserve(capacity);
 }
 
-ByteBuffer::ByteBuffer(std::size_t capacity) : m_BigEndian(true), m_ReadOffset(0)
+ByteBuffer::ByteBuffer(std::size_t capacity) : m_BigEndian(true), m_ReadOffset(0), m_WriteOffset(0)
 {
 	m_Data.reserve(capacity);
 }
@@ -154,6 +155,7 @@ std::size_t ByteBuffer::Size() const
 void ByteBuffer::Clear()
 {
 	m_Data.clear();
+	m_WriteOffset = 0;
 	m_ReadOffset = 0;
 }
 
@@ -204,9 +206,10 @@ ByteBuffer& ByteBuffer::operator=(ByteBuffer& other)
 // Write `len` bytes from `src`
 void ByteBuffer::Write(const u8* src, std::size_t size)
 {
-	std::size_t end_pos = m_Data.size();
-	m_Data.resize(m_Data.size() + size);
-	memcpy(&m_Data[end_pos], src, size);
+	if (m_WriteOffset + size > m_Data.size())
+		m_Data.resize(m_WriteOffset + size);
+	memcpy(&m_Data[m_WriteOffset], src, size);
+	m_WriteOffset += size;
 }
 
 void ByteBuffer::Read(u8* dst, std::size_t size)
@@ -217,6 +220,12 @@ void ByteBuffer::Read(u8* dst, std::size_t size)
 	}
 	memcpy(dst, m_Data.data() + m_ReadOffset, size);
 	m_ReadOffset += size;
+}
+
+void ByteBuffer::Read(ByteBuffer& buf, std::size_t size)
+{
+	Read(&buf.m_Data[buf.m_WriteOffset], size);
+	buf.m_WriteOffset += size;
 }
 
 }

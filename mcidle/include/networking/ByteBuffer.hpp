@@ -35,7 +35,11 @@ public:
 	bool Avail() const;
 
 	void Write(const u8*, std::size_t);
+
+	// Read `size` bytes into a destination address
 	void Read(u8*, std::size_t);
+	// Read `size` bytes into a desitination buffer
+	void Read(ByteBuffer&, std::size_t);
 
 	u8& operator[](std::size_t);
 
@@ -105,13 +109,15 @@ private:
 	void Append(const T val)
 	{
 		std::size_t size = sizeof(val);
-		std::size_t end_pos = m_Data.size();
-		m_Data.resize(m_Data.size() + size);
+		if (m_WriteOffset + size > m_Data.size())
+			m_Data.resize(m_WriteOffset + size);
 		// Copy multiple bytes to the buffer
-		memcpy(&m_Data[end_pos], &val, size);
+		memcpy(&m_Data[m_WriteOffset], &val, size);
+		m_WriteOffset += size;
 	}
 
 	std::vector<u8> m_Data;
+	std::size_t m_WriteOffset;
 	std::size_t m_ReadOffset;
 	// Endianness of byte insertion order
 	bool m_BigEndian;
