@@ -75,19 +75,21 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 		throw std::runtime_error("Received invalid packet length <= 0");
 	}
 
+	auto lenSize = packetLen.Size();
 	// The remaining bytes in the read buffer after reading length
 	s32 remaining = m_LastRecSize - m_ReadBuf.ReadOffset();
 
 	// Allocate the individual packet output buffer
 	auto packetBuf = std::make_shared<ByteBuffer>();
-	packetBuf->Resize(packetLen.Value());
+	packetBuf->Resize(packetLen.Value() + lenSize);
+	m_ReadBuf.SeekRead(m_ReadBuf.ReadOffset() - lenSize);
 
 	// Packet doesn't fit in the buffer, do an additional read call
 	if (remaining < packetLen.Value())
 	{
 		s32 extra = packetLen.Value() - remaining;
 
-		m_ReadBuf.Read(packetBuf->Front(), remaining);
+		m_ReadBuf.Read(packetBuf->Front(), remaining + lenSize);
 
 		// Read bytes into the back until we have enough
 		ByteBuffer extraBuf;
@@ -102,19 +104,23 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 		{
 			auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
 			// Combine the output buffer with the rest of the decrypted bytes
-			decrypt->Read(packetBuf->Front() + remaining, decrypt->Size());
+			decrypt->Read(packetBuf->Front() + remaining + lenSize, decrypt->Size());
 		}
 		else
 		{
 			// Packet isn't encrypted, append the raw bytes
-			extraBuf.Read(packetBuf->Front() + remaining, extraBuf.Size());
+			extraBuf.Read(packetBuf->Front() + remaining + lenSize, extraBuf.Size());
 		}
 	}
 	else
 	{
 		// Packet fits in the buffer, copy the bytes over
-		m_ReadBuf.Read(packetBuf->Front(), packetLen.Value());
+		m_ReadBuf.Read(packetBuf->Front(), packetLen.Value() + lenSize);
 	}
+
+	// Seek off the length so it doesn't have to be read later
+	// but still exists in the buffer
+	packetBuf->SeekRead(lenSize);
 
 	return packetBuf;
 }
@@ -128,7 +134,7 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 
 	auto packet = std::make_unique<Packet>();
 	packet->SetFieldBuffer(packetBuf);
-	
+
 	// Try to decompress the packet
 	if (m_Compression > 0)
 	{
@@ -145,7 +151,7 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	packet->SetId(id.Value());
 
 	// The raw buffer is either compressed or not compressed
-	// but important to store to make forwarding faster
+	// version of the field buffer
 	packet->SetRawBuffer(packetBuf);
 
 	return packet;
