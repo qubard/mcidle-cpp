@@ -2,6 +2,7 @@
 
 #include <networking/TCPSocket.hpp>
 #include <networking/encryption/AesCtx.hpp>
+#include <networking/packet/Packet.hpp>
 #include <networking/protocol/Protocol.hpp>
 
 #include <iostream>

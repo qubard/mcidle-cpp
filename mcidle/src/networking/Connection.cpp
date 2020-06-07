@@ -150,9 +150,20 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	*packet->FieldBuffer() >> id;
 	packet->SetId(id.Value());
 
-	// The raw buffer is either compressed or not compressed
-	// version of the field buffer
+	// The raw buffer is the uncompressed field buffer
+	// useful for forwarding packets without having
+	// to re-compress them
 	packet->SetRawBuffer(packetBuf);
+
+	auto inboundMap = m_Protocol->InboundMap();
+
+	// Lookup the inbound map packet given the protocol
+	// and deserialize the packet into it
+	if (inboundMap.find(id.Value()) != inboundMap.end())
+	{
+		auto mappedPacket = inboundMap[id.Value()]();
+		mappedPacket->Deserialize(*packet->FieldBuffer());
+	}
 
 	return packet;
 }
