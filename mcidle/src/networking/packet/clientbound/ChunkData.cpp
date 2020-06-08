@@ -10,6 +10,11 @@ Packet& ChunkData::Serialize()
 	return *this;
 }
 
+std::unordered_map<s32, Section>& ChunkData::ChunkMap()
+{
+	return m_ChunkMap;
+}
+
 inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int ChunkZ, int section)
 {
 	u8 bits_per_block;

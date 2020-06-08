@@ -5,15 +5,13 @@
 #include <networking/packet/Packet.hpp>
 #include <networking/protocol/Protocol.hpp>
 
-#include <iostream>
-
 namespace mcidle {
 
 class Connection
 {
 public:
 	Connection() = default;
-	Connection(std::unique_ptr<TCPSocket> socket, 
+	Connection(std::shared_ptr<TCPSocket> socket, 
 		std::unique_ptr<Protocol> protocol, 
 		std::size_t size):
 		m_Socket(std::move(socket)), m_ReadSize(size), m_Aes(nullptr), m_ReadBuf(size),
@@ -24,6 +22,17 @@ public:
 	// Equivalent to enabling encryption
 	Connection& SetAes(std::unique_ptr<AesCtx>&);
 	Connection& SetCompression(s32);
+
+	template <typename T>
+	void SendPacket(T&& packet)
+	{
+		auto id = m_Protocol->PacketId(packet);
+		packet.SetId(id).SetProtocol(m_Protocol->VersionNumber()).Serialize().Write();
+
+		auto pktBuf = packet.Buffer();
+		auto mutBuf = boost::asio::buffer(pktBuf->Front(), pktBuf->Size());
+		m_Socket->Send(mutBuf);
+	}
 
 	// Read a packet from the socket as a buffer
 	// This is a raw packet, still needs to be decompressed
@@ -36,7 +45,7 @@ private:
 	inline std::shared_ptr<ByteBuffer> Decompress(std::shared_ptr<ByteBuffer>&);
 
 	std::unique_ptr<Protocol> m_Protocol;
-	std::unique_ptr<TCPSocket> m_Socket;
+	std::shared_ptr<TCPSocket> m_Socket;
 	std::unique_ptr<AesCtx> m_Aes;
 
 	s32 m_Compression;

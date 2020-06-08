@@ -3,6 +3,9 @@
 #include <common/Typedef.hpp>
 
 #include <networking/packet/Packet.hpp>
+#include <networking/packet/serverbound/EncryptionResponse.hpp>
+#include <networking/packet/serverbound/Handshake.hpp>
+#include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/clientbound/ChunkData.hpp>
 
 // Packet ids change for different game versions
@@ -35,8 +38,8 @@ static PacketMap inboundMap_1_12_2 =
 class Protocol
 {
 public:
-	Protocol() {}
-	Protocol(PacketMap inboundMap) 
+	Protocol(s32 versionNumber) : m_VersionNumber(versionNumber) {}
+	Protocol(PacketMap inboundMap, s32 versionNumber) : m_VersionNumber(versionNumber)
 	{
 		m_InboundMap = inboundMap;
 	}
@@ -46,18 +49,25 @@ public:
 		return m_InboundMap;
 	}
 
-	//virtual s32 PacketId(mcidle::packet::serverbound::EncryptionResponse&) { return 0x01; }
-	//virtual s32 PacketId(mcidle::packet::serverbound::Handshake&) { return 0x00; }
-	//virtual s32 PacketId(mcidle::packet::serverbound::LoginStart&) { return 0x00; }
+	s32 VersionNumber()
+	{
+		return m_VersionNumber;
+	}
+
+	virtual s32 PacketId(Packet&) { return -1; }
+	virtual s32 PacketId(mcidle::packet::serverbound::EncryptionResponse&) { return 0x01; }
+	virtual s32 PacketId(mcidle::packet::serverbound::Handshake&) { return 0x00; }
+	virtual s32 PacketId(mcidle::packet::serverbound::LoginStart&) { return 0x00; }
 
 protected:
 	PacketMap m_InboundMap;
+	s32 m_VersionNumber;
 };
 
 class Protocol_1_12_2 : public Protocol
 {
 public:
-	Protocol_1_12_2() : Protocol(inboundMap_1_12_2)
+	Protocol_1_12_2(s32 versionNumber) : Protocol(inboundMap_1_12_2, versionNumber)
 	{
 	}
 };

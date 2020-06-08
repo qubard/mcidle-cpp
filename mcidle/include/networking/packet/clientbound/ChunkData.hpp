@@ -8,9 +8,9 @@ namespace clientbound {
 
 const s32 SECTION_SIZE = 16;
 
-// A chunk is 16*16*16 values in a 1D vector
+// A section is 16*16*16 values in a 1D vector
 // It's 16% slower to nest the vectors
-using Chunk = std::vector<s32>;
+using Section = std::vector<s32>;
 
 class ChunkData : public Packet
 {
@@ -22,13 +22,17 @@ public:
 		m_ChunkX(chunkX), m_ChunkZ(chunkZ), m_GroundUp(groundUp), m_PrimaryBitMask(primaryBitMask)
 	{
 	}
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
+
+	std::unordered_map<s32, Section>& ChunkMap();
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
 
-	// Map section (y=0 to y=15) to the chunk
-	std::unordered_map<s32, Chunk> m_ChunkMap;
+	// Map section height (y=0, y=15) to the section
+	// In world coordinates section height * 16 is y-pos
+	std::unordered_map<s32, Section> m_ChunkMap;
 
 	s32 m_ChunkX;
 	s32 m_ChunkZ;
