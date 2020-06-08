@@ -47,6 +47,8 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 	std::vector<u64> data;
 	buf >> data;
 
+	m_ChunkMap[section] = std::vector<s32>(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
+
 	if (data.size() > 0)
 	{
 		for (int y = 0; y < SECTION_SIZE; y++)
@@ -77,7 +79,7 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 					/*auto id = paletteId >> 4;
 					auto meta = paletteId & 0xF;*/
 
-					m_Blocks[x][y][z] = paletteId;
+					m_ChunkMap[section][block_number] = paletteId;
 
 					/*printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
 						y + section * SECTION_SIZE, z + ChunkZ * SECTION_SIZE,
@@ -85,8 +87,6 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 				}
 			}
 		}
-
-		//chunks[pos] = std::move(blockStates);
 	}
 
 	std::vector<u8> blockLight;
