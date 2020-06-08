@@ -47,14 +47,6 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 	std::vector<u64> data;
 	buf >> data;
 
-	const s32 SECTION_SIZE = 16;
-
-	// 16*16*16 block states in a 1D array
-	std::vector<s32> blockStates;
-	blockStates.resize(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
-
-	std::string pos = std::to_string(ChunkX) + "," + std::to_string(ChunkZ) + "," + std::to_string(section);
-
 	if (data.size() > 0)
 	{
 		for (int y = 0; y < SECTION_SIZE; y++)
@@ -82,16 +74,14 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 
 					auto paletteId = palette[val].Value();
 
-					// Save ~50mb by storing the encoded value instead
-					blockStates[block_number] = paletteId;
+					/*auto id = paletteId >> 4;
+					auto meta = paletteId & 0xF;*/
 
-					auto id = paletteId >> 4;
-					auto meta = paletteId & 0xF;
+					m_Blocks[x][y][z] = paletteId;
 
-
-					printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
-						y, z + ChunkZ * SECTION_SIZE,
-						id, meta);
+					/*printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
+						y + section * SECTION_SIZE, z + ChunkZ * SECTION_SIZE,
+						id, meta);*/
 				}
 			}
 		}
@@ -122,21 +112,18 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 
 	u32 numSections = 0;
 	u32 mask = BitMask.Value();
-	while (mask > 0)
-	{
-		numSections += mask & 1;
-		mask >>= 1;
-	}
 
 	std::vector<u8> data;
 	buf >> data;
 
 	mcidle::ByteBuffer dataBuf(data);
 
-	int section = 0;
-	while (section < numSections)
+	s32 section = 0;
+	while (mask > 0)
 	{
-		ReadSection(dataBuf, ChunkX, ChunkZ, section);
+		if (mask & 1)
+			ReadSection(dataBuf, ChunkX, ChunkZ, section);
+		mask >>= 1;
 		section++;
 	}
 }
