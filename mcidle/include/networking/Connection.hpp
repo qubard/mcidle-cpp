@@ -30,7 +30,7 @@ public:
 		packet.SetId(id).SetProtocol(m_Protocol->VersionNumber()).Serialize().Write();
 
 		auto pktBuf = packet.Buffer();
-		auto mutBuf = boost::asio::buffer(pktBuf->Front(), pktBuf->Size());
+		auto mutBuf = boost::asio::buffer(pktBuf->Front(), pktBuf->WriteSize());
 		m_Socket->Send(mutBuf);
 	}
 

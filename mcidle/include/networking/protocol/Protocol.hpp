@@ -54,7 +54,6 @@ public:
 		return m_VersionNumber;
 	}
 
-	virtual s32 PacketId(Packet&) { return -1; }
 	virtual s32 PacketId(mcidle::packet::serverbound::EncryptionResponse&) { return 0x01; }
 	virtual s32 PacketId(mcidle::packet::serverbound::Handshake&) { return 0x00; }
 	virtual s32 PacketId(mcidle::packet::serverbound::LoginStart&) { return 0x00; }

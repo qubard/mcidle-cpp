@@ -1,6 +1,7 @@
 #pragma once
 
 #include <networking/packet/Packet.hpp>
+#include <networking/types/VarInt.hpp>
 
 namespace mcidle {
 namespace packet {
@@ -26,6 +27,8 @@ public:
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 
+	void WriteSection(s32, u8);
+
 	std::unordered_map<s32, Section>& ChunkMap();
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
@@ -33,11 +36,12 @@ private:
 	// Map section height (y=0, y=15) to the section
 	// In world coordinates section height * 16 is y-pos
 	std::unordered_map<s32, Section> m_ChunkMap;
+	std::unordered_map<s32, std::vector<u8>> m_LightMap;
 
 	s32 m_ChunkX;
 	s32 m_ChunkZ;
 	bool m_GroundUp;
-	s32 m_PrimaryBitMask;
+	VarInt m_PrimaryBitMask;
 };
 
 } // namespace clientbound

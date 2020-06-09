@@ -152,6 +152,11 @@ std::size_t ByteBuffer::Size() const
 	return m_Data.size();
 }
 
+std::size_t ByteBuffer::WriteSize() const
+{
+	return m_WriteOffset;
+}
+
 void ByteBuffer::Clear()
 {
 	m_Data.clear();
@@ -224,6 +229,9 @@ void ByteBuffer::Read(u8* dst, std::size_t size)
 
 void ByteBuffer::Read(ByteBuffer& buf, std::size_t size)
 {
+	// Resize the buffer if it needs more space
+	if (buf.m_WriteOffset + size > buf.Size())
+		buf.Resize(buf.m_WriteOffset + size);
 	Read(&buf.m_Data[buf.m_WriteOffset], size);
 	buf.m_WriteOffset += size;
 }

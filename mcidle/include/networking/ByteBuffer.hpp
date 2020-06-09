@@ -23,6 +23,7 @@ public:
 	void Clear();
 	void SeekRead(std::size_t);
 	std::size_t Size() const;
+	std::size_t WriteSize() const;
 	const std::string Hex();
 
 	// Return a reference to the byte at the current read offset

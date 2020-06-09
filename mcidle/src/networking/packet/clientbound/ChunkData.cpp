@@ -5,8 +5,82 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
+void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
+{
+	*m_FieldBuf << bitsPerBlock;
+
+	std::vector<u64> data;
+	auto dataSize = (SECTION_SIZE * SECTION_SIZE * SECTION_SIZE) * bitsPerBlock / 64;
+	data.resize(dataSize);
+
+	// Direct format, don't write palette
+
+	u32 valueMask = (1 << bitsPerBlock) - 1;
+	for (int x = 0; x < SECTION_SIZE; x++)
+	{
+		for (int z = 0; z < SECTION_SIZE; z++)
+		{
+			for (int y = 0; y < SECTION_SIZE; y++)
+			{
+				auto blockNumber = (((y * SECTION_SIZE) + z) * SECTION_SIZE) + x;
+				auto startLong = (blockNumber * bitsPerBlock) / 64;
+				auto startOffset = (blockNumber * bitsPerBlock) % 64;
+				auto endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
+
+				u64 value = m_ChunkMap[section][blockNumber];
+				value &= valueMask;
+
+				data[startLong] |= (value << startOffset);
+				
+				if (startLong != endLong)
+				{
+					data[endLong] = (value >> (64 - startOffset));
+				}
+			}
+		}
+	}
+
+	*m_FieldBuf << data;
+	
+	if (m_LightMap.find(section) != m_LightMap.end())
+	{
+		*m_FieldBuf << m_LightMap[section];
+	} 
+	else
+	{
+		std::vector<u8> light(2048);
+		*m_FieldBuf << light;
+	}
+
+	// Write sky light if we're in the overworld
+}
+
 Packet& ChunkData::Serialize()
 {
+	*m_FieldBuf << m_ChunkX;
+	*m_FieldBuf << m_ChunkZ;
+
+	*m_FieldBuf << m_GroundUp;
+
+	u8 bitsPerBlock = 13;
+
+	s32 mask = 0;
+	for (int section = 0; section < SECTION_SIZE; section++)
+	{
+		// We could alternatively use the primary bit mask here
+		// but it's less flexible
+		if (m_ChunkMap.find(section) != m_ChunkMap.end())
+		{
+			// Write the sections to the data array
+			WriteSection(section, bitsPerBlock);
+			mask |= 1 << section;
+		}
+	}
+
+	// Write 256 bytes of garbage biome information for now
+	std::vector<u8> biomes(256);
+	*m_FieldBuf << biomes;
+	
 	return *this;
 }
 
@@ -56,47 +130,47 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 
 	if (data.size() > 0)
 	{
-		for (int y = 0; y < SECTION_SIZE; y++)
+		for (int block_number = 0; block_number < 4096; block_number++)
 		{
-			for (int z = 0; z < SECTION_SIZE; z++)
+			int y = block_number / (SECTION_SIZE * SECTION_SIZE);
+			int x = block_number % SECTION_SIZE;
+			int z = (block_number % (SECTION_SIZE * SECTION_SIZE)) / SECTION_SIZE;
+
+			auto startLong = (block_number * bits_per_block) / 64;
+			auto startOffset = (block_number * bits_per_block) % 64;
+			auto endLong = ((block_number + 1) * bits_per_block - 1) / 64;
+
+			auto val = 0;
+
+			if (startLong == endLong)
 			{
-				for (int x = 0; x < SECTION_SIZE; x++)
-				{
-					auto block_number = ((y * SECTION_SIZE) + z) * SECTION_SIZE + x;
-					auto start_long = (block_number * bits_per_block) / 64;
-					auto start_offset = (block_number * bits_per_block) % 64;
-					auto end_long = ((block_number + 1) * bits_per_block - 1) / 64;
-
-					auto val = 0;
-					if (start_long == end_long)
-					{
-						val = data[start_long] >> start_offset;
-					}
-					else
-					{
-						auto end_offset = 64 - start_offset;
-						val = (data[start_long] >> start_offset) | (data[end_long] << end_offset);
-					}
-					val &= mask;
-
-					auto paletteId = palette[val].Value();
-
-					/*auto id = paletteId >> 4;
-					auto meta = paletteId & 0xF;*/
-
-					m_ChunkMap[section][block_number] = paletteId;
-
-					/*printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
-						y + section * SECTION_SIZE, z + ChunkZ * SECTION_SIZE,
-						id, meta);*/
-				}
+				val = data[startLong] >> startOffset;
 			}
+			else
+			{
+				auto end_offset = 64 - startOffset;
+				val = (data[startLong] >> startOffset) | (data[endLong] << end_offset);
+			}
+			val &= mask;
+
+			auto paletteId = palette[val].Value();
+
+			/*auto id = paletteId >> 4;
+			auto meta = paletteId & 0xF;*/
+
+			m_ChunkMap[section][block_number] = paletteId;
+
+			/*printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
+				y + section * SECTION_SIZE, z + ChunkZ * SECTION_SIZE,
+				id, meta);*/
 		}
 	}
 
-	std::vector<u8> blockLight;
-	blockLight.resize(2048);
-	buf.Read(blockLight.data(), blockLight.size());
+	m_LightMap[section] = std::vector<u8>();
+	m_LightMap[section].resize(2048);
+
+	// Read half a byte per block of block light
+	buf.Read(m_LightMap[section].data(), m_LightMap[section].size());
 
 	// Only exists in the overworld
 	/*std::vector<u8> skyLight;
@@ -107,16 +181,13 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 
 void ChunkData::Deserialize(ByteBuffer& buf)
 {
-	mcidle::VarInt BitMask;
-	bool groundUp;
-	int ChunkX, ChunkZ;
-	buf >> ChunkX;
-	buf >> ChunkZ;
-	buf >> groundUp;
-	buf >> BitMask;
+	buf >> m_ChunkX;
+	buf >> m_ChunkZ;
+	buf >> m_GroundUp;
+	buf >> m_PrimaryBitMask;
 
 	u32 numSections = 0;
-	u32 mask = BitMask.Value();
+	u32 mask = m_PrimaryBitMask.Value();
 
 	std::vector<u8> data;
 	buf >> data;
@@ -127,14 +198,13 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	while (mask > 0)
 	{
 		if (mask & 1)
-			ReadSection(dataBuf, ChunkX, ChunkZ, section);
+			ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);
 		mask >>= 1;
 		section++;
 	}
 }
 
-}
-}
-}
-
+} // ns packet
+} // ns clientbound
+} // ns mcidle
 
