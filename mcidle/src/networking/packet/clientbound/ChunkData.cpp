@@ -69,15 +69,26 @@ Packet& ChunkData::Serialize()
 	u8 bitsPerBlock = 13;
 
 	s32 mask = 0;
+
+	for (int section = 0; section < SECTION_SIZE; section++)
+	{
+		if (m_ChunkMap.find(section) != m_ChunkMap.end())
+		{
+			mask |= 1 << section;
+		}
+	}
+	
+	// Write the primary bit mask
+	*m_FieldBuf << VarInt(mask);
+
 	for (int section = 0; section < SECTION_SIZE; section++)
 	{
 		// We could alternatively use the primary bit mask here
 		// but it's less flexible
-		if (m_ChunkMap.find(section) != m_ChunkMap.end())
+		if (mask & (1 << section))
 		{
 			// Write the sections to the data array
 			WriteSection(section, bitsPerBlock);
-			mask |= 1 << section;
 		}
 	}
 
