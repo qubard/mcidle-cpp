@@ -14,6 +14,8 @@ void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 	data.resize(dataSize);
 
 	// Direct format, don't write palette
+	// **NOTE** this is not written in later protocols!
+	*m_FieldBuf << VarInt(0);
 
 	u32 valueMask = (1 << bitsPerBlock) - 1;
 	for (int x = 0; x < SECTION_SIZE; x++)
@@ -31,7 +33,7 @@ void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 				value &= valueMask;
 
 				data[startLong] |= (value << startOffset);
-				
+
 				if (startLong != endLong)
 				{
 					data[endLong] = (value >> (64 - startOffset));
@@ -40,19 +42,21 @@ void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 		}
 	}
 
-	*m_FieldBuf << data;
-	
 	if (m_LightMap.find(section) != m_LightMap.end())
 	{
-		*m_FieldBuf << m_LightMap[section];
-	} 
+		// Half a byte block of light data per block, 
+		// 0.5 bytes per block, 2048 bytes -> 256 u64s
+		data.resize(data.size() + 256);
+		std::vector<u8> light = m_LightMap[section];
+		std::copy(&light.front(), &light.back(), &data[data.size() - 256]);
+	}
 	else
 	{
-		std::vector<u8> light(2048);
-		*m_FieldBuf << light;
 	}
 
-	// Write sky light if we're in the overworld
+	// Write overworld light if in overworld
+
+	*m_FieldBuf << data;
 }
 
 Packet& ChunkData::Serialize()
@@ -78,9 +82,17 @@ Packet& ChunkData::Serialize()
 	}
 
 	// Write 256 bytes of garbage biome information for now
-	std::vector<u8> biomes(256);
-	*m_FieldBuf << biomes;
-	
+	if (m_GroundUp)
+	{
+		// Write 256 bytes of biome information
+		m_FieldBuf->Write(m_Biomes.data(), m_Biomes.size());
+	}
+
+	// Write NBT information for block entities
+	// For now, keep this 0
+	*m_FieldBuf << VarInt(0);
+
+
 	return *this;
 }
 
@@ -89,12 +101,12 @@ std::unordered_map<s32, Section>& ChunkData::ChunkMap()
 	return m_ChunkMap;
 }
 
-inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int ChunkZ, int section)
+inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int section)
 {
 	u8 bits_per_block;
 	buf >> bits_per_block;
 
-	mcidle::VarInt palette_len;
+	VarInt palette_len;
 	buf >> palette_len;
 
 	if (bits_per_block < 4)
@@ -110,14 +122,17 @@ inline void ChunkData::ReadSection(mcidle::ByteBuffer& buf, int ChunkX, int Chun
 	// If bits_per_block >= 13 we use direct format (no palette)
 	// And palette_len.Value() == 0
 
+	// Pretty sure this is always 0 but documentation suggests
+	// there is no palette length field in the latest protocol
+
 	// Read the palette if it exists
-	std::vector<mcidle::VarInt> palette;
+	std::vector<VarInt> palette;
 	if (palette_len.Value() > 0)
 	{
 		palette.reserve(palette_len.Value());
 		for (u32 i = 0; i < palette_len.Value(); i++)
 		{
-			palette.push_back(buf.Read<mcidle::VarInt>());
+			palette.push_back(buf.Read<VarInt>());
 		}
 	}
 
@@ -192,7 +207,7 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	std::vector<u8> data;
 	buf >> data;
 
-	mcidle::ByteBuffer dataBuf(data);
+	ByteBuffer dataBuf(data);
 
 	s32 section = 0;
 	while (mask > 0)
@@ -202,9 +217,19 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 		mask >>= 1;
 		section++;
 	}
+
+	if (m_GroundUp)
+	{
+		m_Biomes.resize(256);
+		dataBuf.Read(m_Biomes.data(), 256);
+	}
+
+	// Read block entities
+	//VarInt numBlockEntities;
+	//buf >> numBlockEntities;
 }
 
-} // ns packet
 } // ns clientbound
+} // ns packet
 } // ns mcidle
 

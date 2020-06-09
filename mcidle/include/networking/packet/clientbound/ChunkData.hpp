@@ -27,16 +27,17 @@ public:
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 
-	void WriteSection(s32, u8);
-
 	std::unordered_map<s32, Section>& ChunkMap();
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
+	void WriteSection(s32, u8);
 
 	// Map section height (y=0, y=15) to the section
 	// In world coordinates section height * 16 is y-pos
 	std::unordered_map<s32, Section> m_ChunkMap;
 	std::unordered_map<s32, std::vector<u8>> m_LightMap;
+
+	std::vector<u8> m_Biomes;
 
 	s32 m_ChunkX;
 	s32 m_ChunkZ;
@@ -44,6 +45,6 @@ private:
 	VarInt m_PrimaryBitMask;
 };
 
-} // namespace clientbound
-} // namespace packet
-} // namespace mcidle
+} // ns clientbound
+} // ns packet
+} // ns mcidle
