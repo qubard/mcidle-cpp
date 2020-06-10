@@ -50,6 +50,11 @@ void ByteBuffer::SeekRead(std::size_t offset)
 	m_ReadOffset = offset;
 }
 
+void ByteBuffer::SeekWrite(std::size_t offset)
+{
+	m_WriteOffset = offset;
+}
+
 // Copy bytes from `buf` into the current buffer
 ByteBuffer& ByteBuffer::operator<<(ByteBuffer& buf)
 {

@@ -78,7 +78,7 @@ public:
 	{
 	}
 
-	//virtual s32 PacketId(packet::serverbound::KeepAlive&) override { return 0x0B; }
+	s32 PacketId(packet::serverbound::KeepAlive&) override { return 0x0B; }
 };
 
 

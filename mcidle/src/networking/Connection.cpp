@@ -2,6 +2,8 @@
 #include <networking/types/VarInt.hpp>
 #include <zlib.h>
 
+#include <common/Compression.hpp>
+
 namespace mcidle {
 
 inline bool Connection::PrepareRead()
@@ -27,25 +29,6 @@ Connection& Connection::SetCompression(s32 compression)
 {
 	m_Compression = compression;
 	return *this;
-}
-
-inline std::shared_ptr<ByteBuffer> Connection::Decompress(std::shared_ptr<ByteBuffer>& buf)
-{
-	mcidle::VarInt compressLen;
-	*buf >> compressLen;
-	// Uncompressed length
-	auto len = compressLen.Value();
-
-	// Is the buffer compressed?
-	if (compressLen.Value() > 0)
-	{
-		auto uncompressed = std::make_shared<mcidle::ByteBuffer>();
-		uncompressed->Resize(compressLen.Value());
-		uncompress((Bytef*)uncompressed->Front(), (uLongf*)&len,
-			(const Bytef*)&buf->Peek(), (uLong)(buf->Size() - buf->ReadOffset()));
-		return std::move(uncompressed);
-	}
-	return nullptr;
 }
 
 std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
@@ -89,7 +72,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	{
 		s32 extra = packetLen.Value() - remaining;
 
-		m_ReadBuf.Read(*packetBuf, remaining + lenSize);
+		m_ReadBuf.Read(*packetBuf, (u64)remaining + lenSize);
 
 		// Read bytes into the back until we have enough
 		ByteBuffer extraBuf;

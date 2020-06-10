@@ -46,8 +46,6 @@ protected:
 	s32 m_Protocol;
 	// The packet's VarInt encoded id
 	s32 m_Id;
-	// Compress the buffer with zlib given the threshold
-	inline void Compress(ByteBuffer& buf);
 	// The field or data buffer for serialization
 	std::shared_ptr<ByteBuffer> m_FieldBuf;
 	

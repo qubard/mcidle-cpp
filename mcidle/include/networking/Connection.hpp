@@ -49,8 +49,6 @@ public:
 private:
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
-	// Decompress a byte buffer and return the decompressed buffer
-	inline std::shared_ptr<ByteBuffer> Decompress(std::shared_ptr<ByteBuffer>&);
 
 	std::unique_ptr<Protocol> m_Protocol;
 	std::shared_ptr<TCPSocket> m_Socket;
