@@ -10,6 +10,8 @@ void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 	*m_FieldBuf << bitsPerBlock;
 
 	std::vector<u64> data;
+
+	// Calculate how many longs we need
 	auto dataSize = (SECTION_SIZE * SECTION_SIZE * SECTION_SIZE) * bitsPerBlock / 64;
 	data.resize(dataSize);
 
@@ -83,11 +85,9 @@ Packet& ChunkData::Serialize()
 
 	for (int section = 0; section < SECTION_SIZE; section++)
 	{
-		// We could alternatively use the primary bit mask here
-		// but it's less flexible
+		// Is the section not empty?
 		if (mask & (1 << section))
 		{
-			// Write the sections to the data array
 			WriteSection(section, bitsPerBlock);
 		}
 	}
@@ -102,7 +102,6 @@ Packet& ChunkData::Serialize()
 	// Write NBT information for block entities
 	// For now, keep this 0
 	*m_FieldBuf << VarInt(0);
-
 
 	return *this;
 }

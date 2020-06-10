@@ -162,7 +162,11 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	if (inboundMap.find(id.Value()) != inboundMap.end())
 	{
 		auto mappedPacket = inboundMap[id.Value()]();
+		mappedPacket->SetFieldBuffer(packet->FieldBuffer());
+		mappedPacket->SetRawBuffer(packet->RawBuffer());
+		mappedPacket->SetId(packet->Id());
 		mappedPacket->Deserialize(*packet->FieldBuffer());
+		return mappedPacket;
 	}
 
 	return packet;

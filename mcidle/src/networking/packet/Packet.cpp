@@ -2,6 +2,7 @@
 #include <networking/types/VarInt.hpp>
 
 #include <zlib.h>
+#include <iostream>
 
 namespace mcidle {
 
@@ -94,6 +95,13 @@ void Packet::Write()
 
 	std::size_t uncompressedLen = m_FieldBuf->Size() + id.Size();
 
+	// Calculate the compression value
+	s32 compressVal = m_Compression == -1 ? -1 : 
+		uncompressedLen > m_Compression ? uncompressedLen : 0;
+	VarInt compression(compressVal);
+	if (compressVal >= 0)
+		uncompressedLen += compression.Size();
+
 	// Compress the buffer if needed
 	/*if (m_CompressionThreshold > 0 && pktBuf.Size() >= m_CompressionThreshold)
 	{
@@ -104,9 +112,12 @@ void Packet::Write()
 	// reserve as many bytes we would need to write the entirety of `pktBuf` + VarInt
 	mcidle::ByteBuffer lenPktBuf(uncompressedLen + 5);
 	lenPktBuf << VarInt(uncompressedLen);
+	if (compressVal >= 0)
+		lenPktBuf << compression;
 	lenPktBuf << id;
 	lenPktBuf << *m_FieldBuf; // Unfortunately this has to do a copy
 
+	std::cout << lenPktBuf.Hex() << "\n";
 	// Re-assign the final outbound packet buffer without
 	// compression to the packet buffer prepended with `m_Id`
 	// Use move semantics here so we avoid a copy

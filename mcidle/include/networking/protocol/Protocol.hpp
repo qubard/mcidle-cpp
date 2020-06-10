@@ -6,7 +6,9 @@
 #include <networking/packet/serverbound/EncryptionResponse.hpp>
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
+#include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/ChunkData.hpp>
+#include <networking/packet/clientbound/KeepAlive.hpp>
 
 // Packet ids change for different game versions
 // When we fwd packets we dont care we just fwd the buffer
@@ -28,10 +30,14 @@ using PacketFactory = std::unique_ptr<Packet> (*)();
 // Inbound packet map
 using PacketMap = std::unordered_map<s32, PacketFactory>;
 
+// 1.12.2 map from id to packet
 static PacketMap inboundMap_1_12_2 = 
 {
 	{
-		0x20, []() -> std::unique_ptr<Packet> { return std::make_unique<mcidle::packet::clientbound::ChunkData>(); },
+		0x20, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChunkData>(); },
+	},
+	{
+		0x1F, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::KeepAlive>(); },
 	}
 };
 
@@ -54,9 +60,11 @@ public:
 		return m_VersionNumber;
 	}
 
-	virtual s32 PacketId(mcidle::packet::serverbound::EncryptionResponse&) { return 0x01; }
-	virtual s32 PacketId(mcidle::packet::serverbound::Handshake&) { return 0x00; }
-	virtual s32 PacketId(mcidle::packet::serverbound::LoginStart&) { return 0x00; }
+	virtual s32 PacketId(packet::serverbound::EncryptionResponse&) { return 0x01; }
+	virtual s32 PacketId(packet::serverbound::Handshake&) { return 0x00; }
+	virtual s32 PacketId(packet::serverbound::LoginStart&) { return 0x00; }
+
+	virtual s32 PacketId(packet::serverbound::KeepAlive&) { return 0x0B; }
 
 protected:
 	PacketMap m_InboundMap;
@@ -69,6 +77,8 @@ public:
 	Protocol_1_12_2(s32 versionNumber) : Protocol(inboundMap_1_12_2, versionNumber)
 	{
 	}
+
+	//virtual s32 PacketId(packet::serverbound::KeepAlive&) override { return 0x0B; }
 };
 
 
