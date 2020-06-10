@@ -15,12 +15,6 @@ void Packet::Deserialize(ByteBuffer& buf)
 {
 }
 
-Packet& Packet::SetCompression(s32 threshold)
-{
-	m_Compression = threshold;
-	return *this;
-}
-
 Packet& Packet::SetProtocol(s32 protocol)
 {
 	m_Protocol = protocol;
@@ -81,7 +75,7 @@ s32 Packet::Id()
 // If we have the size of `m_FieldBuf` we can speed this up
 // by just knowing how much space we'll need exactly for
 // packet id + data length + packet length then we only do one copy
-void Packet::Write()
+void Packet::Write(s32 compressionThreshold)
 {
 	if (m_FieldBuf->Size() == 0)
 	{
@@ -96,8 +90,8 @@ void Packet::Write()
 	std::size_t uncompressedLen = m_FieldBuf->Size() + id.Size();
 
 	// Calculate the compression value
-	s32 compressVal = m_Compression == -1 ? -1 : 
-		uncompressedLen > m_Compression ? uncompressedLen : 0;
+	s32 compressVal = compressionThreshold == -1 ? -1 :
+		uncompressedLen > compressionThreshold ? uncompressedLen : 0;
 	VarInt compression(compressVal);
 	if (compressVal >= 0)
 		uncompressedLen += compression.Size();
@@ -117,7 +111,6 @@ void Packet::Write()
 	lenPktBuf << id;
 	lenPktBuf << *m_FieldBuf; // Unfortunately this has to do a copy
 
-	std::cout << lenPktBuf.Hex() << "\n";
 	// Re-assign the final outbound packet buffer without
 	// compression to the packet buffer prepended with `m_Id`
 	// Use move semantics here so we avoid a copy

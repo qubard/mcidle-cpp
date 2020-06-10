@@ -8,21 +8,17 @@ namespace mcidle {
 class Packet
 {
 public:
-	Packet() : m_Id(-1), m_Compression(-1),
-		m_Protocol(-1), m_FieldBuf(std::make_unique<ByteBuffer>()),
+	Packet() : m_Id(-1), m_Protocol(-1), 
+		m_FieldBuf(std::make_unique<ByteBuffer>()),
 		m_RawRecBuf(nullptr)
 	{
 	}
 	
-	Packet(std::shared_ptr<ByteBuffer> fieldBuf) : m_Id(-1), m_Compression(-1),
+	Packet(std::shared_ptr<ByteBuffer> fieldBuf) : m_Id(-1),
 		m_Protocol(-1), m_FieldBuf(fieldBuf), m_RawRecBuf(nullptr)
 	{
 	}
 
-	// It's better to take the compression and protocol later
-	// because muddying the constructor causes a lot of confusion
-	// when we add fields to the constructor later
-	Packet& SetCompression(s32);
 	Packet& SetProtocol(s32);
 	Packet& SetId(s32);
 	Packet& SetRawBuffer(std::shared_ptr<ByteBuffer>);
@@ -45,13 +41,11 @@ public:
 	s32 Id();
 
 	// Write the packet and compress if necessary
-	void Write();
+	void Write(s32);
 protected:
 	s32 m_Protocol;
 	// The packet's VarInt encoded id
 	s32 m_Id;
-	// The compression threshold (-1 if disabled)
-	s32 m_Compression;
 	// Compress the buffer with zlib given the threshold
 	inline void Compress(ByteBuffer& buf);
 	// The field or data buffer for serialization

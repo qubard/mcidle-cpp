@@ -27,15 +27,17 @@ public:
 	void SendPacket(T&& packet)
 	{
 		auto id = m_Protocol->PacketId(packet);
-		packet.SetCompression(m_Compression);
-		packet.SetId(id).SetProtocol(m_Protocol->VersionNumber()).Serialize().Write();
+		packet.
+			SetId(id).
+			SetProtocol(m_Protocol->VersionNumber()).
+			Serialize().Write(m_Compression);
 
 		auto buf = packet.Buffer();
+
 		boost::asio::mutable_buffer mutBuf;
 		if (m_Aes != nullptr)
-		{
 			buf = std::move(m_Aes->Encrypt(*buf, buf->Size()));
-		}
+
 		mutBuf = boost::asio::buffer(buf->Front(), buf->Size());
 		m_Socket->Send(mutBuf);
 	}
