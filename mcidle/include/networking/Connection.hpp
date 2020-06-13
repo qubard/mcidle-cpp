@@ -11,12 +11,12 @@ class Connection
 {
 public:
 	Connection() = default;
-	Connection(std::shared_ptr<TCPSocket> socket, 
-		std::unique_ptr<Protocol> protocol, 
-		std::size_t size):
-		m_Socket(std::move(socket)), m_ReadSize(size), m_Aes(nullptr), m_ReadBuf(size),
-		m_LastRecSize(0), m_Protocol(std::move(protocol)), m_Compression(-1) {
-		m_ReadBuf.Resize(size);
+	Connection(std::unique_ptr<TCPSocket> socket, 
+		std::shared_ptr<Protocol> protocol, 
+		std::size_t readSize):
+		m_Socket(std::move(socket)), m_ReadSize(readSize), m_Aes(nullptr), m_ReadBuf(readSize),
+		m_LastRecSize(0), m_Protocol(protocol), m_Compression(-1) {
+		m_ReadBuf.Resize(readSize);
 	}
 
 	// Equivalent to enabling encryption
@@ -36,7 +36,7 @@ public:
 
 		boost::asio::mutable_buffer mutBuf;
 		if (m_Aes != nullptr)
-			buf = std::move(m_Aes->Encrypt(*buf, buf->Size()));
+			buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
 
 		mutBuf = boost::asio::buffer(buf->Front(), buf->Size());
 		m_Socket->Send(mutBuf);
@@ -50,14 +50,15 @@ private:
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
 
-	std::unique_ptr<Protocol> m_Protocol;
-	std::shared_ptr<TCPSocket> m_Socket;
+	std::shared_ptr<Protocol> m_Protocol;
+	std::unique_ptr<TCPSocket> m_Socket;
 	std::unique_ptr<AesCtx> m_Aes;
 
 	s32 m_Compression;
 
 	// The read buffer for incoming packet data
 	ByteBuffer m_ReadBuf;
+	// The size of each chunked read call
 	std::size_t m_ReadSize;
 	std::size_t m_LastRecSize;
 };

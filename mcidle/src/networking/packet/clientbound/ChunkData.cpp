@@ -178,10 +178,11 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 			}
 			val &= mask;
 
-			auto paletteId = palette[val].Value();
+			// Take into account direct format which has no palette
+			auto paletteId = bits_per_block >= 13 ? val : val < palette.size() ? palette[val].Value() : 0;
 
-			/*auto id = paletteId >> 4;
-			auto meta = paletteId & 0xF;*/
+			auto id = paletteId >> 4;
+			auto meta = paletteId & 0xF;
 
 			m_ChunkMap[section][block_number] = paletteId;
 

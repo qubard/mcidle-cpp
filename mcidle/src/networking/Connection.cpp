@@ -148,7 +148,10 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 		mappedPacket->SetFieldBuffer(packet->FieldBuffer());
 		mappedPacket->SetRawBuffer(packet->RawBuffer());
 		mappedPacket->SetId(packet->Id());
+		auto lastRead = packet->FieldBuffer()->ReadOffset();
 		mappedPacket->Deserialize(*packet->FieldBuffer());
+		// Reset the read index after deserialization
+		packet->FieldBuffer()->SeekRead(lastRead);
 		return mappedPacket;
 	}
 
@@ -162,4 +165,3 @@ Connection& Connection::SetAes(std::unique_ptr<AesCtx>& ctx)
 }
 
 }
-

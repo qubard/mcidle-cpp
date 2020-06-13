@@ -84,14 +84,14 @@ void Packet::Write(s32 compressionThreshold)
 	packetBuf << id;
 	packetBuf << *m_FieldBuf;
 
-	std::size_t uncompressedLen = packetBuf.Size();
+	std::size_t uncompressedLen = packetBuf.WriteSize();
 
 	// Packet is compressed
 	if (compressionThreshold > 0 && uncompressedLen >= compressionThreshold)
 	{
 		VarInt dataLength(uncompressedLen);
 		auto compressedData = Compress(packetBuf);
-		VarInt packetLength(compressedData->Size() + dataLength.Size());
+		VarInt packetLength(compressedData->WriteSize() + dataLength.Size());
 		outBuf.Resize((u64)packetLength.Size() + packetLength.Value());
 		outBuf << packetLength;
 		outBuf << dataLength;
@@ -99,7 +99,7 @@ void Packet::Write(s32 compressionThreshold)
 	}
 	else {
 		// Compression is disabled or data length is 0
-		VarInt packetLength(packetBuf.WriteSize() + (compressionThreshold >= 0 ? 1 : 0));
+		VarInt packetLength(uncompressedLen + (compressionThreshold >= 0 ? 1 : 0));
 		outBuf.Resize(packetLength.Value());
 		outBuf << packetLength;
 		if (compressionThreshold >= 0)
