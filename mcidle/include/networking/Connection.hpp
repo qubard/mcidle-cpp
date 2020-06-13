@@ -45,8 +45,8 @@ public:
 	// Read a packet from the socket as a buffer
 	// This is a raw packet, still needs to be decompressed
 	std::unique_ptr<Packet> ReadPacket();
-	std::shared_ptr<ByteBuffer> ReadBuffer();
 private:
+	std::shared_ptr<ByteBuffer> ReadBuffer();
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
 

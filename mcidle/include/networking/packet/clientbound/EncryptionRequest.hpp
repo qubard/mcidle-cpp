@@ -10,14 +10,19 @@ class EncryptionRequest : public Packet
 {
 public:
 	EncryptionRequest() : Packet() {}
-	EncryptionRequest(std::string id, std::vector<u8>& pubKey, std::vector<u8>& token) :
-	Packet(), m_ServerId(id), m_PubKey(std::move(pubKey)), m_Token(std::move(token)) {}
+	EncryptionRequest(std::string id, std::string pubKey, std::string token) :
+	Packet(), m_ServerId(id), m_PubKey(pubKey), m_Token(token) {}
+
+	std::string PubKey() const;
+	std::string Token() const;
+	std::string ServerId() const;
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 private:
 	std::string m_ServerId;
-	std::vector<u8> m_PubKey;
-	std::vector<u8> m_Token;
+	std::string m_PubKey;
+	std::string m_Token;
 };
 
 } // namespace clientbound

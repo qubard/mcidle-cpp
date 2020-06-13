@@ -11,6 +11,7 @@
 #include <networking/packet/clientbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
+#include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/clientbound/SetCompression.hpp>
 
 // Packet ids change for different game versions
@@ -38,46 +39,17 @@ using ProtocolMap = std::unordered_map<s32, PacketMap>;
 
 namespace state
 {
-	const s32 PLAY = 0x02;
+	const s32 HANDSHAKE = 0x03;
+	const s32 PLAY = 0x00;
 	const s32 STATUS = 0x01;
-	const s32 LOGIN = 0x00;
+	const s32 LOGIN = 0x02;
 }
-
-// 1.12.2 map from id to packet
-static ProtocolMap inboundMap_1_12_2 = 
-{
-	{
-		state::LOGIN,
-		{
-			{
-				0x01, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EncryptionRequest>(); },
-			},
-			{
-				0x02, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::LoginSuccess>(); },
-			},
-			{
-				0x03, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SetCompression>(); },
-			}
-		}
-	},
-	{ 
-		state::PLAY,
-		{
-			{
-				0x20, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChunkData>(); },
-			},
-			{
-				0x1F, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::KeepAlive>(); },
-			}
-		}
-	}
-};
 
 class Protocol
 {
 public:
 	Protocol(s32 versionNumber) : m_VersionNumber(versionNumber), m_State(state::LOGIN) {}
-	Protocol(ProtocolMap inboundMap, s32 versionNumber) : m_VersionNumber(versionNumber), m_State(state::LOGIN)
+	Protocol(ProtocolMap inboundMap, s32 versionNumber, s32 state) : m_VersionNumber(versionNumber), m_State(state)
 	{
 		m_InboundMap = inboundMap;
 	}
@@ -100,24 +72,17 @@ public:
 	virtual s32 PacketId(packet::serverbound::EncryptionResponse&) { return 0x01; }
 	virtual s32 PacketId(packet::serverbound::Handshake&) { return 0x00; }
 	virtual s32 PacketId(packet::serverbound::LoginStart&) { return 0x00; }
+	virtual s32 PacketId(packet::clientbound::EncryptionRequest&) { return 0x01 };
 
 	virtual s32 PacketId(packet::serverbound::KeepAlive&) { return 0x00; }
 
 protected:
 	ProtocolMap m_InboundMap;
+	// Protocol number
 	s32 m_VersionNumber;
 	s32 m_State;
 };
 
-class Protocol_1_12_2 : public Protocol
-{
-public:
-	Protocol_1_12_2(s32 versionNumber) : Protocol(inboundMap_1_12_2, versionNumber)
-	{
-	}
-
-	s32 PacketId(packet::serverbound::KeepAlive&) override { return 0x0B; }
-};
 
 
 } // namespace mcidle

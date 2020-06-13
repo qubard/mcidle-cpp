@@ -15,6 +15,8 @@ public:
 	}
 	SetCompression(s32 threshold) : Packet(), m_Compression(threshold) {}
 
+	s32 Threshold() const;
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 private:

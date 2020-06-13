@@ -19,6 +19,21 @@ void EncryptionRequest::Deserialize(ByteBuffer& buf)
 	buf >> m_Token;
 }
 
+std::string EncryptionRequest::PubKey() const
+{
+	return m_PubKey;
+}
+
+std::string EncryptionRequest::Token() const
+{
+	return m_Token;
+}
+
+std::string EncryptionRequest::ServerId() const
+{
+	return m_ServerId;
+}
+
 }
 }
 }

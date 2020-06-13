@@ -8,6 +8,9 @@ namespace mcidle {
 
 inline bool Connection::PrepareRead()
 {
+	// Reset the seek index
+	m_ReadBuf.SeekRead(0);
+
 	auto asioBuf = boost::asio::buffer(m_ReadBuf.Front(), m_ReadBuf.Size());
 	std::size_t recLen = m_Socket->Recv(asioBuf);
 
@@ -148,10 +151,9 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 		mappedPacket->SetFieldBuffer(packet->FieldBuffer());
 		mappedPacket->SetRawBuffer(packet->RawBuffer());
 		mappedPacket->SetId(packet->Id());
-		auto lastRead = packet->FieldBuffer()->ReadOffset();
+
 		mappedPacket->Deserialize(*packet->FieldBuffer());
-		// Reset the read index after deserialization
-		packet->FieldBuffer()->SeekRead(lastRead);
+
 		return mappedPacket;
 	}
 

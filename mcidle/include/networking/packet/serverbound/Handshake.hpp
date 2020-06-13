@@ -14,6 +14,12 @@ public:
 	Handshake(s32 protocol, std::string address, u16 port, s32 nextState) : 
 	Packet(), m_ProtocolVersion(VarInt(protocol)), m_ServerAddress(address), m_ServerPort(port), 
 	m_NextState(VarInt(nextState)) {}
+
+	s32 Protocol() const;
+	std::string Address() const;
+	u16 Port() const;
+	s32 NextState() const;
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 private:

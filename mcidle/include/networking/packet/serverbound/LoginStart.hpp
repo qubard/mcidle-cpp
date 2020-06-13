@@ -11,8 +11,11 @@ class LoginStart : public Packet
 public:
 	LoginStart() : Packet() {}
 	LoginStart(std::string username) : Packet(), m_Username(username) {}
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
+
+	std::string Username() const;
 private:
 	std::string m_Username;
 };

@@ -15,6 +15,11 @@ void LoginStart::Deserialize(ByteBuffer& buf)
 	buf >> m_Username;
 }
 
+std::string LoginStart::Username() const
+{
+	return m_Username;
+}
+
 }
 }
 }
