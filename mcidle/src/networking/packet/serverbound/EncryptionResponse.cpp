@@ -17,6 +17,16 @@ void EncryptionResponse::Deserialize(ByteBuffer& buf)
 	buf >> m_Token;
 }
 
+std::string& EncryptionResponse::Token() 
+{
+	return m_Token;
+}
+
+std::string& EncryptionResponse::Secret()
+{
+	return m_Secret;
+}
+
 }
 }
 }

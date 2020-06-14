@@ -79,7 +79,7 @@ void Packet::Write(s32 compressionThreshold)
 	// Packet ID + Data (FieldBuf)
 	ByteBuffer packetBuf;
 
-	// Estimate what the size of the ByteBuffer should be
+	// Estimate what the size of the ByteBuffer should be worst case
 	packetBuf.Resize(m_FieldBuf->Size() + 5);
 	packetBuf << id;
 	packetBuf << *m_FieldBuf;

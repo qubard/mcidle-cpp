@@ -38,7 +38,7 @@ public:
 		if (m_Aes != nullptr)
 			buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
 
-		mutBuf = boost::asio::buffer(buf->Front(), buf->Size());
+		mutBuf = boost::asio::buffer(buf->Front(), buf->WriteSize());
 		m_Socket->Send(mutBuf);
 	}
 

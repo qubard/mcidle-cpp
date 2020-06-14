@@ -72,7 +72,7 @@ public:
 	virtual s32 PacketId(packet::serverbound::EncryptionResponse&) { return 0x01; }
 	virtual s32 PacketId(packet::serverbound::Handshake&) { return 0x00; }
 	virtual s32 PacketId(packet::serverbound::LoginStart&) { return 0x00; }
-	virtual s32 PacketId(packet::clientbound::EncryptionRequest&) { return 0x01 };
+	virtual s32 PacketId(packet::clientbound::EncryptionRequest&) { return 0x01; };
 
 	virtual s32 PacketId(packet::serverbound::KeepAlive&) { return 0x00; }
 

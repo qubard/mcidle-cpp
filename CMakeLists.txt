@@ -11,6 +11,8 @@ set(BOOST_DEBUG OFF)
 
 set(CMAKE_CXX_STANDARD 17) # Use C++17
 
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+
 # Build zlib
 add_subdirectory(zlib)
 

@@ -53,6 +53,9 @@ static ProtocolMap serverboundMap_1_12_2 =
 			{
 				0x00, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::LoginStart>(); },
 			},
+			{
+				0x01, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::EncryptionResponse>(); },
+			},
 		},
 	},
 };

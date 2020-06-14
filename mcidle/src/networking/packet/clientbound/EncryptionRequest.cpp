@@ -1,4 +1,5 @@
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
+#include <iostream>
 
 namespace mcidle {
 namespace packet {
@@ -9,6 +10,7 @@ Packet& EncryptionRequest::Serialize()
 	*m_FieldBuf << m_ServerId;
 	*m_FieldBuf << m_PubKey;
 	*m_FieldBuf << m_Token;
+
 	return *this;
 }
 

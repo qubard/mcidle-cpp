@@ -12,6 +12,10 @@ public:
 	EncryptionResponse() : Packet() {}
 	EncryptionResponse(std::string& secret, std::string& token) :
 		Packet(), m_Secret(std::move(secret)), m_Token(std::move(token)) {}
+
+	std::string& Secret();
+	std::string& Token();
+
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
 private:

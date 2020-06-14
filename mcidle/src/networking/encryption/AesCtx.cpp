@@ -39,6 +39,20 @@ bool AesCtx::Initialize(std::string& publicKey, std::string& verifyToken)
 	RSA_public_encrypt(verifyToken.size(), (const u8*)verifyToken.c_str(), (u8*)encToken.c_str(), rsa, RSA_PKCS1_PADDING);
 	RSA_free(rsa);
 
+	if (!InitializeCtx(sharedSecret))
+		return false;
+
+	m_BlockSize = EVP_CIPHER_block_size(EVP_aes_128_cfb8());
+
+	m_EncSecret = std::move(encSecret);
+	m_EncToken = std::move(encToken);
+	m_Secret = std::move(sharedSecret);
+
+	return true;
+}
+
+bool AesCtx::InitializeCtx(std::string& sharedSecret)
+{
 	// Initialize AES encryption and decryption
 	if (!(m_EncryptCtx = EVP_CIPHER_CTX_new()))
 		return false;
@@ -52,12 +66,6 @@ bool AesCtx::Initialize(std::string& publicKey, std::string& verifyToken)
 	if (!(EVP_DecryptInit_ex(m_DecryptCtx, EVP_aes_128_cfb8(), nullptr, (const u8*)sharedSecret.c_str(), (const u8*)sharedSecret.c_str())))
 		return false;
 
-	m_BlockSize = EVP_CIPHER_block_size(EVP_aes_128_cfb8());
-
-	m_EncSecret = std::move(encSecret);
-	m_EncToken = std::move(encToken);
-	m_Secret = std::move(sharedSecret);
-
 	return true;
 }
 
@@ -69,6 +77,7 @@ std::unique_ptr<ByteBuffer> AesCtx::Encrypt(ByteBuffer& buf, s32 size)
 	out->Resize(size + m_BlockSize);
 	EVP_EncryptUpdate(m_EncryptCtx, out->Front(), &size, buf.Front(), size);
 	out->Resize(size);
+	out->SeekWrite(size);
 	return out;
 }
 
@@ -79,6 +88,7 @@ std::unique_ptr<ByteBuffer> AesCtx::Decrypt(ByteBuffer& buf, s32 size)
 	out->Resize(size + m_BlockSize);
 	EVP_DecryptUpdate(m_DecryptCtx, out->Front(), &size, buf.Front(), size);
 	out->Resize(size);
+	out->SeekWrite(size);
 	return out;
 }
 

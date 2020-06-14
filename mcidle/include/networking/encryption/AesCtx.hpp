@@ -15,6 +15,7 @@ public:
 	~AesCtx();
 
 	bool Initialize(std::string&, std::string&);
+	bool InitializeCtx(std::string&);
 
 	std::string& Secret();
 	std::string& EncSecret();

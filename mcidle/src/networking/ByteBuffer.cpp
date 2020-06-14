@@ -71,15 +71,19 @@ ByteBuffer& ByteBuffer::operator<<(std::string& str)
 {
 	// Write the string length as a VarInt
 	Write(VarInt(str.size()));
-	// Write the actual bytes in the string
-	Write((u8*)&str[0], str.size());
+	if (str.size() > 0)
+	{
+		// Write the actual bytes in the string
+		Write((u8*)&str[0], str.size());
+	}
 	return *this;
 }
 
 ByteBuffer& ByteBuffer::operator<<(std::vector<u8>& vec)
 {
 	Write(VarInt(vec.size()));
-	Write((const u8*)vec.data(), vec.size());
+	if (vec.size() > 0)
+		Write((const u8*)vec.data(), vec.size());
 	return *this;
 }
 
