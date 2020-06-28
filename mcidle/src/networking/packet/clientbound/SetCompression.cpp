@@ -4,6 +4,14 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
+SetCompression::SetCompression() : Packet()
+{
+}
+
+SetCompression::SetCompression(s32 threshold) : Packet(), m_Compression(threshold) 
+{
+}
+
 Packet& SetCompression::Serialize()
 {
 	*m_FieldBuf << m_Compression;

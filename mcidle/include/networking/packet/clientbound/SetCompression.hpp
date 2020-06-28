@@ -10,10 +10,8 @@ namespace clientbound {
 class SetCompression : public Packet
 {
 public:
-	SetCompression() : Packet()
-	{
-	}
-	SetCompression(s32 threshold) : Packet(), m_Compression(threshold) {}
+	SetCompression();
+	SetCompression(s32);
 
 	s32 Threshold() const;
 

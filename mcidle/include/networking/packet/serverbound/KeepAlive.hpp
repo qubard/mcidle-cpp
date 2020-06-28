@@ -1,6 +1,7 @@
 #pragma once
 
 #include <networking/packet/Packet.hpp>
+#include <networking/game/GameState.hpp>
 
 namespace mcidle {
 namespace packet {
@@ -9,10 +10,8 @@ namespace serverbound {
 class KeepAlive : public Packet
 {
 public:
-	KeepAlive() : Packet()
-	{
-	}
-	KeepAlive(s64 id) : Packet(), m_Id(id) {}
+	KeepAlive();
+	KeepAlive(s64);
 
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;

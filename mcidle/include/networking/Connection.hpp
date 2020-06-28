@@ -1,45 +1,34 @@
 #pragma once
 
+#include <memory>
+
 #include <networking/TCPSocket.hpp>
 #include <networking/encryption/AesCtx.hpp>
 #include <networking/packet/Packet.hpp>
-#include <networking/protocol/Protocol.hpp>
+
+#include <networking/packet/Serialize.hpp>
 
 namespace mcidle {
 
 class Connection
 {
 public:
-	Connection() = default;
-	Connection(std::unique_ptr<TCPSocket> socket, 
-		std::shared_ptr<Protocol> protocol, 
-		std::size_t readSize):
-		m_Socket(std::move(socket)), m_ReadSize(readSize), m_Aes(nullptr), m_ReadBuf(readSize),
-		m_LastRecSize(0), m_Protocol(protocol), m_Compression(-1) {
-		m_ReadBuf.Resize(readSize);
-	}
+	Connection(std::unique_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::size_t);
 
 	// Equivalent to enabling encryption
 	Connection& SetAes(std::unique_ptr<AesCtx>&);
 	Connection& SetCompression(s32);
+    s32 Compression();
+    Protocol& Protocol();
+
+    // Send a packet without FullWrite
+    void SendPacketSimple(Packet& packet);
 
 	template <typename T>
 	void SendPacket(T&& packet)
 	{
-		auto id = m_Protocol->PacketId(packet);
-		packet.
-			SetId(id).
-			SetProtocol(m_Protocol->VersionNumber()).
-			Serialize().Write(m_Compression);
-
-		auto buf = packet.Buffer();
-
-		boost::asio::mutable_buffer mutBuf;
-		if (m_Aes != nullptr)
-			buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
-
-		mutBuf = boost::asio::buffer(buf->Front(), buf->WriteSize());
-		m_Socket->Send(mutBuf);
+        SerializeWrite(packet, *m_Protocol, m_Compression);
+        SendPacketSimple(packet);
 	}
 
 	// Read a packet from the socket as a buffer
@@ -50,7 +39,7 @@ private:
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
 
-	std::shared_ptr<Protocol> m_Protocol;
+	std::shared_ptr<mcidle::Protocol> m_Protocol;
 	std::unique_ptr<TCPSocket> m_Socket;
 	std::unique_ptr<AesCtx> m_Aes;
 
@@ -63,4 +52,4 @@ private:
 	std::size_t m_LastRecSize;
 };
 
-} // namespace mcidle
+} // ns mcidle

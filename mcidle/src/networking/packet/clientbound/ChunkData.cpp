@@ -5,6 +5,20 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
+ChunkData::ChunkData()
+{
+}
+
+ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask) : Packet(),
+    m_ChunkX(chunkX), m_ChunkZ(chunkZ), m_GroundUp(groundUp), m_PrimaryBitMask(primaryBitMask)
+{
+}
+
+void ChunkData::Mutate(GameState& state) 
+{
+    // Do nothing (for now)
+}
+
 void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 {
 	*m_FieldBuf << bitsPerBlock;
@@ -199,9 +213,9 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	buf.Read(m_LightMap[section].data(), m_LightMap[section].size());
 
 	// Only exists in the overworld
-	/*std::vector<u8> skyLight;
+	std::vector<u8> skyLight;
 	skyLight.resize(4096 / 2);
-	buf.Read(skyLight.data(), skyLight.size());*/
+	buf.Read(skyLight.data(), skyLight.size());
 }
 
 
@@ -212,8 +226,8 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	buf >> m_GroundUp;
 	buf >> m_PrimaryBitMask;
 
-	u32 numSections = 0;
-	u32 mask = m_PrimaryBitMask.Value();
+	s32 numSections = 0;
+	s32 mask = m_PrimaryBitMask.Value();
 
 	std::vector<u8> data;
 	buf >> data;
@@ -224,16 +238,18 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	while (mask > 0)
 	{
 		if (mask & 1)
+        {
 			ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);
+        }
 		mask >>= 1;
 		section++;
 	}
 
-	if (m_GroundUp)
+	/*if (m_GroundUp)
 	{
-		m_Biomes.resize(256);
-		dataBuf.Read(m_Biomes.data(), 256);
-	}
+		m_Biomes.resize(1024*4);
+		dataBuf.Read(m_Biomes.data(), 1024*4);
+	}*/
 
 	// Read block entities
 	//VarInt numBlockEntities;

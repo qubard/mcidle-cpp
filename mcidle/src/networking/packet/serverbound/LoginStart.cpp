@@ -4,6 +4,14 @@ namespace mcidle {
 namespace packet {
 namespace serverbound {
 
+LoginStart::LoginStart() : Packet() 
+{
+}
+
+LoginStart::LoginStart(std::string username) : Packet(), m_Username(username)
+{
+}
+
 Packet& LoginStart::Serialize()
 {
 	*m_FieldBuf << m_Username;

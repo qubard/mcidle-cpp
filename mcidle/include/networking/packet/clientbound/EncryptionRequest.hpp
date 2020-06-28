@@ -9,9 +9,8 @@ namespace clientbound {
 class EncryptionRequest : public Packet 
 {
 public:
-	EncryptionRequest() : Packet() {}
-	EncryptionRequest(std::string id, std::string pubKey, std::string token) :
-	Packet(), m_ServerId(id), m_PubKey(pubKey), m_Token(token) {}
+	EncryptionRequest();
+	EncryptionRequest(std::string, std::string, std::string);
 
 	std::string PubKey() const;
 	std::string Token() const;

@@ -12,21 +12,28 @@ inline std::shared_ptr<ByteBuffer> Decompress(std::shared_ptr<ByteBuffer>& buf)
 	VarInt compressLen;
 	*buf >> compressLen;
 	// Uncompressed length
-	auto len = compressLen.Value();
+	uLongf len = compressLen.Value();
 
 	// Is the buffer compressed?
-	if (compressLen.Value() > 0)
+	if (len > 0)
 	{
 		auto uncompressed = std::make_shared<ByteBuffer>();
-		uncompressed->Resize(compressLen.Value());
-		uncompress((Bytef*)uncompressed->Front(), (uLongf*)&len,
+		uncompressed->Resize(len);
+
+		s32 succ = uncompress((Bytef*)uncompressed->Front(), (uLongf*)&len,
 			(const Bytef*)&buf->Peek(), (uLong)(buf->Size() - buf->ReadOffset()));
+
+        // Invalid decompression
+        if (succ != Z_OK) 
+            return nullptr;
+
 		// Set the write offset to the end of the buffer just to be safe
 		// if we ever use this buffer again for writing
 		uncompressed->SeekWrite(len);
 		return std::move(uncompressed);
-	}
-	return nullptr;
+	} 
+
+	return std::move(buf);
 }
 
 inline std::shared_ptr<ByteBuffer> Compress(ByteBuffer& buf)

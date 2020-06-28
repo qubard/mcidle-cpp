@@ -1,10 +1,18 @@
 #include <networking/Connection.hpp>
 #include <networking/types/VarInt.hpp>
-#include <zlib.h>
 
 #include <common/Compression.hpp>
 
 namespace mcidle {
+
+Connection::Connection(std::unique_ptr<TCPSocket> socket, 
+    std::shared_ptr<mcidle::Protocol> protocol, 
+    std::size_t readSize):
+        m_Socket(std::move(socket)), m_ReadSize(readSize), m_Aes(nullptr), 
+        m_ReadBuf(readSize),
+        m_LastRecSize(0), m_Protocol(protocol), m_Compression(-1) {
+    m_ReadBuf.Resize(readSize);
+}
 
 inline bool Connection::PrepareRead()
 {
@@ -28,10 +36,32 @@ inline bool Connection::PrepareRead()
 	return recLen > 0;
 }
 
+void Connection::SendPacketSimple(Packet& packet)
+{
+    auto buf = packet.Buffer();
+
+    boost::asio::mutable_buffer mutBuf;
+    if (m_Aes != nullptr)
+        buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
+
+    mutBuf = boost::asio::buffer(buf->Front(), buf->WriteSize());
+    m_Socket->Send(mutBuf);
+}
+
 Connection& Connection::SetCompression(s32 compression)
 {
 	m_Compression = compression;
 	return *this;
+}
+
+s32 Connection::Compression()
+{
+    return m_Compression;
+}
+
+Protocol& Connection::Protocol()
+{
+    return *m_Protocol;
 }
 
 std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
@@ -83,7 +113,8 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 
 		auto asioBuf = boost::asio::buffer(extraBuf.Front(), extraBuf.Size());
 
-		if (m_Socket->Read(asioBuf) == 0)
+        // No bytes
+		if (m_Socket->Read(asioBuf) <= 0)
 			return nullptr;
 
 		if (m_Aes != nullptr)
@@ -125,10 +156,9 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	if (m_Compression > 0)
 	{
 		auto decompressed = Decompress(packetBuf);
-		if (decompressed != nullptr)
-		{
-			packet->SetFieldBuffer(decompressed);
-		}
+		if (decompressed == nullptr) return nullptr;
+
+        packet->SetFieldBuffer(decompressed);
 	}
 
 	// Field buf is valid, read the packet ID and set it

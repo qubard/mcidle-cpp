@@ -3,6 +3,8 @@
 #include <networking/packet/Packet.hpp>
 #include <networking/types/VarInt.hpp>
 
+#include <unordered_map>
+
 namespace mcidle {
 namespace packet {
 namespace clientbound {
@@ -16,16 +18,13 @@ using Section = std::vector<s32>;
 class ChunkData : public Packet
 {
 public:
-	ChunkData()
-	{
-	}
-	ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask) : Packet(),
-		m_ChunkX(chunkX), m_ChunkZ(chunkZ), m_GroundUp(groundUp), m_PrimaryBitMask(primaryBitMask)
-	{
-	}
+	ChunkData();
+	ChunkData(s32, s32, bool, s32);
 
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;
+
+    void Mutate(GameState& state) override;
 
 	std::unordered_map<s32, Section>& ChunkMap();
 private:

@@ -2,17 +2,18 @@
 
 #include <common/Typedef.hpp>
 
-#include <networking/packet/Packet.hpp>
+#include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/serverbound/EncryptionResponse.hpp>
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/packet/clientbound/KeepAlive.hpp>
-#include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/clientbound/SetCompression.hpp>
+
+#include <unordered_map>
 
 // Packet ids change for different game versions
 // When we fwd packets we dont care we just fwd the buffer
@@ -28,7 +29,10 @@
 // we can easily swap them in/out to support different protocol numbers
 // and choose the correct protocol accordingly
 
-namespace mcidle {
+namespace mcidle 
+{
+
+class Packet;
 
 using PacketFactory = std::unique_ptr<Packet> (*)();
 
@@ -48,33 +52,21 @@ namespace state
 class Protocol
 {
 public:
-	Protocol(s32 versionNumber) : m_VersionNumber(versionNumber), m_State(state::LOGIN) {}
-	Protocol(ProtocolMap inboundMap, s32 versionNumber, s32 state) : m_VersionNumber(versionNumber), m_State(state)
-	{
-		m_InboundMap = inboundMap;
-	}
+	Protocol(s32);
+	Protocol(ProtocolMap, s32, s32);
 
-	PacketMap& InboundMap()
-	{
-		return m_InboundMap[m_State];
-	}
+	PacketMap& InboundMap();
 
-	s32 VersionNumber()
-	{
-		return m_VersionNumber;
-	}
+	s32 VersionNumber();
 
-	void SetState(s32 state)
-	{
-		m_State = state;
-	}
+	void SetState(s32);
 
-	virtual s32 PacketId(packet::serverbound::EncryptionResponse&) { return 0x01; }
-	virtual s32 PacketId(packet::serverbound::Handshake&) { return 0x00; }
-	virtual s32 PacketId(packet::serverbound::LoginStart&) { return 0x00; }
-	virtual s32 PacketId(packet::clientbound::EncryptionRequest&) { return 0x01; };
-
-	virtual s32 PacketId(packet::serverbound::KeepAlive&) { return 0x00; }
+	virtual s32 PacketId(packet::serverbound::EncryptionResponse&);
+	virtual s32 PacketId(packet::serverbound::Handshake&);
+	virtual s32 PacketId(packet::serverbound::LoginStart&);
+	virtual s32 PacketId(packet::clientbound::EncryptionRequest&);
+    virtual s32 PacketId(packet::clientbound::SetCompression&);
+	virtual s32 PacketId(packet::serverbound::KeepAlive&);
 
 protected:
 	ProtocolMap m_InboundMap;
@@ -83,6 +75,4 @@ protected:
 	s32 m_State;
 };
 
-
-
-} // namespace mcidle
+} // ns mcidle

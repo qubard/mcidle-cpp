@@ -1,5 +1,3 @@
-#pragma once
-
 #include <networking/ByteBuffer.hpp>
 #include <networking/types/VarInt.hpp>
 
@@ -15,12 +13,6 @@ ByteBuffer::ByteBuffer(std::vector<u8>& data) : m_BigEndian(true), m_ReadOffset(
 m_WriteOffset(0)
 {
 	m_Data = std::move(data);
-}
-
-
-ByteBuffer::ByteBuffer(bool bigEndian=true): m_BigEndian(bigEndian),
-m_ReadOffset(0), m_WriteOffset(0)
-{
 }
 
 ByteBuffer::ByteBuffer(ByteBuffer&& buf) : m_BigEndian(buf.m_BigEndian), 
@@ -173,7 +165,7 @@ void ByteBuffer::Clear()
 	m_ReadOffset = 0;
 }
 
-ByteBuffer& ByteBuffer::Resize(std::size_t size)
+ByteBuffer& ByteBuffer::Resize(u64 size)
 {
 	m_Data.resize(size);
 	return *this;

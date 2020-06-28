@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+
 #include <common/Typedef.hpp>
 #include <boost/algorithm/hex.hpp>
 
@@ -19,7 +20,7 @@ public:
 	ByteBuffer(std::vector<u8>&);
 
 	void Reserve(std::size_t);
-	ByteBuffer& Resize(std::size_t);
+	ByteBuffer& Resize(u64);
 	void Clear();
 	void SeekRead(std::size_t);
 	std::size_t Size() const;

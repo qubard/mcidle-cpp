@@ -9,12 +9,12 @@ namespace clientbound {
 class KeepAlive : public Packet
 {
 public:
-	KeepAlive() : Packet()
-	{
-	}
-	KeepAlive(s64 id) : Packet(), m_Id(id) {}
+	KeepAlive();
+	KeepAlive(s64);
 
 	s64 KeepAliveId() const;
+
+    std::shared_ptr<Packet> Response(Protocol&, s32) override;
 
 	Packet& Serialize() override;
 	void Deserialize(ByteBuffer&) override;

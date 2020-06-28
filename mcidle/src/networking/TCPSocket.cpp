@@ -90,7 +90,7 @@ std::size_t TCPSocket::Recv(boost::asio::mutable_buffer& buffer)
 	}
 	catch (boost::system::system_error & e)
 	{
-		std::cout << e.what() << "\n";
+        return -1;
 	}
 
 	return 0;
@@ -104,7 +104,7 @@ std::size_t TCPSocket::Read(boost::asio::mutable_buffer& buffer)
 	}
 	catch (boost::system::system_error & e)
 	{
-		std::cout << e.what() << "\n";
+        return -1;
 	}
 
 	return 0;
