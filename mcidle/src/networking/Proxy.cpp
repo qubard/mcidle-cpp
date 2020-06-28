@@ -3,20 +3,15 @@
 
 namespace mcidle {
 
-Proxy::Proxy(std::shared_ptr<Connection> source)
-    : m_Source(source)
+Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<GameState> state) : m_Source(source), m_State(state)
 {
 }
 
 // A proxy reads from `source` and writes to `sink`
 // after it is setup.
-Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<Connection> sink) : m_Source(source), m_Sink(sink)
+Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<Connection> sink, std::shared_ptr<GameState> state)
+    : m_Source(source), m_Sink(sink), m_State(state)
 {
-}
-
-void Proxy::RegisterHandler(std::shared_ptr<PacketHandler> handler)
-{
-    m_Handlers.push_back(handler);
 }
 
 void Proxy::Run()
@@ -29,7 +24,8 @@ void Proxy::Run()
         if (packet != nullptr)
         {
             m_StateLock.lock();
-            packet->Mutate(*m_State);
+            if (m_State != nullptr)
+                packet->Mutate(*m_State);
             m_StateLock.unlock();
 
             // Try to generate a protocol agnostic response for the packet

@@ -236,7 +236,7 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 
         s32 section = 0;
         while (mask > 0)
-	{
+        {
 		if (mask & 1)
                 {
                     ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);

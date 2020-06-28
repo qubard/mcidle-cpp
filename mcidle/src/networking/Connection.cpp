@@ -129,10 +129,10 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
                 }
                 else
                 {
-			// Packet isn't encrypted, append the raw bytes
-			extraBuf.Read(*packetBuf, extraBuf.Size());
-		}
-	}
+                    // Packet isn't encrypted, append the raw bytes
+                    extraBuf.Read(*packetBuf, extraBuf.Size());
+                }
+        }
 	else
 	{
 		// Packet fits in the buffer, copy the bytes over
@@ -171,7 +171,7 @@ std::unique_ptr<Packet> Connection::ReadPacket()
         *packet->FieldBuffer() >> id;
         packet->SetId(id.Value());
 
-	// The raw buffer is the uncompressed field buffer
+        // The raw buffer is the uncompressed field buffer
 	// useful for forwarding packets without having
 	// to re-compress them
 	packet->SetRawBuffer(packetBuf);

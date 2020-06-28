@@ -1,7 +1,6 @@
-#pragma once 
+#pragma once
 
 #include <memory>
-
 #include <networking/ByteBuffer.hpp>
 #include <networking/PacketHandler.hpp>
 #include <networking/game/GameState.hpp>

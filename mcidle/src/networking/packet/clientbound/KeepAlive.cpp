@@ -6,20 +6,19 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-    KeepAlive::KeepAlive()
-    {
-    }
+KeepAlive::KeepAlive()
+{
+}
 
-    KeepAlive::KeepAlive(s64 id)
-        : m_Id(id)
-    {
-    }
+KeepAlive::KeepAlive(s64 id) : m_Id(id)
+{
+}
 
-    std::shared_ptr<Packet> KeepAlive::Response(Protocol &protocol, s32 compression)
-    {
-        // Generate a serverbound keep alive using our id
-        return CreatePacket<packet::serverbound::KeepAlive>(protocol, compression, m_Id);
-    }
+std::shared_ptr<Packet> KeepAlive::Response(Protocol &protocol, s32 compression)
+{
+    // Generate a serverbound keep alive using our id
+    return CreatePacket<packet::serverbound::KeepAlive>(protocol, compression, m_Id);
+}
 
 Packet& KeepAlive::Serialize()
 {

@@ -2,15 +2,12 @@
 
 namespace mcidle {
 
-Protocol::Protocol(s32 versionNumber)
-    : m_VersionNumber(versionNumber)
-    , m_State(state::LOGIN)
+Protocol::Protocol(s32 versionNumber) : m_VersionNumber(versionNumber), m_State(state::LOGIN)
 {
 }
 
 Protocol::Protocol(ProtocolMap inboundMap, s32 versionNumber, s32 state)
-    : m_VersionNumber(versionNumber)
-    , m_State(state)
+    : m_VersionNumber(versionNumber), m_State(state)
 {
     m_InboundMap = inboundMap;
 }
@@ -56,6 +53,11 @@ s32 Protocol::PacketId(packet::clientbound::SetCompression &)
 }
 
 s32 Protocol::PacketId(packet::serverbound::KeepAlive &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::UpdateHealth &)
 {
     return 0x00;
 }

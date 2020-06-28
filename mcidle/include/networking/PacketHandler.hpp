@@ -7,9 +7,9 @@ namespace mcidle {
 // Forward declare packets to resolve
 // a cyclical dependency
 namespace packet {
-    namespace serverbound {
-        class KeepAlive;
-    }
+namespace serverbound {
+class KeepAlive;
+}
 }  // namespace packet
 
 class Packet;

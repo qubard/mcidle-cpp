@@ -1,17 +1,16 @@
 #pragma once
 
 #include <common/Typedef.hpp>
-
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/clientbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
 #include <networking/packet/clientbound/SetCompression.hpp>
+#include <networking/packet/clientbound/UpdateHealth.hpp>
 #include <networking/packet/serverbound/EncryptionResponse.hpp>
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
-
 #include <unordered_map>
 
 // Packet ids change for different game versions
@@ -65,6 +64,7 @@ public:
     virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
     virtual s32 PacketId(packet::clientbound::SetCompression &);
     virtual s32 PacketId(packet::serverbound::KeepAlive &);
+    virtual s32 PacketId(packet::clientbound::UpdateHealth &);
 
 protected:
 	ProtocolMap m_InboundMap;

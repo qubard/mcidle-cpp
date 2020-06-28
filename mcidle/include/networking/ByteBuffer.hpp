@@ -27,7 +27,7 @@ public:
         std::size_t WriteSize() const;
         const std::string Hex();
 
-	void SeekWrite(std::size_t);
+        void SeekWrite(std::size_t);
 
 	// Return a reference to the byte at the current read offset
 	u8& Peek();

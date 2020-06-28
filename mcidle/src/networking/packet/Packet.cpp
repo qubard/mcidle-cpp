@@ -1,24 +1,16 @@
+#include <common/Compression.hpp>
 #include <networking/packet/Packet.hpp>
 #include <networking/protocol/Protocol.hpp>
 #include <networking/types/VarInt.hpp>
 
-#include <common/Compression.hpp>
-
 namespace mcidle {
 
-Packet::Packet()
-    : m_Id(-1)
-    , m_Protocol(-1)
-    , m_FieldBuf(std::make_unique<ByteBuffer>())
-    , m_RawRecBuf(nullptr)
+Packet::Packet() : m_Id(-1), m_Protocol(-1), m_FieldBuf(std::make_unique<ByteBuffer>()), m_RawRecBuf(nullptr)
 {
 }
 
 Packet::Packet(std::shared_ptr<ByteBuffer> fieldBuf)
-    : m_Id(-1)
-    , m_Protocol(-1)
-    , m_FieldBuf(fieldBuf)
-    , m_RawRecBuf(nullptr)
+    : m_Id(-1), m_Protocol(-1), m_FieldBuf(fieldBuf), m_RawRecBuf(nullptr)
 {
 }
 
@@ -45,7 +37,6 @@ Packet& Packet::SetId(s32 id)
 
 void Packet::Mutate(GameState &state)
 {
-    printf("Called mutate on root type %x\n", m_Id);
 }
 
 std::shared_ptr<Packet> Packet::Response(Protocol &protocol, s32 compression)
