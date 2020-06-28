@@ -20,12 +20,12 @@ public:
 	ByteBuffer(std::vector<u8>&);
 
 	void Reserve(std::size_t);
-	ByteBuffer& Resize(u64);
-	void Clear();
-	void SeekRead(std::size_t);
-	std::size_t Size() const;
-	std::size_t WriteSize() const;
-	const std::string Hex();
+        ByteBuffer &Resize(u64);
+        void Clear();
+        void SeekRead(std::size_t);
+        std::size_t Size() const;
+        std::size_t WriteSize() const;
+        const std::string Hex();
 
 	void SeekWrite(std::size_t);
 

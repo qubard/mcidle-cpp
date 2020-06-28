@@ -90,5 +90,4 @@ void ByteBuffer::Write(const VarInt val)
 	*this << val;
 }
 
-
-}
+}  // namespace mcidle

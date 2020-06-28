@@ -9,15 +9,16 @@ namespace clientbound {
 class EncryptionRequest : public Packet 
 {
 public:
-	EncryptionRequest();
-	EncryptionRequest(std::string, std::string, std::string);
+    EncryptionRequest();
+    EncryptionRequest(std::string, std::string, std::string);
 
-	std::string PubKey() const;
-	std::string Token() const;
-	std::string ServerId() const;
+    std::string PubKey() const;
+    std::string Token() const;
+    std::string ServerId() const;
 
-	Packet& Serialize() override;
-	void Deserialize(ByteBuffer&) override;
+    Packet &Serialize() override;
+    void Deserialize(ByteBuffer &) override;
+
 private:
 	std::string m_ServerId;
 	std::string m_PubKey;

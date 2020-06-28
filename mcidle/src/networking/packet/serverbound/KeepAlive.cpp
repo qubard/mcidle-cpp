@@ -8,7 +8,7 @@ KeepAlive::KeepAlive() : Packet()
 {
 }
 
-KeepAlive::KeepAlive(s64 id) : Packet(), m_Id(id) 
+KeepAlive::KeepAlive(s64 id) : Packet(), m_Id(id)
 {
 }
 

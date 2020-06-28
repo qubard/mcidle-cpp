@@ -64,16 +64,16 @@ static ProtocolMap serverboundMap_1_12_2 =
 class Protocol_1_12_2_CB : public Protocol
 {
 public:
-	Protocol_1_12_2_CB(s32);
+    Protocol_1_12_2_CB(s32);
 
-	s32 PacketId(packet::serverbound::KeepAlive&);
+    s32 PacketId(packet::serverbound::KeepAlive &);
 };
 
 
 class Protocol_1_12_2_SB : public Protocol
 {
 public:
-	Protocol_1_12_2_SB(s32);
+    Protocol_1_12_2_SB(s32);
 };
 
 }

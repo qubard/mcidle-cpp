@@ -1,16 +1,14 @@
 #include <networking/GameHandler.hpp>
 
-namespace mcidle
-{
+namespace mcidle {
 
 GameHandler::GameHandler()
 {
 }
 
-std::shared_ptr<Packet> GameHandler::Handle(packet::serverbound::KeepAlive& packet) 
+std::shared_ptr<Packet> GameHandler::Handle(packet::serverbound::KeepAlive &packet)
 {
     return nullptr;
 }
 
-} // ns mcidle
-
+}  // namespace mcidle

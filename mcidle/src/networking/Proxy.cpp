@@ -1,17 +1,16 @@
 #include <networking/Proxy.hpp>
 #include <networking/packet/Serialize.hpp>
 
-namespace mcidle
-{
+namespace mcidle {
 
-Proxy::Proxy(std::shared_ptr<Connection> source): m_Source(source)
+Proxy::Proxy(std::shared_ptr<Connection> source)
+    : m_Source(source)
 {
 }
 
 // A proxy reads from `source` and writes to `sink`
 // after it is setup.
-Proxy::Proxy(std::shared_ptr<Connection> source, 
-        std::shared_ptr<Connection> sink): m_Source(source), m_Sink(sink) 
+Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<Connection> sink) : m_Source(source), m_Sink(sink)
 {
 }
 
@@ -22,7 +21,7 @@ void Proxy::RegisterHandler(std::shared_ptr<PacketHandler> handler)
 
 void Proxy::Run()
 {
-    for(;;)
+    for (;;)
     {
         auto packet = m_Source->ReadPacket();
 
@@ -38,8 +37,8 @@ void Proxy::Run()
 
             if (response != nullptr)
                 m_Source->SendPacketSimple(*response);
-        } 
+        }
     }
 }
 
-}
+}  // namespace mcidle

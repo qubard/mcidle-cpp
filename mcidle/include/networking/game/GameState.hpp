@@ -2,11 +2,9 @@
 
 #include <common/Typedef.hpp>
 
-namespace mcidle
-{
+namespace mcidle {
 
-struct Player
-{
+struct Player {
     float Health;
     double X;
     double Y;
@@ -20,9 +18,10 @@ public:
     GameState();
 
     void SetThreshold(s32);
+
 private:
     s32 m_Threshold;
     Player m_Player;
 };
 
-} // ns mcidle
+}  // namespace mcidle

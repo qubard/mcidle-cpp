@@ -2,16 +2,15 @@
 
 #include <common/Typedef.hpp>
 
-#include <networking/packet/clientbound/EncryptionRequest.hpp>
-#include <networking/packet/serverbound/EncryptionResponse.hpp>
-#include <networking/packet/serverbound/Handshake.hpp>
-#include <networking/packet/serverbound/LoginStart.hpp>
-#include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/ChunkData.hpp>
+#include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/clientbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
-#include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/clientbound/SetCompression.hpp>
+#include <networking/packet/serverbound/EncryptionResponse.hpp>
+#include <networking/packet/serverbound/Handshake.hpp>
+#include <networking/packet/serverbound/KeepAlive.hpp>
+#include <networking/packet/serverbound/LoginStart.hpp>
 
 #include <unordered_map>
 
@@ -29,8 +28,7 @@
 // we can easily swap them in/out to support different protocol numbers
 // and choose the correct protocol accordingly
 
-namespace mcidle 
-{
+namespace mcidle {
 
 class Packet;
 
@@ -52,21 +50,21 @@ namespace state
 class Protocol
 {
 public:
-	Protocol(s32);
-	Protocol(ProtocolMap, s32, s32);
+    Protocol(s32);
+    Protocol(ProtocolMap, s32, s32);
 
-	PacketMap& InboundMap();
+    PacketMap &InboundMap();
 
-	s32 VersionNumber();
+    s32 VersionNumber();
 
-	void SetState(s32);
+    void SetState(s32);
 
-	virtual s32 PacketId(packet::serverbound::EncryptionResponse&);
-	virtual s32 PacketId(packet::serverbound::Handshake&);
-	virtual s32 PacketId(packet::serverbound::LoginStart&);
-	virtual s32 PacketId(packet::clientbound::EncryptionRequest&);
-    virtual s32 PacketId(packet::clientbound::SetCompression&);
-	virtual s32 PacketId(packet::serverbound::KeepAlive&);
+    virtual s32 PacketId(packet::serverbound::EncryptionResponse &);
+    virtual s32 PacketId(packet::serverbound::Handshake &);
+    virtual s32 PacketId(packet::serverbound::LoginStart &);
+    virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
+    virtual s32 PacketId(packet::clientbound::SetCompression &);
+    virtual s32 PacketId(packet::serverbound::KeepAlive &);
 
 protected:
 	ProtocolMap m_InboundMap;
@@ -75,4 +73,4 @@ protected:
 	s32 m_State;
 };
 
-} // ns mcidle
+}  // namespace mcidle

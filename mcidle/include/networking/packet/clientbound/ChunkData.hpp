@@ -18,15 +18,16 @@ using Section = std::vector<s32>;
 class ChunkData : public Packet
 {
 public:
-	ChunkData();
-	ChunkData(s32, s32, bool, s32);
+    ChunkData();
+    ChunkData(s32, s32, bool, s32);
 
-	Packet& Serialize() override;
-	void Deserialize(ByteBuffer&) override;
+    Packet &Serialize() override;
+    void Deserialize(ByteBuffer &) override;
 
-    void Mutate(GameState& state) override;
+    void Mutate(GameState &state) override;
 
-	std::unordered_map<s32, Section>& ChunkMap();
+    std::unordered_map<s32, Section> &ChunkMap();
+
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
 	void WriteSection(s32, u8);

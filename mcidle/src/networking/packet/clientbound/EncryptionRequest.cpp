@@ -5,13 +5,14 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-EncryptionRequest::EncryptionRequest()
-{
-}
+    EncryptionRequest::EncryptionRequest()
+    {
+    }
 
-EncryptionRequest::EncryptionRequest(std::string id, std::string pubKey, std::string token) : Packet(), m_ServerId(id), m_PubKey(pubKey), m_Token(token) 
-{
-}
+    EncryptionRequest::EncryptionRequest(std::string id, std::string pubKey, std::string token)
+        : Packet(), m_ServerId(id), m_PubKey(pubKey), m_Token(token)
+    {
+    }
 
 Packet& EncryptionRequest::Serialize()
 {

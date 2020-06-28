@@ -10,13 +10,14 @@ namespace clientbound {
 class SetCompression : public Packet
 {
 public:
-	SetCompression();
-	SetCompression(s32);
+    SetCompression();
+    SetCompression(s32);
 
-	s32 Threshold() const;
+    s32 Threshold() const;
 
-	Packet& Serialize() override;
-	void Deserialize(ByteBuffer&) override;
+    Packet &Serialize() override;
+    void Deserialize(ByteBuffer &) override;
+
 private:
 	VarInt m_Compression;
 };

@@ -1,13 +1,12 @@
 #pragma once
 
-#include <networking/game/GameState.hpp>
 #include <networking/Connection.hpp>
 #include <networking/PacketHandler.hpp>
+#include <networking/game/GameState.hpp>
 
 #include <mutex>
 
-namespace mcidle
-{
+namespace mcidle {
 
 class Proxy
 {
@@ -21,6 +20,7 @@ public:
     // Run the proxy and pipe from source to sink
     // and mutate local game state if needed
     void Run();
+
 private:
     std::vector<std::shared_ptr<PacketHandler>> m_Handlers;
     // Mutex over game state
@@ -31,4 +31,4 @@ private:
     std::shared_ptr<Connection> m_Sink;
 };
 
-} // ns mcidle
+}  // namespace mcidle

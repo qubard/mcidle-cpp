@@ -5,12 +5,16 @@
 
 namespace mcidle {
 
-Connection::Connection(std::unique_ptr<TCPSocket> socket, 
-    std::shared_ptr<mcidle::Protocol> protocol, 
-    std::size_t readSize):
-        m_Socket(std::move(socket)), m_ReadSize(readSize), m_Aes(nullptr), 
-        m_ReadBuf(readSize),
-        m_LastRecSize(0), m_Protocol(protocol), m_Compression(-1) {
+Connection::Connection(std::unique_ptr<TCPSocket> socket, std::shared_ptr<mcidle::Protocol> protocol,
+                       std::size_t readSize)
+    : m_Socket(std::move(socket))
+    , m_ReadSize(readSize)
+    , m_Aes(nullptr)
+    , m_ReadBuf(readSize)
+    , m_LastRecSize(0)
+    , m_Protocol(protocol)
+    , m_Compression(-1)
+{
     m_ReadBuf.Resize(readSize);
 }
 
@@ -36,7 +40,7 @@ inline bool Connection::PrepareRead()
 	return recLen > 0;
 }
 
-void Connection::SendPacketSimple(Packet& packet)
+void Connection::SendPacketSimple(Packet &packet)
 {
     auto buf = packet.Buffer();
 
@@ -59,7 +63,7 @@ s32 Connection::Compression()
     return m_Compression;
 }
 
-Protocol& Connection::Protocol()
+Protocol &Connection::Protocol()
 {
     return *m_Protocol;
 }
@@ -113,18 +117,18 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 
 		auto asioBuf = boost::asio::buffer(extraBuf.Front(), extraBuf.Size());
 
-        // No bytes
-		if (m_Socket->Read(asioBuf) <= 0)
-			return nullptr;
+                // No bytes
+                if (m_Socket->Read(asioBuf) <= 0)
+                    return nullptr;
 
-		if (m_Aes != nullptr)
-		{
-			auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
-			// Combine the output buffer with the rest of the decrypted bytes
-			decrypt->Read(*packetBuf, decrypt->Size());
-		}
-		else
-		{
+                if (m_Aes != nullptr)
+                {
+                    auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
+                    // Combine the output buffer with the rest of the decrypted bytes
+                    decrypt->Read(*packetBuf, decrypt->Size());
+                }
+                else
+                {
 			// Packet isn't encrypted, append the raw bytes
 			extraBuf.Read(*packetBuf, extraBuf.Size());
 		}
@@ -156,15 +160,16 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	if (m_Compression > 0)
 	{
 		auto decompressed = Decompress(packetBuf);
-		if (decompressed == nullptr) return nullptr;
+                if (decompressed == nullptr)
+                    return nullptr;
 
-        packet->SetFieldBuffer(decompressed);
-	}
+                packet->SetFieldBuffer(decompressed);
+        }
 
-	// Field buf is valid, read the packet ID and set it
-	mcidle::VarInt id;
-	*packet->FieldBuffer() >> id;
-	packet->SetId(id.Value());
+        // Field buf is valid, read the packet ID and set it
+        mcidle::VarInt id;
+        *packet->FieldBuffer() >> id;
+        packet->SetId(id.Value());
 
 	// The raw buffer is the uncompressed field buffer
 	// useful for forwarding packets without having

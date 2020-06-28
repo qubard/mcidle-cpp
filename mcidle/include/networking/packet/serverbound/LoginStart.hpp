@@ -9,13 +9,14 @@ namespace serverbound {
 class LoginStart : public Packet 
 {
 public:
-	LoginStart();
-	LoginStart(std::string);
+    LoginStart();
+    LoginStart(std::string);
 
-	Packet& Serialize() override;
-	void Deserialize(ByteBuffer&) override;
+    Packet &Serialize() override;
+    void Deserialize(ByteBuffer &) override;
 
-	std::string Username() const;
+    std::string Username() const;
+
 private:
 	std::string m_Username;
 };

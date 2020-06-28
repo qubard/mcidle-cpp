@@ -165,7 +165,7 @@ void ByteBuffer::Clear()
 	m_ReadOffset = 0;
 }
 
-ByteBuffer& ByteBuffer::Resize(u64 size)
+ByteBuffer &ByteBuffer::Resize(u64 size)
 {
 	m_Data.resize(size);
 	return *this;
@@ -237,4 +237,4 @@ void ByteBuffer::Read(ByteBuffer& buf, std::size_t size)
 	buf.m_WriteOffset += size;
 }
 
-}
+}  // namespace mcidle
