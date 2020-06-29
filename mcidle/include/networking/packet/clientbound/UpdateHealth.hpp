@@ -15,7 +15,7 @@ public:
     UpdateHealth();
     UpdateHealth(float, s32, float);
 
-    void Mutate(GameState &) override;
+    void Mutate(mcidle::game::GameState &) override;
 
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;

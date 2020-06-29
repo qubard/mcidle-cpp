@@ -3,6 +3,7 @@
 #include <common/Typedef.hpp>
 
 namespace mcidle {
+namespace game {
 
 struct FoodStats {
     float Health;
@@ -34,4 +35,5 @@ private:
     Player m_Player;
 };
 
-}  // namespace mcidle
+} // namespace game
+} // namespace mcidle

@@ -1,6 +1,7 @@
 #include <networking/game/GameState.hpp>
 
 namespace mcidle {
+namespace game {
 
 GameState::GameState()
 {
@@ -28,4 +29,5 @@ void GameState::SetGamemode(u8 gamemode)
     m_Player.Gamemode = gamemode;
 }
 
-}  // namespace mcidle
+} // namespace game
+} // namespace mcidle

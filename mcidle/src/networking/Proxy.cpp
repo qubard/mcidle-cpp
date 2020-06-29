@@ -4,7 +4,7 @@
 namespace mcidle {
 
 Proxy::Proxy(std::shared_ptr<Connection> source, 
-        std::shared_ptr<GameState> state) : 
+        std::shared_ptr<mcidle::game::GameState> state) : 
     m_Source(source), 
     m_State(state),
     m_Dest(nullptr)
@@ -15,7 +15,7 @@ Proxy::Proxy(std::shared_ptr<Connection> source,
 // after it is setup.
 Proxy::Proxy(std::shared_ptr<Connection> source, 
         std::shared_ptr<Connection> destination, 
-        std::shared_ptr<GameState> state)
+        std::shared_ptr<mcidle::game::GameState> state)
     : m_Source(source), m_State(state), m_Dest(destination)
 {
 }

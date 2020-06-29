@@ -14,7 +14,7 @@ Respawn::Respawn(int dimension, u8 difficulty, u8 gamemode, std::string level)
 {
 }
 
-void Respawn::Mutate(GameState &state)
+void Respawn::Mutate(mcidle::game::GameState &state)
 {
     state.SetDimension(m_Dimension);
     state.SetGamemode(m_Gamemode);

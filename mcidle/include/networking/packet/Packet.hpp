@@ -28,7 +28,7 @@ public:
     virtual void Deserialize(ByteBuffer &);
 
     // Mutate the game state given the packet's information
-    virtual void Mutate(GameState &);
+    virtual void Mutate(mcidle::game::GameState &);
 
     // Handle a packet using the handler and return a packet
     // as forwarding output

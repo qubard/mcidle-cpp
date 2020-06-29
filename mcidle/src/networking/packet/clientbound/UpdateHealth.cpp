@@ -14,7 +14,7 @@ UpdateHealth::UpdateHealth(float health, s32 food, float saturation)
 {
 }
 
-void UpdateHealth::Mutate(GameState &state)
+void UpdateHealth::Mutate(mcidle::game::GameState &state)
 {
     printf("Updated food stats %.2f %d %.2f\n", m_Health, m_Food.Value(), m_Saturation);
     state.SetFoodStats(m_Health, m_Food.Value(), m_Saturation);

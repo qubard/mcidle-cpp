@@ -30,7 +30,7 @@ public:
     GameState();
     GameState(u8, float);
 
-    void Mutate(mcidle::GameState &) override;
+    void Mutate(mcidle::game::GameState &) override;
 
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;

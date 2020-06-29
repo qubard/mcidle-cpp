@@ -13,7 +13,7 @@ GameState::GameState(u8 reason, float value) : m_Reason(reason), m_Value(value)
 {
 }
 
-void GameState::Mutate(mcidle::GameState &state)
+void GameState::Mutate(mcidle::game::GameState &state)
 {
     if (m_Reason == CHANGE_GAMEMODE)
     {

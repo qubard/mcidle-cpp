@@ -14,7 +14,7 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 {
 }
 
-void ChunkData::Mutate(GameState &state)
+void ChunkData::Mutate(mcidle::game::GameState &state)
 {
     // Do nothing (for now)
 }

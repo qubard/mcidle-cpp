@@ -24,7 +24,7 @@ public:
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;
 
-    void Mutate(GameState &state) override;
+    void Mutate(mcidle::game::GameState &state) override;
 
     std::unordered_map<s32, Section> &ChunkMap();
 

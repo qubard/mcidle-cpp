@@ -4,7 +4,6 @@
 
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
-#include <networking/packet/clientbound/GameState.hpp>
 #include <networking/packet/clientbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
 #include <networking/packet/clientbound/Respawn.hpp>
@@ -14,6 +13,7 @@
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
+#include <networking/packet/clientbound/GameState.hpp>
 
 #include <unordered_map>
 

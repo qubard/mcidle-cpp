@@ -35,7 +35,7 @@ Packet& Packet::SetId(s32 id)
 	return *this;
 }
 
-void Packet::Mutate(GameState &state)
+void Packet::Mutate(mcidle::game::GameState &state)
 {
 }
 
