@@ -18,4 +18,14 @@ void GameState::SetFoodStats(float health, s32 food, float saturation)
     m_Player.foodStats.Saturation = saturation;
 }
 
+void GameState::SetDimension(u8 dimension)
+{
+    m_Player.Dimension = dimension;
+}
+
+void GameState::SetGamemode(u8 gamemode)
+{
+    m_Player.Gamemode = gamemode;
+}
+
 }  // namespace mcidle

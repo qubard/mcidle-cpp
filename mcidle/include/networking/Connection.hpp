@@ -49,7 +49,7 @@ private:
         // The read buffer for incoming packet data
         ByteBuffer m_ReadBuf;
         // The size of each chunked read call
-	std::size_t m_ReadSize;
+        std::size_t m_ReadSize;
 	std::size_t m_LastRecSize;
 };
 

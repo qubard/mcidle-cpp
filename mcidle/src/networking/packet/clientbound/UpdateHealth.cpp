@@ -38,5 +38,4 @@ void UpdateHealth::Deserialize(ByteBuffer &buf)
 
 }  // namespace clientbound
 }  // namespace packet
-
 }  // namespace mcidle

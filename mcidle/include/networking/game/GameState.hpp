@@ -15,6 +15,8 @@ struct Player {
     double Y;
     double Z;
     bool OnGround;
+    u8 Gamemode;
+    u8 Dimension;
     FoodStats foodStats;
 };
 
@@ -25,6 +27,8 @@ public:
 
     void SetThreshold(s32);
     void SetFoodStats(float, s32, float);
+    void SetGamemode(u8);
+    void SetDimension(u8);
 
 private:
     s32 m_Threshold;

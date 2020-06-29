@@ -1,11 +1,10 @@
 #pragma once
 
+#include <networking/game/GameState.hpp>
 #include <networking/packet/Packet.hpp>
 #include <networking/types/VarInt.hpp>
 
 namespace mcidle {
-
-class GameState;
 
 namespace packet {
 namespace clientbound {

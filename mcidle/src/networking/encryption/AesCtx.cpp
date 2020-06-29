@@ -1,6 +1,11 @@
+#include <cstdlib>
 #include <networking/encryption/AesCtx.hpp>
 
 namespace mcidle {
+
+AesCtx::AesCtx() : m_BlockSize(0), m_EncryptCtx(nullptr), m_DecryptCtx(nullptr)
+{
+}
 
 AesCtx::~AesCtx()
 {
@@ -20,12 +25,12 @@ bool AesCtx::Initialize(std::string& publicKey, std::string& verifyToken)
 	
 	if (rsa == NULL) return false;
 
-	// Generate random shared secret
-	std::string sharedSecret;
+        // Generate random 16 byte shared secret
+        std::string sharedSecret;
 	for (int i = 0; i < 16; i++)
-		sharedSecret += "A";
+            sharedSecret += (u8)(rand() % 256);
 
-	s32 rsaSize = RSA_size(rsa);
+        s32 rsaSize = RSA_size(rsa);
 
 	// RSA only outputs blocks of size RSA_size(rsa)
 	std::string encSecret;
@@ -107,4 +112,4 @@ std::string& AesCtx::EncToken()
 	return m_EncToken;
 }
 
-}
+}  // namespace mcidle

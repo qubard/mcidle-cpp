@@ -133,7 +133,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
                     extraBuf.Read(*packetBuf, extraBuf.Size());
                 }
         }
-	else
+        else
 	{
 		// Packet fits in the buffer, copy the bytes over
 		m_ReadBuf.Read(*packetBuf, packetLen.Value() + lenSize);
@@ -172,9 +172,9 @@ std::unique_ptr<Packet> Connection::ReadPacket()
         packet->SetId(id.Value());
 
         // The raw buffer is the uncompressed field buffer
-	// useful for forwarding packets without having
-	// to re-compress them
-	packet->SetRawBuffer(packetBuf);
+        // useful for forwarding packets without having
+        // to re-compress them
+        packet->SetRawBuffer(packetBuf);
 
 	auto inboundMap = m_Protocol->InboundMap();
 

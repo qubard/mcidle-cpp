@@ -3,8 +3,10 @@
 #include <common/Typedef.hpp>
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
+#include <networking/packet/clientbound/GameState.hpp>
 #include <networking/packet/clientbound/KeepAlive.hpp>
 #include <networking/packet/clientbound/LoginSuccess.hpp>
+#include <networking/packet/clientbound/Respawn.hpp>
 #include <networking/packet/clientbound/SetCompression.hpp>
 #include <networking/packet/clientbound/UpdateHealth.hpp>
 #include <networking/packet/serverbound/EncryptionResponse.hpp>

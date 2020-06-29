@@ -29,7 +29,7 @@ public:
 
         void SeekWrite(std::size_t);
 
-	// Return a reference to the byte at the current read offset
+        // Return a reference to the byte at the current read offset
 	u8& Peek();
 	u8* Front();
 	u8* Back();

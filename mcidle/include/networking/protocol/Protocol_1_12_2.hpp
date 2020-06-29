@@ -1,8 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <networking/packet/Packet.hpp>
 #include <networking/protocol/Protocol.hpp>
-#include <memory>
 
 namespace mcidle
 {
@@ -34,9 +34,15 @@ static ProtocolMap clientboundMap_1_12_2 = {
       {
           0x41,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UpdateHealth>(); },
-      }
-
-     }}};
+      },
+      {
+          0x35,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
+      },
+      {
+          0x1E,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::GameState>(); },
+      }}}};
 
 static ProtocolMap serverboundMap_1_12_2 =
 {
