@@ -5,8 +5,9 @@
 
 namespace mcidle {
 
-Connection::Connection(std::unique_ptr<TCPSocket> socket, std::shared_ptr<mcidle::Protocol> protocol,
-                       std::size_t readSize)
+Connection::Connection(std::unique_ptr<TCPSocket> socket, 
+        std::shared_ptr<mcidle::Protocol> protocol,
+       std::size_t readSize)
     : m_Socket(std::move(socket))
     , m_ReadSize(readSize)
     , m_Aes(nullptr)
@@ -43,7 +44,11 @@ inline bool Connection::PrepareRead()
 void Connection::SendPacketSimple(Packet &packet)
 {
     auto buf = packet.Buffer();
+    SendBuffer(buf);
+}
 
+void Connection::SendBuffer(std::shared_ptr<ByteBuffer>& buf)
+{
     boost::asio::mutable_buffer mutBuf;
     if (m_Aes != nullptr)
         buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
@@ -160,11 +165,11 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 	if (m_Compression > 0)
 	{
 		auto decompressed = Decompress(packetBuf);
-                if (decompressed == nullptr)
-                    return nullptr;
+        if (decompressed == nullptr)
+            return nullptr;
 
-                packet->SetFieldBuffer(decompressed);
-        }
+        packet->SetFieldBuffer(decompressed);
+    }
 
         // Field buf is valid, read the packet ID and set it
         mcidle::VarInt id;

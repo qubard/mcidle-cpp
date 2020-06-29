@@ -25,12 +25,12 @@ bool AesCtx::Initialize(std::string& publicKey, std::string& verifyToken)
 	
 	if (rsa == NULL) return false;
 
-        // Generate random 16 byte shared secret
-        std::string sharedSecret;
+    // Generate random 16 byte shared secret
+    std::string sharedSecret;
 	for (int i = 0; i < 16; i++)
-            sharedSecret += (u8)(rand() % 256);
+        sharedSecret += (u8)(rand() % 256);
 
-        s32 rsaSize = RSA_size(rsa);
+    s32 rsaSize = RSA_size(rsa);
 
 	// RSA only outputs blocks of size RSA_size(rsa)
 	std::string encSecret;

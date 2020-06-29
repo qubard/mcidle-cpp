@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common/Typedef.hpp>
+
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/packet/clientbound/EncryptionRequest.hpp>
 #include <networking/packet/clientbound/GameState.hpp>
@@ -13,6 +14,7 @@
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
+
 #include <unordered_map>
 
 // Packet ids change for different game versions

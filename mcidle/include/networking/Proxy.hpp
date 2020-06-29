@@ -20,11 +20,11 @@ public:
     void Run();
 
 private:
-    // Mutex over game state
+    // Mutex over game state (re-entrant lock)
     std::recursive_mutex m_StateLock;
     std::shared_ptr<GameState> m_State;
 
-    std::shared_ptr<Connection> m_Source;
+    std::shared_ptr<Connection> m_Dest;
     std::shared_ptr<Connection> m_Sink;
 };
 

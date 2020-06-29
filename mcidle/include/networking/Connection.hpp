@@ -23,6 +23,8 @@ public:
 
     // Send a packet without FullWrite
     void SendPacketSimple(Packet &packet);
+    // Send a byte buffer
+    void SendBuffer(std::shared_ptr<ByteBuffer>&);
 
     template <typename T>
     void SendPacket(T &&packet)
@@ -40,16 +42,16 @@ private:
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
 
-        std::shared_ptr<mcidle::Protocol> m_Protocol;
-        std::unique_ptr<TCPSocket> m_Socket;
-        std::unique_ptr<AesCtx> m_Aes;
+    std::shared_ptr<mcidle::Protocol> m_Protocol;
+    std::unique_ptr<TCPSocket> m_Socket;
+    std::unique_ptr<AesCtx> m_Aes;
 
-        s32 m_Compression;
+    s32 m_Compression;
 
-        // The read buffer for incoming packet data
-        ByteBuffer m_ReadBuf;
-        // The size of each chunked read call
-        std::size_t m_ReadSize;
+    // The read buffer for incoming packet data
+    ByteBuffer m_ReadBuf;
+    // The size of each chunked read call
+    std::size_t m_ReadSize;
 	std::size_t m_LastRecSize;
 };
 

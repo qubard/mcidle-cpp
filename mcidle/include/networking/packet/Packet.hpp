@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
+
 #include <networking/ByteBuffer.hpp>
-#include <networking/PacketHandler.hpp>
 #include <networking/game/GameState.hpp>
 
 namespace mcidle {
@@ -45,8 +45,6 @@ public:
 
     // Write the packet and compress if necessary
     void Write(s32);
-    // Do a write but serialize the packet first
-    //Packet& SerializeWrite(Protocol&, s32);
 protected:
 	s32 m_Protocol;
 	// The packet's VarInt encoded id

@@ -29,7 +29,6 @@ public:
     void SetFoodStats(float, s32, float);
     void SetGamemode(u8);
     void SetDimension(u8);
-
 private:
     s32 m_Threshold;
     Player m_Player;
