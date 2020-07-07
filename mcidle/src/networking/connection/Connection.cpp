@@ -1,4 +1,4 @@
-#include <networking/Connection.hpp>
+#include <networking/connection/Connection.hpp>
 #include <networking/types/VarInt.hpp>
 
 #include <common/Compression.hpp>
@@ -17,6 +17,11 @@ Connection::Connection(std::unique_ptr<TCPSocket> socket,
     , m_Compression(-1)
 {
     m_ReadBuf.Resize(readSize);
+}
+
+bool Connection::Setup()
+{
+    return false;
 }
 
 inline bool Connection::PrepareRead()

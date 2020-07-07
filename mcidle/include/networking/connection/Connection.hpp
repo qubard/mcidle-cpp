@@ -19,7 +19,10 @@ public:
     Connection &SetAes(std::unique_ptr<AesCtx> &);
     Connection &SetCompression(s32);
     s32 Compression();
-    Protocol &Protocol();
+    mcidle::Protocol &Protocol();
+
+    // Hook to be called before the connection is ran/used
+    virtual bool Setup();
 
     // Send a packet without FullWrite
     void SendPacketSimple(Packet &packet);

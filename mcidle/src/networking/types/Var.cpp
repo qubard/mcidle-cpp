@@ -1,5 +1,3 @@
-#pragma once
-
 #include <networking/types/Var.hpp>
 
 namespace mcidle {

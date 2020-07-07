@@ -1,7 +1,7 @@
 #pragma once
 
 #include <mutex>
-#include <networking/Connection.hpp>
+#include <networking/connection/Connection.hpp>
 #include <networking/PacketHandler.hpp>
 #include <networking/game/GameState.hpp>
 

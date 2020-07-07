@@ -17,6 +17,7 @@ KeepAlive::KeepAlive(s64 id) : m_Id(id)
 std::shared_ptr<Packet> KeepAlive::Response(Protocol &protocol, s32 compression)
 {
     // Generate a serverbound keep alive using our id
+    printf("Responded to KeepAlive\n");
     return CreatePacket<packet::serverbound::KeepAlive>(protocol, compression, m_Id);
 }
 

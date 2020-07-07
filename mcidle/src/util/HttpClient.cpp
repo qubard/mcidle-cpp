@@ -1,4 +1,4 @@
-#include <util/HTTPClient.hpp>
+#include <util/HttpClient.hpp>
 
 #include <common/Json.hpp>
 #include <util/Tokenizer.hpp>
