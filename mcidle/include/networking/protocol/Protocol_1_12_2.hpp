@@ -10,10 +10,16 @@ namespace mcidle
 // 1.12.2 map from id to packet
 static ProtocolMap clientboundMap_1_12_2 = {
     {state::LOGIN,
-     {{
+     {
+     {
           0x01,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EncryptionRequest>(); },
       },
+       {  
+          0x00,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
+      },
+
       {
           0x02,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::LoginSuccess>(); },
@@ -31,6 +37,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x1F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::KeepAlive>(); },
       },
+    {
+          0x1A,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
+      },
       {
           0x41,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UpdateHealth>(); },
@@ -38,6 +48,11 @@ static ProtocolMap clientboundMap_1_12_2 = {
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
+      },
+      {
+        0x0F,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChatMessage>(); },
+
       },
       {
           0x1E,

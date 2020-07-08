@@ -21,6 +21,8 @@ public:
     ChunkData();
     ChunkData(s32, s32, bool, s32);
 
+    std::shared_ptr<Packet> Response(Protocol &, s32) override;
+
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;
 

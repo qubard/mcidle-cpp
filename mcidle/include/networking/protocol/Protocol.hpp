@@ -14,6 +14,8 @@
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
 #include <networking/packet/clientbound/GameState.hpp>
+#include <networking/packet/clientbound/ChatMessage.hpp>
+#include <networking/packet/clientbound/Disconnect.hpp>
 
 #include <unordered_map>
 

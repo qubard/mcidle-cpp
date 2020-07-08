@@ -39,7 +39,10 @@ void Proxy::Run()
             auto response = packet->Response(m_Source->Protocol(), m_Source->Compression());
 
             if (response != nullptr)
+            {
+                printf("Sent response..\n");
                 m_Source->SendPacketSimple(*response);
+            }
         } 
         // This only occurs when the socket is closed
         else

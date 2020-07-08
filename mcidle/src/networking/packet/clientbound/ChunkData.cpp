@@ -19,6 +19,14 @@ void ChunkData::Mutate(mcidle::game::GameState &state)
     // Do nothing (for now)
 }
 
+std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
+{
+    // Generate a serverbound keep alive using our id
+    printf("ChunkData received\n");
+    return nullptr;
+}
+
+
 void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 {
 	*m_FieldBuf << bitsPerBlock;
@@ -213,9 +221,9 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	buf.Read(m_LightMap[section].data(), m_LightMap[section].size());
 
 	// Only exists in the overworld
-        std::vector<u8> skyLight;
-        skyLight.resize(4096 / 2);
-        buf.Read(skyLight.data(), skyLight.size());
+    std::vector<u8> skyLight;
+    skyLight.resize(4096 / 2);
+    //buf.Read(skyLight.data(), skyLight.size());
 }
 
 
@@ -226,34 +234,34 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	buf >> m_GroundUp;
 	buf >> m_PrimaryBitMask;
 
-        s32 numSections = 0;
-        s32 mask = m_PrimaryBitMask.Value();
+    s32 numSections = 0;
+    s32 mask = m_PrimaryBitMask.Value();
 
-        std::vector<u8> data;
-        buf >> data;
+    std::vector<u8> data;
+    buf >> data;
 
-        ByteBuffer dataBuf(data);
+    ByteBuffer dataBuf(data);
 
-        s32 section = 0;
-        while (mask > 0)
+    s32 section = 0;
+    while (mask > 0)
+    {
+        if (mask & 1)
         {
-            if (mask & 1)
-            {
-                ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);
-            }
-            mask >>= 1;
-            section++;
+            ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);
         }
+        mask >>= 1;
+        section++;
+    }
 
-        /*if (m_GroundUp)
+    /*if (m_GroundUp)
 	{
 		m_Biomes.resize(1024*4);
 		dataBuf.Read(m_Biomes.data(), 1024*4);
 	}*/
 
-        // Read block entities
-        //VarInt numBlockEntities;
-        //buf >> numBlockEntities;
+    // Read block entities
+    //VarInt numBlockEntities;
+    //buf >> numBlockEntities;
 }
 
 } // ns clientbound

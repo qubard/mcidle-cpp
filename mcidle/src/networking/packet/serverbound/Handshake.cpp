@@ -10,7 +10,7 @@ Packet& Handshake::Serialize()
 	*m_FieldBuf << m_ProtocolVersion;
 	*m_FieldBuf << m_ServerAddress;
 	*m_FieldBuf << m_ServerPort;
-	*m_FieldBuf << m_NextState;
+    *m_FieldBuf << m_NextState;
 	return *this;
 }
 

@@ -41,6 +41,7 @@ void Packet::Mutate(mcidle::game::GameState &state)
 
 std::shared_ptr<Packet> Packet::Response(Protocol &protocol, s32 compression)
 {
+    printf("ID: %x\n", m_Id);
     return nullptr;
 }
 
@@ -97,8 +98,8 @@ void Packet::Write(s32 compressionThreshold)
 	// Packet ID + Data (FieldBuf)
 	ByteBuffer packetBuf;
 
-	// Estimate what the size of the ByteBuffer should be worst case
-	packetBuf.Resize(m_FieldBuf->Size() + 5);
+	// Set the ByteBuffer to take up exact space
+	packetBuf.Resize(m_FieldBuf->Size() + id.Size());
 	packetBuf << id;
 	packetBuf << *m_FieldBuf;
 
