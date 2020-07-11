@@ -16,6 +16,7 @@
 #include <networking/packet/clientbound/GameState.hpp>
 #include <networking/packet/clientbound/ChatMessage.hpp>
 #include <networking/packet/clientbound/Disconnect.hpp>
+#include <networking/packet/clientbound/JoinGame.hpp>
 
 #include <unordered_map>
 
@@ -71,6 +72,8 @@ public:
     virtual s32 PacketId(packet::clientbound::SetCompression &);
     virtual s32 PacketId(packet::serverbound::KeepAlive &);
     virtual s32 PacketId(packet::clientbound::UpdateHealth &);
+    virtual s32 PacketId(packet::clientbound::LoginSuccess &);
+    virtual s32 PacketId(packet::clientbound::JoinGame &);
 
 protected:
 	ProtocolMap m_InboundMap;

@@ -57,7 +57,17 @@ s32 Protocol::PacketId(packet::serverbound::KeepAlive &)
     return 0x00;
 }
 
+s32 Protocol::PacketId(packet::clientbound::LoginSuccess &)
+{
+    return 0x02;
+}
+
 s32 Protocol::PacketId(packet::clientbound::UpdateHealth &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::JoinGame &)
 {
     return 0x00;
 }

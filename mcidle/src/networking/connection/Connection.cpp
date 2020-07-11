@@ -19,7 +19,7 @@ Connection::Connection(std::unique_ptr<TCPSocket> socket,
     m_ReadBuf.Resize(readSize);
 }
 
-bool Connection::Setup()
+bool Connection::Setup(mcidle::util::Yggdrasil &)
 {
     return false;
 }

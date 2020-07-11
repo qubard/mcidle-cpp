@@ -223,7 +223,9 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	// Only exists in the overworld
     std::vector<u8> skyLight;
     skyLight.resize(4096 / 2);
-    //buf.Read(skyLight.data(), skyLight.size());
+    // TODO: This will break mcidle, need to read in the dimension
+    // somewhere here
+    buf.Read(skyLight.data(), skyLight.size());
 }
 
 

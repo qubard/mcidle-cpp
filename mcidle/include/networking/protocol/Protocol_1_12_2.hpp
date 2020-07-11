@@ -19,7 +19,6 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x00,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
       },
-
       {
           0x02,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::LoginSuccess>(); },
@@ -48,6 +47,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
+      },
+        {
+          0x23,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::JoinGame>(); },
       },
       {
         0x0F,
@@ -89,7 +92,9 @@ public:
     Protocol_1_12_2_CB(s32);
 
     s32 PacketId(packet::serverbound::KeepAlive &);
+
     s32 PacketId(packet::clientbound::UpdateHealth &);
+    s32 PacketId(packet::clientbound::JoinGame &);
 };
 
 

@@ -7,6 +7,7 @@
 #include <networking/packet/Packet.hpp>
 
 #include <networking/packet/Serialize.hpp>
+#include <util/Yggdrasil.hpp>
 
 namespace mcidle {
 
@@ -22,7 +23,7 @@ public:
     mcidle::Protocol &Protocol();
 
     // Hook to be called before the connection is ran/used
-    virtual bool Setup();
+    virtual bool Setup(mcidle::util::Yggdrasil &);
 
     // Send a packet without FullWrite
     void SendPacketSimple(Packet &packet);
@@ -39,15 +40,12 @@ public:
     // Read a packet from the socket as a buffer
     // This is a raw packet, still needs to be decompressed
     std::unique_ptr<Packet> ReadPacket();
+    std::shared_ptr<mcidle::Protocol> m_Protocol;
 
 private:
 	std::shared_ptr<ByteBuffer> ReadBuffer();
 	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
 	inline bool PrepareRead();
-
-    std::shared_ptr<mcidle::Protocol> m_Protocol;
-    std::unique_ptr<TCPSocket> m_Socket;
-    std::unique_ptr<AesCtx> m_Aes;
 
     s32 m_Compression;
 
@@ -56,6 +54,9 @@ private:
     // The size of each chunked read call
     std::size_t m_ReadSize;
 	std::size_t m_LastRecSize;
+
+    std::unique_ptr<TCPSocket> m_Socket;
+    std::unique_ptr<AesCtx> m_Aes;
 };
 
 }  // namespace mcidle
