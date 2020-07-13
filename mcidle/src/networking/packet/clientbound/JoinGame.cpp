@@ -8,14 +8,16 @@ JoinGame::JoinGame()
 {
 }
 
-JoinGame::JoinGame(int entityId, u8 gamemode, int dimension, u8 difficulty, u8 maxPlayers, std::string levelType, bool debugInfo)
+JoinGame::JoinGame(s32 entityId, u8 gamemode, s32 dimension, u8 difficulty, u8 maxPlayers, std::string levelType, bool debugInfo)
     : m_EntityId(entityId), m_Gamemode(gamemode), m_Dimension(dimension), m_Difficulty(difficulty), m_MaxPlayers(maxPlayers), m_LevelType(levelType), m_DebugInfo(debugInfo)
 {
 }
 
 void JoinGame::Mutate(mcidle::game::GameState &state)
 {
-    printf("Join Game received %d %d %d %d %d\n", m_EntityId, m_Gamemode, m_Dimension, m_Difficulty, m_MaxPlayers);
+    printf("Join Game received entity: %d gamemode: %d dim: %d diff: %d maxplayers: %d\n", m_EntityId, m_Gamemode, m_Dimension, m_Difficulty, m_MaxPlayers);
+    state.SetDimension(m_Dimension & 3); // bit 3 reserved for hardcore status
+    state.SetGamemode(m_Gamemode);
 }
 
 Packet &JoinGame::Serialize()
@@ -34,6 +36,7 @@ void JoinGame::Deserialize(ByteBuffer &buf)
 {
     buf >> m_EntityId;
     buf >> m_Gamemode;
+    buf >> m_Dimension;
     buf >> m_Difficulty;
     buf >> m_MaxPlayers;
     buf >> m_LevelType;

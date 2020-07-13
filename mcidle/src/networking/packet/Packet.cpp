@@ -19,6 +19,12 @@ Packet& Packet::Serialize()
 	return *this;
 }
 
+Packet& Packet::SetGameState(std::shared_ptr<mcidle::game::GameState>& state)
+{
+    m_State = state;
+    return *this;
+}
+
 void Packet::Deserialize(ByteBuffer& buf)
 {
 }
@@ -41,7 +47,6 @@ void Packet::Mutate(mcidle::game::GameState &state)
 
 std::shared_ptr<Packet> Packet::Response(Protocol &protocol, s32 compression)
 {
-    printf("ID: %x\n", m_Id);
     return nullptr;
 }
 

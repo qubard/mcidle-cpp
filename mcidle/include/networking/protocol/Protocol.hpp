@@ -17,6 +17,7 @@
 #include <networking/packet/clientbound/ChatMessage.hpp>
 #include <networking/packet/clientbound/Disconnect.hpp>
 #include <networking/packet/clientbound/JoinGame.hpp>
+#include <networking/packet/clientbound/PlayerPositionLook.hpp>
 
 #include <unordered_map>
 

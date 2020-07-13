@@ -7,6 +7,7 @@ namespace mcidle {
 
 Connection::Connection(std::unique_ptr<TCPSocket> socket, 
         std::shared_ptr<mcidle::Protocol> protocol,
+        std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
     : m_Socket(std::move(socket))
     , m_ReadSize(readSize)
@@ -15,6 +16,7 @@ Connection::Connection(std::unique_ptr<TCPSocket> socket,
     , m_LastRecSize(0)
     , m_Protocol(protocol)
     , m_Compression(-1)
+    , m_State(state)
 {
     m_ReadBuf.Resize(readSize);
 }
@@ -196,7 +198,7 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 		mappedPacket->SetFieldBuffer(packet->FieldBuffer());
 		mappedPacket->SetRawBuffer(packet->RawBuffer());
 		mappedPacket->SetId(packet->Id());
-
+        mappedPacket->SetGameState(m_State);
 		mappedPacket->Deserialize(*packet->FieldBuffer());
 
 		return mappedPacket;

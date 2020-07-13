@@ -37,6 +37,11 @@ static ProtocolMap clientboundMap_1_12_2 = {
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::KeepAlive>(); },
       },
     {
+          0x2F,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::PlayerPositionLook>(); },
+      },
+
+    {
           0x1A,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
       },

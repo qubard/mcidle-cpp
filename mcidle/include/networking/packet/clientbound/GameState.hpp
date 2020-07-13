@@ -4,7 +4,6 @@
 #include <networking/packet/Packet.hpp>
 
 namespace mcidle {
-
 namespace packet {
 namespace clientbound {
 

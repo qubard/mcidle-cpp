@@ -6,8 +6,9 @@ namespace mcidle {
 
 SConnection::SConnection(std::unique_ptr<TCPSocket> socket, 
         std::shared_ptr<mcidle::Protocol> protocol,
+        std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
-    : Connection(std::move(socket), protocol, readSize)
+    : Connection(std::move(socket), protocol, state, readSize)
 {
 }
 
@@ -17,7 +18,7 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 
     std::cout << "connected\n"; 
 
-    std::string serverName = "localhost";
+    std::string serverName = "2b2t.org";
     mcidle::packet::serverbound::Handshake handshake(340, serverName, 25565, mcidle::state::LOGIN);
     printf("Sending handshake serverbound\n");
     SendPacket(handshake);

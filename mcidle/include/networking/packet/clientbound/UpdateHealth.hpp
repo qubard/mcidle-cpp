@@ -28,5 +28,4 @@ private:
 
 }  // namespace clientbound
 }  // namespace packet
-
 }  // namespace mcidle

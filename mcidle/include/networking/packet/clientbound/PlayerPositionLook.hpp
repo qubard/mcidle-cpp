@@ -1,5 +1,6 @@
 #pragma once
 
+#include <networking/game/GameState.hpp>
 #include <networking/packet/Packet.hpp>
 
 namespace mcidle {
@@ -7,11 +8,11 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-class JoinGame : public Packet
+class PlayerPositionLook : public Packet
 {
 public:
-    JoinGame();
-    JoinGame(s32, u8, s32, u8, u8, std::string, bool);
+    PlayerPositionLook();
+    PlayerPositionLook(double, double, double, float, float, u8, s32);
 
     void Mutate(mcidle::game::GameState &) override;
 
@@ -19,13 +20,13 @@ public:
     void Deserialize(ByteBuffer &) override;
 
 private:
-    s32 m_EntityId;
-    u8 m_Gamemode;
-    s32 m_Dimension;
-    u8 m_Difficulty;
-    u8 m_MaxPlayers;
-    std::string m_LevelType;
-    bool m_DebugInfo;
+    double m_X;
+    double m_Y;
+    double m_Z;
+    float m_Yaw;
+    float m_Pitch;
+    u8 m_Flags;
+    s32 m_TeleportId;
 };
 
 }  // namespace clientbound

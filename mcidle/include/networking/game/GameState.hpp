@@ -15,9 +15,11 @@ struct Player {
     double X;
     double Y;
     double Z;
+    float Yaw;
+    float Pitch;
     bool OnGround;
     u8 Gamemode;
-    u8 Dimension;
+    s32 Dimension;
     FoodStats foodStats;
 };
 
@@ -30,6 +32,14 @@ public:
     void SetFoodStats(float, s32, float);
     void SetGamemode(u8);
     void SetDimension(u8);
+
+    // Set the position with absolute or relative coordinates/angles
+    void SetPosition(double, double, double, bool, bool, bool);
+    void SetYaw(float, bool);
+    void SetPitch(float, bool);
+    void SetAngles(float, float);
+
+    s32 Dimension();
 private:
     s32 m_Threshold;
     Player m_Player;

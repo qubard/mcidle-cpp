@@ -12,6 +12,7 @@ class SConnection : public Connection
 public:
     SConnection(std::unique_ptr<TCPSocket>, 
             std::shared_ptr<mcidle::Protocol>, 
+            std::shared_ptr<mcidle::game::GameState>,
             std::size_t);
 
     bool Setup(mcidle::util::Yggdrasil&) override;
