@@ -18,6 +18,7 @@
 #include <networking/packet/clientbound/Disconnect.hpp>
 #include <networking/packet/clientbound/JoinGame.hpp>
 #include <networking/packet/clientbound/PlayerPositionLook.hpp>
+#include <networking/packet/clientbound/SpawnPosition.hpp>
 
 #include <unordered_map>
 

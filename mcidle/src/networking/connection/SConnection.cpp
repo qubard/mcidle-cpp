@@ -18,7 +18,7 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 
     std::cout << "connected\n"; 
 
-    std::string serverName = "2b2t.org";
+    std::string serverName = "localhost";
     mcidle::packet::serverbound::Handshake handshake(340, serverName, 25565, mcidle::state::LOGIN);
     printf("Sending handshake serverbound\n");
     SendPacket(handshake);

@@ -49,6 +49,11 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x41,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UpdateHealth>(); },
       },
+    {
+          0x46,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnPosition>(); },
+      },
+
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
