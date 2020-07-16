@@ -20,6 +20,10 @@ class ChunkData : public Packet
 public:
     ChunkData();
     ChunkData(s32, s32, bool, s32);
+    ChunkData(ChunkData&&);
+
+    s32 ChunkX() const;
+    s32 ChunkZ() const;
 
     std::shared_ptr<Packet> Response(Protocol &, s32) override;
 
@@ -29,7 +33,6 @@ public:
     void Mutate(mcidle::game::GameState &state) override;
 
     std::unordered_map<s32, Section> &ChunkMap();
-
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
 	void WriteSection(s32, u8);

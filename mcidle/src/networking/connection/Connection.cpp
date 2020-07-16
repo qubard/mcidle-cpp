@@ -129,23 +129,23 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 
 		auto asioBuf = boost::asio::buffer(extraBuf.Front(), extraBuf.Size());
 
-                // No bytes
-                if (m_Socket->Read(asioBuf) <= 0)
-                    return nullptr;
+        // No bytes
+        if (m_Socket->Read(asioBuf) <= 0)
+            return nullptr;
 
-                if (m_Aes != nullptr)
-                {
-                    auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
-                    // Combine the output buffer with the rest of the decrypted bytes
-                    decrypt->Read(*packetBuf, decrypt->Size());
-                }
-                else
-                {
-                    // Packet isn't encrypted, append the raw bytes
-                    extraBuf.Read(*packetBuf, extraBuf.Size());
-                }
+        if (m_Aes != nullptr)
+        {
+            auto decrypt = m_Aes->Decrypt(extraBuf, extraBuf.Size());
+            // Combine the output buffer with the rest of the decrypted bytes
+            decrypt->Read(*packetBuf, decrypt->Size());
         }
         else
+        {
+            // Packet isn't encrypted, append the raw bytes
+            extraBuf.Read(*packetBuf, extraBuf.Size());
+        }
+    }
+    else
 	{
 		// Packet fits in the buffer, copy the bytes over
 		m_ReadBuf.Read(*packetBuf, packetLen.Value() + lenSize);
@@ -158,7 +158,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	return packetBuf;
 }
 
-std::unique_ptr<Packet> Connection::ReadPacket()
+std::shared_ptr<Packet> Connection::ReadPacket()
 {
 	auto packetBuf = ReadBuffer();
 
@@ -167,6 +167,11 @@ std::unique_ptr<Packet> Connection::ReadPacket()
 
 	auto packet = std::make_unique<Packet>();
 	packet->SetFieldBuffer(packetBuf);
+
+    // The raw buffer is the uncompressed field buffer
+    // useful for forwarding packets without having
+    // to re-compress them
+    packet->SetRawBuffer(packetBuf);
 
 	// Try to decompress the packet
 	if (m_Compression > 0)
@@ -183,12 +188,7 @@ std::unique_ptr<Packet> Connection::ReadPacket()
         *packet->FieldBuffer() >> id;
         packet->SetId(id.Value());
 
-        // The raw buffer is the uncompressed field buffer
-        // useful for forwarding packets without having
-        // to re-compress them
-        packet->SetRawBuffer(packetBuf);
-
-	auto inboundMap = m_Protocol->InboundMap();
+    auto inboundMap = m_Protocol->InboundMap();
 
 	// Lookup the inbound map packet given the protocol
 	// and deserialize the packet into it

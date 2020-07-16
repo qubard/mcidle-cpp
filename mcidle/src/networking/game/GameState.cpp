@@ -1,4 +1,5 @@
 #include <networking/game/GameState.hpp>
+#include <networking/packet/clientbound/ChunkData.hpp>
 
 namespace mcidle {
 namespace game {
@@ -56,6 +57,16 @@ void GameState::SetAngles(float pitch, float yaw)
     // Always absolute angles
     SetYaw(yaw, false);
     SetPitch(pitch, false);
+}
+
+void GameState::LoadChunk(std::shared_ptr<mcidle::packet::clientbound::ChunkData> chunk) 
+{
+    m_LoadedChunks.push_back(chunk);
+}
+
+ChunkVec& GameState::LoadedChunks()
+{
+    return m_LoadedChunks;
 }
 
 } // namespace game

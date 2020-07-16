@@ -14,9 +14,23 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 {
 }
 
+// Move from another chunk packet, cheaper than calling copy ctor
+ChunkData::ChunkData(ChunkData&& o) : m_ChunkX(o.m_ChunkX), m_ChunkZ(o.m_ChunkZ), m_GroundUp(o.m_GroundUp),
+    m_PrimaryBitMask(o.m_PrimaryBitMask), m_Biomes(std::move(o.m_Biomes)), m_ChunkMap(std::move(o.m_ChunkMap)),
+    m_LightMap(std::move(o.m_LightMap))
+{
+    // Share the raw buffer ptr in case we want to do forwarding
+    SetRawBuffer(o.RawBuffer());
+}
+
 void ChunkData::Mutate(mcidle::game::GameState &state)
 {
-    // Do nothing (for now)
+    // dangerous, but necessary since we need to keep the
+    // current pointer alive but avoid expensive copies
+    auto ch = game::Chunk(new ChunkData(std::move(*this)));
+    state.LoadChunk(ch);
+
+    printf("Loaded chunks: %d\n", state.LoadedChunks().size());
 }
 
 std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
@@ -26,6 +40,15 @@ std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
     return nullptr;
 }
 
+s32 ChunkData::ChunkX() const
+{
+    return m_ChunkX;
+}
+
+s32 ChunkData::ChunkZ() const
+{
+    return m_ChunkZ;
+}
 
 void ChunkData::WriteSection(s32 section, u8 bitsPerBlock)
 {
@@ -98,9 +121,11 @@ Packet& ChunkData::Serialize()
 	{
 		if (m_ChunkMap.find(section) != m_ChunkMap.end())
 		{
+            printf("Wrote section\n");
 			mask |= 1 << section;
 		}
 	}
+    printf("Finished writing sections\n");
 	
 	// Write the primary bit mask
 	*m_FieldBuf << VarInt(mask);

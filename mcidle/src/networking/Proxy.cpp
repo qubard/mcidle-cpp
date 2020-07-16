@@ -29,12 +29,6 @@ void Proxy::Run()
         // Check that the packet is valid
         if (packet != nullptr)
         {
-            // Us the packet to mutate the game state attached to the proxy
-            m_StateLock.lock();
-            if (m_State != nullptr)
-                packet->Mutate(*m_State);
-            m_StateLock.unlock();
-
             // Try to generate a protocol agnostic response for the packet
             auto response = packet->Response(m_Source->Protocol(), m_Source->Compression());
 
@@ -42,6 +36,15 @@ void Proxy::Run()
             {
                 printf("Sent response..\n");
                 m_Source->SendPacketSimple(*response);
+            }
+
+            // Use the packet to mutate the game state attached to the proxy
+            // Since this can move the packet do it last
+            if (m_State != nullptr)
+            {
+                m_StateLock.lock();
+                packet->Mutate(*m_State);
+                m_StateLock.unlock();               
             }
         } 
         // This only occurs when the socket is closed

@@ -3,6 +3,13 @@
 #include <common/Typedef.hpp>
 
 namespace mcidle {
+
+namespace packet {
+namespace clientbound {
+class ChunkData;
+}
+}
+
 namespace game {
 
 struct FoodStats {
@@ -23,6 +30,9 @@ struct Player {
     FoodStats foodStats;
 };
 
+using Chunk = std::shared_ptr<mcidle::packet::clientbound::ChunkData>;
+using ChunkVec = std::vector<Chunk>;
+
 class GameState
 {
 public:
@@ -39,10 +49,16 @@ public:
     void SetPitch(float, bool);
     void SetAngles(float, float);
 
+    // Load a chunk into the `m_LoadedChunks` table
+    void LoadChunk(game::Chunk);
+
+    ChunkVec& LoadedChunks();
     s32 Dimension();
 private:
     s32 m_Threshold;
     Player m_Player;
+
+    ChunkVec m_LoadedChunks;
 };
 
 } // namespace game

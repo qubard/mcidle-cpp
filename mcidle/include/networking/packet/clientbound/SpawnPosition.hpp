@@ -11,7 +11,7 @@ class SpawnPosition : public Packet
 {
 public:
     SpawnPosition();
-    SpawnPosition(s32, s32, s32);
+    SpawnPosition(s64, s64, s64);
 
     void Mutate(mcidle::game::GameState &) override;
 
@@ -19,9 +19,9 @@ public:
     void Deserialize(ByteBuffer &) override;
 
 private:
-    s32 m_X;
-    s32 m_Y;
-    s32 m_Z;
+    s64 m_X;
+    s64 m_Y;
+    s64 m_Z;
 };
 
 }  // namespace clientbound

@@ -2,7 +2,6 @@
 
 #include <mutex>
 #include <networking/connection/Connection.hpp>
-#include <networking/PacketHandler.hpp>
 #include <networking/game/GameState.hpp>
 
 namespace mcidle {

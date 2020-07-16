@@ -17,7 +17,6 @@ public:
 
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;
-
 private:
     s32 m_EntityId;
     u8 m_Gamemode;

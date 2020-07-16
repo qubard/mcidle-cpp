@@ -9,7 +9,7 @@ SpawnPosition::SpawnPosition()
 {
 }
 
-SpawnPosition::SpawnPosition(s32 x, s32 y, s32 z) : m_X(x), m_Y(y), m_Z(z)
+SpawnPosition::SpawnPosition(s64 x, s64 y, s64 z) : m_X(x), m_Y(y), m_Z(z)
 {
     printf("Spawn position: %d, %d, %d\n", m_X, m_Y, m_Z);
 }
@@ -18,7 +18,7 @@ void SpawnPosition::Mutate(mcidle::game::GameState &state)
 {
 }
 
-Packet &SpawnPosition::Serialize()
+Packet& SpawnPosition::Serialize()
 {
     u64 pos = ((m_X & 0x3FFFFFF) << 38) | ((m_Y & 0xFFF) << 26) | (m_Z & 0x3FFFFFF);
     *m_FieldBuf << pos;

@@ -39,7 +39,7 @@ public:
 
     // Read a packet from the socket as a buffer
     // This is a raw packet, still needs to be decompressed
-    std::unique_ptr<Packet> ReadPacket();
+    std::shared_ptr<Packet> ReadPacket();
     std::shared_ptr<mcidle::Protocol> m_Protocol;
 
 private:
