@@ -10,7 +10,9 @@ set(Boost_DETAILED_FAILURE_MSG ON)
 set(BOOST_DEBUG OFF)
 
 set(CMAKE_CXX_STANDARD 17) # Use C++17
+# Use clang
 set(CMAKE_CXX_COMPILER /usr/bin/c++ CACHE STRING "C++ compiler" FORCE)
+add_compile_options(-Ofast)
 
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 
