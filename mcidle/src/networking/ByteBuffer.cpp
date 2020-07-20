@@ -79,6 +79,14 @@ ByteBuffer& ByteBuffer::operator<<(std::vector<u8>& vec)
 	return *this;
 }
 
+ByteBuffer& ByteBuffer::operator<<(std::vector<u64>& vec)
+{
+	Write(VarInt(vec.size()));
+	if (vec.size() > 0)
+		Write((const u8*)vec.data(), sizeof(u64) * vec.size());
+	return *this;
+}
+
 ByteBuffer& ByteBuffer::operator>>(std::vector<u64>& vec)
 {
 	VarInt len = Read<VarInt>();

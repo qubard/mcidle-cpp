@@ -13,6 +13,7 @@
 #include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
 #include <networking/packet/serverbound/LoginStart.hpp>
+#include <networking/packet/serverbound/TeleportConfirm.hpp>
 #include <networking/packet/clientbound/GameState.hpp>
 #include <networking/packet/clientbound/ChatMessage.hpp>
 #include <networking/packet/clientbound/Disconnect.hpp>
@@ -70,12 +71,18 @@ public:
     virtual s32 PacketId(packet::serverbound::EncryptionResponse &);
     virtual s32 PacketId(packet::serverbound::Handshake &);
     virtual s32 PacketId(packet::serverbound::LoginStart &);
+    virtual s32 PacketId(packet::serverbound::KeepAlive &);
+
     virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
     virtual s32 PacketId(packet::clientbound::SetCompression &);
-    virtual s32 PacketId(packet::serverbound::KeepAlive &);
     virtual s32 PacketId(packet::clientbound::UpdateHealth &);
     virtual s32 PacketId(packet::clientbound::LoginSuccess &);
     virtual s32 PacketId(packet::clientbound::JoinGame &);
+    virtual s32 PacketId(packet::clientbound::SpawnPosition &);
+    virtual s32 PacketId(packet::clientbound::PlayerPositionLook &);
+    virtual s32 PacketId(packet::clientbound::KeepAlive &);
+    virtual s32 PacketId(packet::clientbound::ChunkData &);
+
 
 protected:
 	ProtocolMap m_InboundMap;

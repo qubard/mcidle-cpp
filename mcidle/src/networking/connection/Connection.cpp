@@ -3,6 +3,8 @@
 
 #include <common/Compression.hpp>
 
+#include <iostream>
+
 namespace mcidle {
 
 Connection::Connection(std::unique_ptr<TCPSocket> socket, 
@@ -48,20 +50,23 @@ inline bool Connection::PrepareRead()
 	return recLen > 0;
 }
 
-void Connection::SendPacketSimple(Packet &packet)
+std::size_t Connection::SendPacketFwd(Packet &packet)
 {
     auto buf = packet.Buffer();
-    SendBuffer(buf);
+    return SendBuffer(buf);
 }
 
-void Connection::SendBuffer(std::shared_ptr<ByteBuffer>& buf)
+std::size_t Connection::SendBuffer(std::shared_ptr<ByteBuffer>& buf)
 {
+    if (buf == nullptr) 
+        throw std::runtime_error("Trying to send a null buffer!");
+
     boost::asio::mutable_buffer mutBuf;
     if (m_Aes != nullptr)
         buf = std::move(m_Aes->Encrypt(*buf, buf->WriteSize()));
 
     mutBuf = boost::asio::buffer(buf->Front(), buf->WriteSize());
-    m_Socket->Send(mutBuf);
+    return m_Socket->Send(mutBuf);
 }
 
 Connection& Connection::SetCompression(s32 compression)

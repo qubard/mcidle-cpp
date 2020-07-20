@@ -35,7 +35,7 @@ void Proxy::Run()
             if (response != nullptr)
             {
                 printf("Sent response..\n");
-                m_Source->SendPacketSimple(*response);
+                m_Source->SendPacketFwd(*response);
             }
 
             // Use the packet to mutate the game state attached to the proxy

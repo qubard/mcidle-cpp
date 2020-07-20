@@ -20,16 +20,16 @@ public:
 	ByteBuffer(std::vector<u8>&);
 
 	void Reserve(std::size_t);
-        ByteBuffer &Resize(u64);
-        void Clear();
-        void SeekRead(std::size_t);
-        std::size_t Size() const;
-        std::size_t WriteSize() const;
-        const std::string Hex();
+    ByteBuffer &Resize(u64);
+    void Clear();
+    void SeekRead(std::size_t);
+    std::size_t Size() const;
+    std::size_t WriteSize() const;
+    const std::string Hex();
 
-        void SeekWrite(std::size_t);
+    void SeekWrite(std::size_t);
 
-        // Return a reference to the byte at the current read offset
+    // Return a reference to the byte at the current read offset
 	u8& Peek();
 	u8* Front();
 	u8* Back();
@@ -55,6 +55,8 @@ public:
 	ByteBuffer& operator<<(std::string&&);
 	ByteBuffer& operator<<(const char*);
 	ByteBuffer& operator<<(std::vector<u8>&);
+    ByteBuffer& operator<<(std::vector<u64>&);
+
 
 	ByteBuffer& operator>>(std::vector<u64>& vec);
 	ByteBuffer& operator>>(std::vector<u8>& vec);

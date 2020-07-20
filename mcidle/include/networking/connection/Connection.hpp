@@ -25,16 +25,16 @@ public:
     // Hook to be called before the connection is ran/used
     virtual bool Setup(mcidle::util::Yggdrasil &);
 
-    // Send a packet without FullWrite
-    void SendPacketSimple(Packet &packet);
+    // Send an already written packet without FullWrite
+    std::size_t SendPacketFwd(Packet &packet);
     // Send a byte buffer
-    void SendBuffer(std::shared_ptr<ByteBuffer>&);
+    std::size_t SendBuffer(std::shared_ptr<ByteBuffer>&);
 
     template <typename T>
-    void SendPacket(T &&packet)
+    std::size_t SendPacket(T &&packet)
     {
         SerializeWrite(packet, *m_Protocol, m_Compression);
-        SendPacketSimple(packet);
+        return SendPacketFwd(packet);
     }
 
     // Read a packet from the socket as a buffer

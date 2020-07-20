@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <memory>
 #include <vector>
+#include <string>
 
 typedef int8_t s8;
 typedef int16_t s16;

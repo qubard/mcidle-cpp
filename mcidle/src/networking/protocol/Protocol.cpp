@@ -49,7 +49,7 @@ s32 Protocol::PacketId(packet::clientbound::EncryptionRequest &)
 
 s32 Protocol::PacketId(packet::clientbound::SetCompression &)
 {
-    return 0x02;
+    return 0x03;
 }
 
 s32 Protocol::PacketId(packet::serverbound::KeepAlive &)
@@ -68,6 +68,26 @@ s32 Protocol::PacketId(packet::clientbound::UpdateHealth &)
 }
 
 s32 Protocol::PacketId(packet::clientbound::JoinGame &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::SpawnPosition &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::PlayerPositionLook &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::ChunkData &)
+{
+    return 0x00;
+}
+
+s32 Protocol::PacketId(packet::clientbound::KeepAlive &)
 {
     return 0x00;
 }

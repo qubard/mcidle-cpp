@@ -13,7 +13,7 @@ const s32 SECTION_SIZE = 16;
 
 // A section is 16*16*16 values in a 1D vector
 // It's 16% slower to nest the vectors
-using Section = std::vector<s32>;
+using Section = std::vector<u64>;
 
 class ChunkData : public Packet
 {
@@ -35,13 +35,14 @@ public:
     std::unordered_map<s32, Section> &ChunkMap();
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
-	void WriteSection(s32, u8);
+	void WriteSection(ByteBuffer&, s32, u8);
 
 	// Map section height (y=0, y=15) to the section
 	// In world coordinates section height * 16 is y-pos
 	std::unordered_map<s32, Section> m_ChunkMap;
 	std::unordered_map<s32, std::vector<u8>> m_LightMap;
 
+    std::vector<u8> m_Skylight;
 	std::vector<u8> m_Biomes;
 
 	s32 m_ChunkX;

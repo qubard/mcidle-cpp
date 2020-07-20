@@ -93,25 +93,40 @@ static ProtocolMap serverboundMap_1_12_2 =
 			},
 		},
 	},
+    {
+		state::PLAY,
+		{
+			{
+				0x00, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::TeleportConfirm>(); },
+			},
+		},
+	},
+
 };
 
-
+// Incoming clientbound packets, outbound server packets
 class Protocol_1_12_2_CB : public Protocol
 {
 public:
     Protocol_1_12_2_CB(s32);
 
-    s32 PacketId(packet::serverbound::KeepAlive &);
-
-    s32 PacketId(packet::clientbound::UpdateHealth &);
-    s32 PacketId(packet::clientbound::JoinGame &);
+    s32 PacketId(packet::serverbound::KeepAlive &) override;
 };
 
 
+// Incoming serverbound packets, outbound client packets
 class Protocol_1_12_2_SB : public Protocol
 {
 public:
     Protocol_1_12_2_SB(s32);
+
+    s32 PacketId(packet::clientbound::UpdateHealth &) override;
+    s32 PacketId(packet::clientbound::JoinGame &) override;
+    s32 PacketId(packet::clientbound::SpawnPosition &) override;
+    s32 PacketId(packet::clientbound::PlayerPositionLook &) override;
+    s32 PacketId(packet::clientbound::KeepAlive &) override;
+    s32 PacketId(packet::clientbound::ChunkData &) override;
+
 };
 
 }

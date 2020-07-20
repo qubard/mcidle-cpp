@@ -90,10 +90,11 @@ s32 Packet::Id()
 
 void Packet::Write(s32 compressionThreshold)
 {
+    if (m_FieldBuf == nullptr) 
+        throw std::runtime_error("FieldBuf is null on Write()!");
+
 	if (m_FieldBuf->Size() == 0)
-	{
 		throw std::runtime_error("Cannot write empty packet, serialize fields first!");
-	}
 
 	ByteBuffer outBuf;
 
@@ -119,7 +120,7 @@ void Packet::Write(s32 compressionThreshold)
 		outBuf.Resize((u64)packetLength.Size() + packetLength.Value());
 		outBuf << packetLength;
 		outBuf << dataLength;
-		outBuf << compressedData;
+		outBuf << *compressedData;
 	}
 	else {
 		// Compression is disabled or data length is 0

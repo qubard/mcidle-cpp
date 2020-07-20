@@ -16,9 +16,11 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 {
     printf("Called SConnection::Setup()\n");
 
-    std::cout << "connected\n"; 
-
     std::string serverName = "localhost";
+    bool ONLINE_MODE = false;
+
+    std::cout << "Listening in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE") << " mode!\n";
+
     mcidle::packet::serverbound::Handshake handshake(340, serverName, 25565, mcidle::state::LOGIN);
     printf("Sending handshake serverbound\n");
     SendPacket(handshake);
@@ -31,40 +33,43 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
     mcidle::packet::serverbound::LoginStart loginStart("leddit");
     SendPacket(loginStart);
 
-    auto encryptionrequest = ReadPacket();
-    std::cout << "Encryption request received\n";
-    auto er = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest*>(encryptionrequest.get());
-
-    auto verifytoken = er->Token();
-    auto pubkey = er->PubKey();
-    auto serverid = er->ServerId();
-
-    for (auto x : verifytoken) std::cout << x << "\n";
-    std::cout << verifytoken.size() << " size\n";
-    auto aes = std::make_unique<mcidle::AesCtx>();
-    
-    if (aes->Initialize(pubkey, verifytoken))
+    if (ONLINE_MODE)
     {
-        std::cout << "initialized aes\n";
-    }
-    else {
-        std::cout << "failed to init aes\n";
-    }
+        auto encryptionrequest = ReadPacket();
+        std::cout << "Encryption request received -> " << encryptionrequest->RawBuffer()->Hex() << "\n";
+        auto er = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest*>(encryptionrequest.get());
 
-    if (yg.JoinServer(serverid, aes->Secret(), pubkey))
-    {
-        std::cout << "Joined server\n";
-    }
-    else 
-    {
-        std::cout << "Failed to join server\n";
-    }
+        auto verifytoken = er->Token();
+        auto pubkey = er->PubKey();
+        auto serverid = er->ServerId();
 
-    mcidle::packet::serverbound::EncryptionResponse r(aes->EncSecret(), aes->EncToken());
-    SendPacket(std::move(r));
-    
+        for (auto x : verifytoken) std::cout << x << "\n";
+        std::cout << verifytoken.size() << " size\n";
+        auto aes = std::make_unique<mcidle::AesCtx>();
+        
+        if (aes->Initialize(pubkey, verifytoken))
+        {
+            std::cout << "initialized aes\n";
+        }
+        else {
+            std::cout << "failed to init aes\n";
+        }
+
+        if (yg.JoinServer(serverid, aes->Secret(), pubkey))
+        {
+            std::cout << "Joined server\n";
+        }
+        else 
+        {
+            std::cout << "Failed to join server\n";
+        }
+
+        mcidle::packet::serverbound::EncryptionResponse r(aes->EncSecret(), aes->EncToken());
+        SendPacket(std::move(r));
+        SetAes(aes);
+    }
     // Enable encryption and read a packet
-    auto pkt = SetAes(aes).ReadPacket();
+    auto pkt = ReadPacket();
     auto compressionpkt = reinterpret_cast<mcidle::packet::clientbound::SetCompression*>(pkt.get());
     int total = 0;
     std::cout << "Compression: " << compressionpkt->Threshold() << "\n";

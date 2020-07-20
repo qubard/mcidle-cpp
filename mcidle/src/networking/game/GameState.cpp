@@ -15,9 +15,9 @@ void GameState::SetThreshold(s32 threshold)
 
 void GameState::SetFoodStats(float health, s32 food, float saturation)
 {
-    m_Player.foodStats.Health = health;
-    m_Player.foodStats.Food = food;
-    m_Player.foodStats.Saturation = saturation;
+    m_Player.Food.Health = health;
+    m_Player.Food.Hunger = food;
+    m_Player.Food.Saturation = saturation;
 }
 
 void GameState::SetDimension(u8 dimension)
@@ -59,9 +59,116 @@ void GameState::SetAngles(float pitch, float yaw)
     SetPitch(pitch, false);
 }
 
-void GameState::LoadChunk(std::shared_ptr<mcidle::packet::clientbound::ChunkData> chunk) 
+void GameState::LoadChunk(Chunk chunk) 
 {
     m_LoadedChunks.push_back(chunk);
+}
+
+void GameState::SetDifficulty(u8 difficulty)
+{
+    m_Difficulty = difficulty;
+}
+
+void GameState::SetPlayerId(s32 id)
+{
+    m_Player.EntityId = id;
+}
+
+void GameState::SetMaxPlayers(u8 maxPlayers)
+{
+    m_MaxPlayers = maxPlayers;
+}
+
+void GameState::SetLevelType(std::string level)
+{
+    m_LevelType = level;
+}
+
+void GameState::SetDebugInfo(bool debug)
+{
+    m_DebugInfo = debug;
+}
+
+u8 GameState::Gamemode() const
+{
+    return m_Player.Gamemode;
+}
+
+u8 GameState::Dimension() const
+{
+    return m_Player.Dimension;
+}
+
+s32 GameState::PlayerId() const
+{
+    return m_Player.EntityId;
+}
+
+u8 GameState::Difficulty() const
+{
+    return m_Difficulty;
+}
+
+void GameState::SetSpawnPosition(s64 x, s64 y, s64 z)
+{
+    m_Player.SpawnX = x;
+    m_Player.SpawnY = y;
+    m_Player.SpawnZ = z;
+}
+
+s64 GameState::SpawnX() const
+{
+    return m_Player.SpawnX;
+}
+
+s64 GameState::SpawnY() const
+{
+    return m_Player.SpawnY;
+}
+
+s64 GameState::SpawnZ() const
+{
+    return m_Player.SpawnZ;
+}
+
+double GameState::PlayerX() const
+{
+    return m_Player.X;
+}
+
+double GameState::PlayerY() const
+{
+    return m_Player.Y;
+}
+
+double GameState::PlayerZ() const
+{
+    return m_Player.Z;
+}
+
+float GameState::PlayerYaw() const
+{
+    return m_Player.Yaw;
+}
+
+float GameState::PlayerPitch() const
+{
+    return m_Player.Pitch;
+}
+
+u8 GameState::MaxPlayers() const 
+{
+    return m_MaxPlayers;
+}
+
+std::string GameState::LevelType() const
+{
+    return m_LevelType;
+}
+
+bool GameState::DebugInfo() const
+{
+    return m_DebugInfo;
 }
 
 ChunkVec& GameState::LoadedChunks()

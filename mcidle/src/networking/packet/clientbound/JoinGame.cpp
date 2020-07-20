@@ -18,6 +18,11 @@ void JoinGame::Mutate(mcidle::game::GameState &state)
     printf("Join Game received entity: %d gamemode: %d dim: %d diff: %d maxplayers: %d\n", m_EntityId, m_Gamemode, m_Dimension, m_Difficulty, m_MaxPlayers);
     state.SetDimension(m_Dimension & 3); // bit 3 reserved for hardcore status
     state.SetGamemode(m_Gamemode);
+    state.SetPlayerId(m_EntityId);
+    state.SetDifficulty(m_Difficulty);
+    state.SetMaxPlayers(m_MaxPlayers);
+    state.SetLevelType(m_LevelType);
+    state.SetDebugInfo(m_DebugInfo);
 }
 
 Packet &JoinGame::Serialize()

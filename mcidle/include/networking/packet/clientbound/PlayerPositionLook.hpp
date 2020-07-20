@@ -18,7 +18,6 @@ public:
 
     Packet &Serialize() override;
     void Deserialize(ByteBuffer &) override;
-
 private:
     double m_X;
     double m_Y;
