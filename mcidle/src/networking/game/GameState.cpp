@@ -59,7 +59,7 @@ void GameState::SetAngles(float pitch, float yaw)
     SetPitch(pitch, false);
 }
 
-void GameState::LoadChunk(Chunk chunk) 
+void GameState::LoadChunk(std::shared_ptr<Chunk> chunk) 
 {
     m_LoadedChunks.push_back(chunk);
 }
@@ -171,7 +171,8 @@ bool GameState::DebugInfo() const
     return m_DebugInfo;
 }
 
-ChunkVec& GameState::LoadedChunks()
+// Need a thread safe foreach
+game::ChunkList& GameState::LoadedChunks()
 {
     return m_LoadedChunks;
 }

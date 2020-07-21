@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common/Typedef.hpp>
+#include <mutex>
 
 namespace mcidle {
 
@@ -33,9 +34,6 @@ struct Player {
     s32 Dimension;
     FoodStats Food;
 };
-
-using Chunk = std::shared_ptr<mcidle::packet::clientbound::ChunkData>;
-using ChunkVec = std::vector<Chunk>;
 
 class GameState
 {
@@ -80,9 +78,9 @@ public:
     float PlayerPitch() const;
 
     // Load a chunk into the `m_LoadedChunks` table
-    void LoadChunk(Chunk);
+    void LoadChunk(std::shared_ptr<Chunk>);
 
-    ChunkVec& LoadedChunks();
+    game::ChunkList& LoadedChunks();
     s32 Dimension();
 private:
     Player m_Player;
@@ -93,7 +91,8 @@ private:
 
     s32 m_Threshold;
 
-    ChunkVec m_LoadedChunks;
+    ChunkList m_LoadedChunks;
+    mutable std::mutex m_Mutex;
 };
 
 } // namespace game

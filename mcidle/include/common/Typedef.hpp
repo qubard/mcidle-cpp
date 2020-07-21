@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+#include <unordered_map>
+
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
@@ -34,6 +36,22 @@ const u8 CREATIVE = 1;
 const u8 ADVENTURE = 2;
 
 } // ns game
+
+using Section = std::vector<u64>;
+
+struct Chunk {
+    s32 ChunkX;
+    s32 ChunkZ;
+    std::shared_ptr<std::unordered_map<s32, Section>> Sections;
+    std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> LightMap;
+    std::shared_ptr<std::vector<u8>> Skylight;
+    std::shared_ptr<std::vector<u8>> Biomes;
+    bool GroundUp;
+    // Represents mapped sections
+    s32 PrimaryBitMask;
+};
+
+using ChunkList = std::vector<std::shared_ptr<Chunk>>;
 
 } // ns dimension
 } // ns mcidle

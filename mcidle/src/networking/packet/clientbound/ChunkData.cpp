@@ -5,8 +5,12 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-ChunkData::ChunkData() : m_Biomes(0)
+ChunkData::ChunkData()
 {
+    m_Sections = std::make_shared<std::unordered_map<s32, game::Section>>();
+    m_LightMap = std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
+    m_Skylight = std::make_shared<std::vector<u8>>();
+    m_Biomes = std::make_shared<std::vector<u8>>();
 }
 
 ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
@@ -14,9 +18,15 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 {
 }
 
+ChunkData::ChunkData(game::Chunk&& chunk) : m_ChunkX(chunk.ChunkX), m_ChunkZ(chunk.ChunkZ), 
+    m_Sections(std::move(chunk.Sections)), m_Skylight(std::move(chunk.Skylight)), m_Biomes(std::move(chunk.Biomes)),
+    m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(std::move(chunk.LightMap))
+{
+}
+
 // Move from another chunk packet, cheaper than calling copy ctor
 ChunkData::ChunkData(ChunkData&& o) :  m_ChunkX(o.m_ChunkX), m_ChunkZ(o.m_ChunkZ), m_GroundUp(o.m_GroundUp),
-    m_PrimaryBitMask(o.m_PrimaryBitMask), m_Biomes(std::move(o.m_Biomes)), m_ChunkMap(std::move(o.m_ChunkMap)),
+    m_PrimaryBitMask(o.m_PrimaryBitMask), m_Biomes(std::move(o.m_Biomes)), m_Sections(std::move(o.m_Sections)),
     m_LightMap(std::move(o.m_LightMap)), m_Skylight(std::move(o.m_Skylight))
 {
     // Share the raw buffer ptr in case we want to do forwarding
@@ -27,7 +37,17 @@ void ChunkData::Mutate(mcidle::game::GameState &state)
 {
     // dangerous, but necessary since we need to keep the
     // current pointer alive but avoid expensive copies
-    auto ch = game::Chunk(new ChunkData(std::move(*this)));
+    auto p = new game::Chunk();
+    p->ChunkX = m_ChunkX;
+    p->ChunkZ = m_ChunkZ;
+    p->Sections = m_Sections;
+    p->Skylight = m_Skylight;
+    p->LightMap = m_LightMap;
+    p->Biomes = m_Biomes;
+    p->GroundUp = m_GroundUp;
+    p->PrimaryBitMask = m_PrimaryBitMask.Value();
+
+    auto ch = std::shared_ptr<game::Chunk>(p);
     state.LoadChunk(ch);
 }
 
@@ -69,7 +89,7 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
         s32 startOffset = (blockNumber * bitsPerBlock) % 64;
         s32 endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
 
-        u64 value = m_ChunkMap[section][blockNumber];
+        u64 value = (*m_Sections)[section][blockNumber];
         value &= valueMask;
 
         auto id = value >> 4;
@@ -89,11 +109,11 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
     // Write from the temporary data buffer to the byte buffer
     buf << data;
 
-	if (m_LightMap.find(section) != m_LightMap.end())
+	if (m_LightMap->find(section) != m_LightMap->end())
 	{
 		// Half a byte block of light data per block, 
 		// 0.5 bytes per block, 2048 bytes -> 256 u64s
-		std::vector<u8> light = m_LightMap[section];
+		std::vector<u8> light = (*m_LightMap)[section];
         buf.Write(light.data(), light.size());
 	}
 	else
@@ -102,10 +122,10 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 	}
 
     // Write skylight if in overworld
-    if (m_Skylight.size() > 0)
+    if (m_Skylight->size() > 0)
     {
         // data is u64
-        buf.Write(m_Skylight.data(), m_Skylight.size());
+        buf.Write(m_Skylight->data(), m_Skylight->size());
     }
 }
 
@@ -135,7 +155,7 @@ Packet& ChunkData::Serialize()
 
     if (m_GroundUp)
 	{
-        dataBuf.Write(m_Biomes.data(), m_Biomes.size());
+        dataBuf.Write(m_Biomes->data(), m_Biomes->size());
 	}
 
     *m_FieldBuf << VarInt(dataBuf.Size());
@@ -146,11 +166,6 @@ Packet& ChunkData::Serialize()
 	*m_FieldBuf << VarInt(0);
 
 	return *this;
-}
-
-std::unordered_map<s32, Section>& ChunkData::ChunkMap()
-{
-	return m_ChunkMap;
 }
 
 inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int section)
@@ -197,7 +212,7 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
     // Convert the data array to big endian (byte ordering)
     for (u64& l : data) std::reverse((u8*)&l, (u8*)&l + 8);
 
-	m_ChunkMap[section] = std::vector<u64>(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
+	(*m_Sections)[section] = std::vector<u64>(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
 
     for (s32 blockNumber = 0; blockNumber < BLOCK_COUNT; blockNumber++)
     {
@@ -227,21 +242,21 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
         u64 paletteId = bits_per_block >= 13 ? val : val < palette.size() ? palette[val].Value() : 0;
 
         // Store the block
-        m_ChunkMap[section][blockNumber] = paletteId;
+        (*m_Sections)[section][blockNumber] = paletteId;
     }
 
-	m_LightMap[section] = std::vector<u8>();
-	m_LightMap[section].resize(BLOCK_COUNT >> 1);
+	(*m_LightMap)[section] = std::vector<u8>();
+	(*m_LightMap)[section].resize(BLOCK_COUNT >> 1);
 
 	// Read half a byte per block of block light
-	buf.Read(m_LightMap[section].data(), m_LightMap[section].size());
+	buf.Read((*m_LightMap)[section].data(), (*m_LightMap)[section].size());
 
 	// Only exists in the overworld
     if (m_State->Dimension() == mcidle::game::dimension::OVERWORLD)
     {
-        m_Skylight.resize(BLOCK_COUNT >> 1);
+        m_Skylight->resize(BLOCK_COUNT >> 1);
 
-        buf.Read(m_Skylight.data(), m_Skylight.size());
+        buf.Read(m_Skylight->data(), m_Skylight->size());
     }
 }
 
@@ -277,8 +292,8 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 
     if (m_GroundUp)
 	{
-		m_Biomes.resize(256);
-		dataBuf.Read(m_Biomes.data(), 256);
+		m_Biomes->resize(256);
+		dataBuf.Read(m_Biomes->data(), 256);
 	}
 
     // Read block entities
