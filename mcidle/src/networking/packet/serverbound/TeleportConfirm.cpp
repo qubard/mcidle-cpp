@@ -21,7 +21,6 @@ Packet& TeleportConfirm::Serialize()
 
 void TeleportConfirm::Deserialize(ByteBuffer& buf)
 {
-    printf("a\n");
     VarInt tmp;
 	buf >> tmp;
     m_Id = tmp.Value();

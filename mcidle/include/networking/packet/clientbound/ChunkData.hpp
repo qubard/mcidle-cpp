@@ -10,6 +10,7 @@ namespace packet {
 namespace clientbound {
 
 const s32 SECTION_SIZE = 16;
+const s32 BLOCK_COUNT = SECTION_SIZE * SECTION_SIZE * SECTION_SIZE;
 
 // A section is 16*16*16 values in a 1D vector
 // It's 16% slower to nest the vectors

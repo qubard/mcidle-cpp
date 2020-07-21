@@ -105,7 +105,6 @@ ByteBuffer& ByteBuffer::operator>>(std::vector<u8>& vec)
 	return *this;
 }
 
-
 ByteBuffer& ByteBuffer::operator<<(const char* buf)
 {
 	// Convert `buf` to a string first

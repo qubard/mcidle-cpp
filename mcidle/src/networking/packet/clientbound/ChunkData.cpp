@@ -62,32 +62,29 @@ void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBlock)
 	buf << VarInt(0);
 
 	u32 valueMask = (1 << bitsPerBlock) - 1;
-	for (int y = 0; y < SECTION_SIZE; y++)
-	{
-		for (int x = 0; x < SECTION_SIZE; x++)
-		{
-			for (int z = 0; z < SECTION_SIZE; z++)
-			{
-				s32 blockNumber = (((y * SECTION_SIZE) + z) * SECTION_SIZE) + x;
-				s32 startLong = (blockNumber * bitsPerBlock) / 64;
-				s32 startOffset = (blockNumber * bitsPerBlock) % 64;
-				s32 endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
+    for (s32 blockNumber = 0; blockNumber < BLOCK_COUNT; blockNumber++)
+    {
+        s32 startLong = (blockNumber * bitsPerBlock) / 64;
 
-				u64 value = m_ChunkMap[section][blockNumber];
-				value &= valueMask;
+        s32 startOffset = (blockNumber * bitsPerBlock) % 64;
+        s32 endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
 
-				data[startLong] |= (value << startOffset);
+        u64 value = m_ChunkMap[section][blockNumber];
+        value &= valueMask;
 
-                auto id = value >> 4;
-                auto meta = value & 0xF;
+        auto id = value >> 4;
+        auto meta = value & 0xF;
 
-				if (startLong != endLong)
-				{
-					data[endLong] = (value >> (64 - startOffset));
-				}
-			}
-		}
-	}
+        data[startLong] |= value << startOffset;
+
+        if (startLong != endLong)
+        {
+            data[endLong] |= value >> (64 - startOffset);
+        }
+    }
+
+    // Convert each long back to big endian (byte ordering)
+    for (auto &l: data) std::reverse((u8*)&l, (u8*)&l + 8);
 
     buf << data;
 
@@ -109,8 +106,6 @@ void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBlock)
         // data is u64
         buf.Write(m_Skylight.data(), m_Skylight.size());
     }
-
-    //buf.Write((u8*)data.data(), 8 * data.size());
 }
 
 Packet& ChunkData::Serialize()
@@ -121,25 +116,17 @@ Packet& ChunkData::Serialize()
 
 	u8 bitsPerBlock = 13;
 
-	s32 mask = 0;
-
-	for (int section = 0; section < SECTION_SIZE; section++)
-	{
-		if (m_ChunkMap.find(section) != m_ChunkMap.end())
-		{
-			mask |= 1 << section;
-		}
-	}
+    s32 primaryMask = m_PrimaryBitMask.Value();
 
 	// Write the primary bit mask
-	*m_FieldBuf << VarInt(mask);
+	*m_FieldBuf << m_PrimaryBitMask;
 
     ByteBuffer dataBuf;
 
 	for (int section = 0; section < SECTION_SIZE; section++)
 	{
 		// Is the section not empty?
-		if (mask & (1 << section))
+		if (primaryMask & (1 << section))
 		{
 			WriteSection(dataBuf, section, bitsPerBlock);
 		}
@@ -202,54 +189,48 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 
 	int mask = (1 << bits_per_block) - 1;
 
+    // Reads 256 longs or 2048 bytes, 4 bits per block -> 2048 bytes
 	std::vector<u64> data;
 	buf >> data;
 
+    // Convert the data array to big endian (byte ordering)
+    for (u64& l : data) std::reverse((u8*)&l, (u8*)&l + 8);
+
 	m_ChunkMap[section] = std::vector<u64>(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
 
-    for (int y = 0; y < SECTION_SIZE; y++)
-	{
-		for (int x = 0; x < SECTION_SIZE; x++)
-		{
-			for (int z = 0; z < SECTION_SIZE; z++)
-			{
-                s32 block_number = (((y * SECTION_SIZE) + z) * SECTION_SIZE) + x;
+    for (s32 blockNumber = 0; blockNumber < BLOCK_COUNT; blockNumber++)
+    {
+        s32 startLong = (blockNumber * bits_per_block) / 64;
+        s32 startOffset = (blockNumber * bits_per_block) % 64;
+        s32 endLong = ((blockNumber + 1) * bits_per_block - 1) / 64;
 
-                s32 startLong = (block_number * bits_per_block) / 64;
-                s32 startOffset = (block_number * bits_per_block) % 64;
-                s32 endLong = ((block_number + 1) * bits_per_block - 1) / 64;
+        u32 val = 0;
 
-                u32 val = 0;
+        // Could it be that the data has to be written in big endian?
+        // Answer: Yes.
+        // Well, no..we have to reverse the endianness of the index
+        // and it'll be ok
 
-                if (startLong == endLong)
-                {
-                    val = (u32)(data[startLong] >> startOffset) & mask;
-                }
-                else
-                {
-                    s32 end_offset = 64 - startOffset;
-                    val = (u32)((data[startLong] >> startOffset) | (data[endLong] << end_offset)) & mask;
-                }
-                val &= mask;
-
-                // Take into account direct format which has no palette
-                u64 paletteId = bits_per_block >= 13 ? val : val < palette.size() ? palette[val].Value() : 0;
-
-                auto id = paletteId >> 4;
-                auto meta = paletteId & 0x0F;
-
-                m_ChunkMap[section][block_number] = paletteId;
-
-                /*printf("Pos: %d, %d, %d, Block id: %d, Meta: %d\n", x + ChunkX * SECTION_SIZE,
-                    y + section * SECTION_SIZE, z + ChunkZ * SECTION_SIZE,
-                    id, meta);*/
-            }
+        if (startLong == endLong)
+        {
+            val = (u32)(data[startLong] >> startOffset);
         }
+        else
+        {
+            s32 end_offset = 64 - startOffset;
+            val = (u32)((data[startLong] >> startOffset) | (data[endLong] << end_offset));
+        }
+        val &= mask;
+
+        // Take into account direct format which has no palette
+        u64 paletteId = bits_per_block >= 13 ? val : val < palette.size() ? palette[val].Value() : 0;
+
+        // Store the block
+        m_ChunkMap[section][blockNumber] = paletteId;
     }
 
-
 	m_LightMap[section] = std::vector<u8>();
-	m_LightMap[section].resize(2048);
+	m_LightMap[section].resize(BLOCK_COUNT >> 1);
 
 	// Read half a byte per block of block light
 	buf.Read(m_LightMap[section].data(), m_LightMap[section].size());
@@ -257,7 +238,7 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	// Only exists in the overworld
     if (m_State->Dimension() == mcidle::game::dimension::OVERWORLD)
     {
-        m_Skylight.resize(4096 / 2);
+        m_Skylight.resize(BLOCK_COUNT >> 1);
 
         buf.Read(m_Skylight.data(), m_Skylight.size());
     }
@@ -272,15 +253,16 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	buf >> m_GroundUp;
 	buf >> m_PrimaryBitMask;
 
-    s32 numSections = 0;
     s32 mask = m_PrimaryBitMask.Value();
 
+    // Create a temporary byte storage
+    // for the data array
     std::vector<u8> data;
     buf >> data;
 
+    // Use the data array as a byte buffer
     ByteBuffer dataBuf(data);
 
-    /*
     s32 section = 0;
     while (mask > 0)
     {
@@ -290,14 +272,6 @@ void ChunkData::Deserialize(ByteBuffer& buf)
         }
         mask >>= 1;
         section++;
-    }*/
-
-    for (s32 section = 0; section < 16; section++)
-    {
-        if ((mask & (1 << section)) != 0) 
-        {
-            ReadSection(dataBuf, m_ChunkX, m_ChunkZ, section);
-        }
     }
 
     if (m_GroundUp)
