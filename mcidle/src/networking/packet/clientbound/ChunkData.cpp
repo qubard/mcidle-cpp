@@ -47,7 +47,7 @@ s32 ChunkData::ChunkZ() const
     return m_ChunkZ;
 }
 
-void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBlock)
+inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBlock)
 {
 	buf << bitsPerBlock;
 
@@ -86,6 +86,7 @@ void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBlock)
     // Convert each long back to big endian (byte ordering)
     for (auto &l: data) std::reverse((u8*)&l, (u8*)&l + 8);
 
+    // Write from the temporary data buffer to the byte buffer
     buf << data;
 
 	if (m_LightMap.find(section) != m_LightMap.end())

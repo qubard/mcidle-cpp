@@ -29,67 +29,67 @@ void Protocol::SetState(s32 state)
 
 s32 Protocol::PacketId(packet::serverbound::EncryptionResponse &)
 {
-    return 0x01;
+    throw std::runtime_error("Unimplemented serverbound::EncryptionResponse!");
 }
 
 s32 Protocol::PacketId(packet::serverbound::Handshake &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented serverbound::Handshake!");
 }
 
 s32 Protocol::PacketId(packet::serverbound::LoginStart &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented serverbound::LoginStart!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::EncryptionRequest &)
 {
-    return 0x01;
+    throw std::runtime_error("Unimplemented clientbound::EncryptionRequest!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::SetCompression &)
 {
-    return 0x03;
+    throw std::runtime_error("Unimplemented clientbound::SetCompression!");
 }
 
 s32 Protocol::PacketId(packet::serverbound::KeepAlive &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented serverbound::KeepAlive!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::LoginSuccess &)
 {
-    return 0x02;
+    throw std::runtime_error("Unimplemented clientbound::LoginSucces!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::UpdateHealth &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::UpdateHealth!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::JoinGame &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::JoinGame!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::SpawnPosition &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::SpawnPosition!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::PlayerPositionLook &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::PlayerPositionLook!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::ChunkData &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::ChunkData!");
 }
 
 s32 Protocol::PacketId(packet::clientbound::KeepAlive &)
 {
-    return 0x00;
+    throw std::runtime_error("Unimplemented clientbound::KeepAlive!");
 }
 
 }  // namespace mcidle

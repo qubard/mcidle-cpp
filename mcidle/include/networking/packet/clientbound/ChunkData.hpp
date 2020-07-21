@@ -36,7 +36,7 @@ public:
     std::unordered_map<s32, Section> &ChunkMap();
 private:
 	inline void ReadSection(ByteBuffer&, s32, s32, s32);
-	void WriteSection(ByteBuffer&, s32, u8);
+	inline void WriteSection(ByteBuffer&, s32, u8);
 
 	// Map section height (y=0, y=15) to the section
 	// In world coordinates section height * 16 is y-pos
