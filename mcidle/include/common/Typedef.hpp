@@ -39,19 +39,23 @@ const u8 ADVENTURE = 2;
 
 using Section = std::vector<u64>;
 
+typedef u64 ChunkPos;
+
 struct Chunk {
     s32 ChunkX;
     s32 ChunkZ;
+    // Maps section-y (0-16) to Section
     std::shared_ptr<std::unordered_map<s32, Section>> Sections;
+    // Maps section-y to its light information
     std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> LightMap;
     std::shared_ptr<std::vector<u8>> Skylight;
     std::shared_ptr<std::vector<u8>> Biomes;
     bool GroundUp;
-    // Represents mapped sections
     s32 PrimaryBitMask;
 };
 
 using ChunkList = std::vector<std::shared_ptr<Chunk>>;
+using ChunkMap = std::unordered_map<ChunkPos, std::shared_ptr<Chunk>>;
 
 } // ns dimension
 } // ns mcidle

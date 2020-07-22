@@ -61,7 +61,8 @@ void GameState::SetAngles(float pitch, float yaw)
 
 void GameState::LoadChunk(std::shared_ptr<Chunk> chunk) 
 {
-    m_LoadedChunks.push_back(chunk);
+    game::ChunkPos pos = static_cast<game::ChunkPos>(chunk->ChunkX) << 32 | static_cast<game::ChunkPos>(chunk->ChunkZ);
+    m_LoadedChunks[pos] = chunk;
 }
 
 void GameState::SetDifficulty(u8 difficulty)
@@ -172,9 +173,15 @@ bool GameState::DebugInfo() const
 }
 
 // Need a thread safe foreach
-game::ChunkList& GameState::LoadedChunks()
+game::ChunkMap& GameState::LoadedChunks()
 {
     return m_LoadedChunks;
+}
+
+void GameState::UnloadChunk(s32 x, s32 z)
+{
+    game::ChunkPos pos = static_cast<game::ChunkPos>(x) << 32 | static_cast<game::ChunkPos>(z);
+    m_LoadedChunks.erase(pos);
 }
 
 } // namespace game

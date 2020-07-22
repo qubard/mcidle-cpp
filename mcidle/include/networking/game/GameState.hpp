@@ -79,8 +79,9 @@ public:
 
     // Load a chunk into the `m_LoadedChunks` table
     void LoadChunk(std::shared_ptr<Chunk>);
+    void UnloadChunk(s32, s32);
 
-    game::ChunkList& LoadedChunks();
+    game::ChunkMap& LoadedChunks();
     s32 Dimension();
 private:
     Player m_Player;
@@ -91,7 +92,7 @@ private:
 
     s32 m_Threshold;
 
-    ChunkList m_LoadedChunks;
+    ChunkMap m_LoadedChunks;
     mutable std::mutex m_Mutex;
 };
 
