@@ -95,6 +95,12 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 			return nullptr;
 	}
 
+    // This (sometimes) occurs
+    if ((s64)m_LastRecSize < 0)
+    {
+        return nullptr;
+    }
+
 	VarInt packetLen;
 	try
 	{
@@ -113,7 +119,8 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	}
 
 	auto lenSize = packetLen.Size();
-	// The remaining bytes in the read buffer after reading length
+
+    // The remaining bytes in the read buffer after reading length
 	s32 remaining = m_LastRecSize - m_ReadBuf.ReadOffset();
 
 	// Allocate the individual packet output buffer

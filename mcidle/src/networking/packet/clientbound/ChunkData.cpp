@@ -19,8 +19,8 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 }
 
 ChunkData::ChunkData(game::Chunk&& chunk) : m_ChunkX(chunk.ChunkX), m_ChunkZ(chunk.ChunkZ), 
-    m_Sections(std::move(chunk.Sections)), m_Skylight(std::move(chunk.Skylight)), m_Biomes(std::move(chunk.Biomes)),
-    m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(std::move(chunk.LightMap))
+    m_Sections(chunk.Sections), m_Skylight(chunk.Skylight), m_Biomes(chunk.Biomes),
+    m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(chunk.LightMap)
 {
 }
 

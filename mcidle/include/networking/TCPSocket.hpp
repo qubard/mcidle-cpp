@@ -25,6 +25,9 @@ public:
 
 	bool Connect();
 	bool Bind();
+
+    // To support better error handling these should 
+    // probably return signed types..
 	std::size_t Send(boost::asio::mutable_buffer&);
 	std::size_t Recv(boost::asio::mutable_buffer&);
 	// Block until bytes are read
