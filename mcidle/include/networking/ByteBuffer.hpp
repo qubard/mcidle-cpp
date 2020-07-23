@@ -6,6 +6,8 @@
 #include <common/Typedef.hpp>
 #include <boost/algorithm/hex.hpp>
 
+#include <networking/types/VarInt.hpp>
+
 namespace mcidle {
 
 class ByteBuffer
@@ -54,12 +56,25 @@ public:
 	ByteBuffer& operator<<(std::string&);
 	ByteBuffer& operator<<(std::string&&);
 	ByteBuffer& operator<<(const char*);
-	ByteBuffer& operator<<(std::vector<u8>&);
-    ByteBuffer& operator<<(std::vector<u64>&);
 
+    template <typename T>
+	ByteBuffer& operator<<(std::vector<T>& vec)
+    {
+        Write(VarInt(vec.size()));
+        if (vec.size() > 0)
+            Write((const u8*)vec.data(), sizeof(T)*vec.size());
+        return *this;
+    }
 
-	ByteBuffer& operator>>(std::vector<u64>& vec);
-	ByteBuffer& operator>>(std::vector<u8>& vec);
+    template <typename T>
+	ByteBuffer& operator>>(std::vector<T>& vec)
+    {
+        VarInt len = Read<VarInt>();
+        auto size = len.Value() * sizeof(T);
+        vec.resize(vec.size() + size);
+        Read((u8*)&vec[vec.size() - size], size);
+        return *this;
+    }
 
 	ByteBuffer& operator>>(std::string&);
 
@@ -129,8 +144,13 @@ private:
 	bool m_BigEndian;
 };
 
-class VarInt;
 template<>
 VarInt ByteBuffer::Read();
+template<>
+void ByteBuffer::Write(const VarInt);
+
+ByteBuffer& operator<<(ByteBuffer&, VarInt&&);
+ByteBuffer& operator<<(ByteBuffer&, const VarInt&);
+ByteBuffer& operator>>(ByteBuffer&, const VarInt&);
 
 }

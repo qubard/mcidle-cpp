@@ -54,55 +54,21 @@ ByteBuffer& ByteBuffer::operator<<(ByteBuffer& buf)
 	return *this;
 }
 
+ByteBuffer& ByteBuffer::operator<<(std::string& str)
+{
+    // Write the string length as a VarInt
+    Write(VarInt(str.size()));
+    if (str.size() > 0)
+    {
+        // Write the actual bytes in the string
+        Write((u8*)&str[0], str.size());
+    }
+    return *this;
+}
+
 std::size_t ByteBuffer::ReadOffset() const
 {
 	return m_ReadOffset;
-}
-
-ByteBuffer& ByteBuffer::operator<<(std::string& str)
-{
-	// Write the string length as a VarInt
-	Write(VarInt(str.size()));
-	if (str.size() > 0)
-	{
-		// Write the actual bytes in the string
-		Write((u8*)&str[0], str.size());
-	}
-	return *this;
-}
-
-ByteBuffer& ByteBuffer::operator<<(std::vector<u8>& vec)
-{
-	Write(VarInt(vec.size()));
-	if (vec.size() > 0)
-		Write((const u8*)vec.data(), vec.size());
-	return *this;
-}
-
-ByteBuffer& ByteBuffer::operator<<(std::vector<u64>& vec)
-{
-	Write(VarInt(vec.size()));
-	if (vec.size() > 0)
-		Write((const u8*)vec.data(), sizeof(u64) * vec.size());
-	return *this;
-}
-
-ByteBuffer& ByteBuffer::operator>>(std::vector<u64>& vec)
-{
-	VarInt len = Read<VarInt>();
-	auto size = len.Value() * sizeof(u64);
-	vec.resize(vec.size() + size);
-	Read((u8*)&vec[vec.size() - size], size);
-	return *this;
-}
-
-ByteBuffer& ByteBuffer::operator>>(std::vector<u8>& vec)
-{
-	VarInt len = Read<VarInt>();
-	auto size = len.Value() * sizeof(u8);
-	vec.resize(vec.size() + size);
-	Read((u8*)&vec[vec.size() - size], size);
-	return *this;
 }
 
 ByteBuffer& ByteBuffer::operator<<(const char* buf)
@@ -241,6 +207,75 @@ void ByteBuffer::Read(ByteBuffer& buf, std::size_t size)
 		buf.Resize(buf.m_WriteOffset + size);
 	Read(&buf.m_Data[buf.m_WriteOffset], size);
 	buf.m_WriteOffset += size;
+}
+
+ByteBuffer& operator>>(ByteBuffer& buf, VarInt& value)
+{
+	s32 numRead = 0;
+	s32 result = 0;
+	u8 read;
+	do 
+	{
+		try 
+		{
+			read = buf.Read<u8>();
+		}
+		catch (std::runtime_error e)
+		{
+			throw std::runtime_error("VarInt too small");
+		}
+
+		u8 value = read & 0b01111111;
+		result |= value << (7 * numRead);
+
+		numRead++;
+		if (numRead > 5) 
+		{
+			throw std::runtime_error("VarInt is too long");
+		}
+	} while ((read & 0b10000000) != 0);
+	
+	value.SetValue(result);
+
+	return buf;
+}
+
+
+ByteBuffer& operator<<(ByteBuffer& buf, VarInt&& value)
+{
+	return buf << value;
+}
+
+ByteBuffer& operator<<(ByteBuffer& buf, const VarInt& value)
+{
+	u32 tmp = value.Value();
+	do
+	{
+		u8 temp = tmp & 0b01111111;
+		tmp >>= 7;
+		// Last bit denotes if there are more bytes
+		if (tmp != 0)
+		{
+			temp |= 0b10000000;
+		}
+		buf.Write(temp);
+	} while (tmp != 0);
+
+	return buf;
+}
+
+template<>
+VarInt ByteBuffer::Read()
+{
+	VarInt res;
+	*this >> res;
+	return res;
+}
+
+template<>
+void ByteBuffer::Write(const VarInt val)
+{
+	*this << val;
 }
 
 }  // namespace mcidle

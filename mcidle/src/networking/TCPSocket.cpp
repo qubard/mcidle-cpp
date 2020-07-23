@@ -110,5 +110,4 @@ std::size_t TCPSocket::Read(boost::asio::mutable_buffer& buffer)
     return 0;
 }
 
-
 }
