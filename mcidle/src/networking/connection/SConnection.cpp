@@ -8,76 +8,57 @@ SConnection::SConnection(std::unique_ptr<TCPSocket> socket,
         std::shared_ptr<mcidle::Protocol> protocol,
         std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
-    : Connection(std::move(socket), protocol, state, readSize)
+    : Connection(std::move(socket), protocol, state, readSize),
+    m_ServerName("localhost"), m_OnlineMode(false)
 {
+}
+
+void SConnection::SetServerName(std::string serverName)
+{
+    m_ServerName = serverName;
+}
+
+void SConnection::SetOnlineMode(bool onlineMode)
+{
+    m_OnlineMode = onlineMode;
 }
 
 bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 {
-    printf("Called SConnection::Setup()\n");
-
-    std::string serverName = "localhost";
-    bool ONLINE_MODE = false;
-
-    std::cout << "Listening in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE") << " mode!\n";
-
-    mcidle::packet::serverbound::Handshake handshake(340, serverName, 25565, mcidle::state::LOGIN);
-    printf("Sending handshake serverbound\n");
+    mcidle::packet::serverbound::Handshake handshake(340, m_ServerName, 25565, mcidle::state::LOGIN);
     SendPacket(handshake);
-    // handshake 0x00 Handshake(ProtocolVersion=340, ServerAddress='2b2t.org', ServerPort=25565, NextState=2) | 0F 00 D4 02 08 32 62 32 74 2E 6F 72 67 63 DD 02
-    std::cout << handshake.Buffer()->Hex() << "\n";
-    std::cout << handshake.Buffer()->WriteSize() << "\n";
+
     // Set our next state to LOGIN
     m_Protocol->SetState(mcidle::state::LOGIN);
 
     mcidle::packet::serverbound::LoginStart loginStart("leddit");
     SendPacket(loginStart);
 
-    if (ONLINE_MODE)
+    if (m_OnlineMode)
     {
-        auto encryptionrequest = ReadPacket();
-        std::cout << "Encryption request received -> " << encryptionrequest->RawBuffer()->Hex() << "\n";
-        auto er = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest*>(encryptionrequest.get());
+        auto response = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest*>(ReadPacket().get());
 
-        auto verifytoken = er->Token();
-        auto pubkey = er->PubKey();
-        auto serverid = er->ServerId();
-
-        for (auto x : verifytoken) std::cout << x << "\n";
-        std::cout << verifytoken.size() << " size\n";
         auto aes = std::make_unique<mcidle::AesCtx>();
-        
-        if (aes->Initialize(pubkey, verifytoken))
-        {
-            std::cout << "initialized aes\n";
-        }
-        else {
-            std::cout << "failed to init aes\n";
-        }
+        auto token = response->Token();
+        auto pubKey = response->PubKey();
 
-        if (yg.JoinServer(serverid, aes->Secret(), pubkey))
-        {
-            std::cout << "Joined server\n";
-        }
-        else 
-        {
-            std::cout << "Failed to join server\n";
-        }
+        if (!aes->Initialize(pubKey, token))
+            return false;
+
+        if (!yg.JoinServer(response->ServerId(), aes->Secret(), pubKey))
+            return false;
 
         mcidle::packet::serverbound::EncryptionResponse r(aes->EncSecret(), aes->EncToken());
         SendPacket(std::move(r));
         SetAes(aes);
     }
+
     // Enable encryption and read a packet
-    auto pkt = ReadPacket();
-    auto compressionpkt = reinterpret_cast<mcidle::packet::clientbound::SetCompression*>(pkt.get());
-    int total = 0;
-    std::cout << "Compression: " << compressionpkt->Threshold() << "\n";
+    auto compressionpkt = reinterpret_cast<mcidle::packet::clientbound::SetCompression*>(ReadPacket().get());
     SetCompression(compressionpkt->Threshold());
     m_Protocol->SetState(mcidle::state::PLAY);
 
     return true;
-
 }
 
 } // ns mcidle

@@ -113,6 +113,8 @@ public:
     s32 PacketId(packet::serverbound::KeepAlive &) override;
     s32 PacketId(packet::serverbound::Handshake &) override;
     s32 PacketId(packet::serverbound::LoginStart &) override;
+    s32 PacketId(packet::serverbound::EncryptionResponse &) override;
+
 };
 
 
@@ -130,6 +132,7 @@ public:
     s32 PacketId(packet::clientbound::ChunkData &) override;
     s32 PacketId(packet::clientbound::SetCompression &) override;
     s32 PacketId(packet::clientbound::LoginSuccess &) override;
+    s32 PacketId(packet::clientbound::EncryptionRequest &) override;
 
 };
 

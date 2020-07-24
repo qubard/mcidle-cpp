@@ -22,6 +22,11 @@ s32 Protocol_1_12_2_CB::PacketId(packet::serverbound::LoginStart &)
     return 0x00;
 }
 
+s32 Protocol_1_12_2_CB::PacketId(packet::serverbound::EncryptionResponse &)
+{
+    return 0x01;
+}
+
 s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::UpdateHealth &)
 {
     return 0x41;
@@ -62,9 +67,17 @@ s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::ChunkData &)
     return 0x20;
 }
 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::EncryptionRequest &)
+{
+    return 0x01;
+}
+
+
 Protocol_1_12_2_SB::Protocol_1_12_2_SB(s32 versionNumber)
     : Protocol(serverboundMap_1_12_2, versionNumber, state::HANDSHAKE)
 {
 }
+
+
 
 }  // namespace mcidle

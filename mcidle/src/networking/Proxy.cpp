@@ -34,7 +34,6 @@ void Proxy::Run()
 
             if (response != nullptr)
             {
-                printf("Sent response..\n");
                 m_Source->SendPacketFwd(*response);
             }
 

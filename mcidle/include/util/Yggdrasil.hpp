@@ -70,6 +70,7 @@ public:
 	const std::string& ProfileId() const { return m_ProfileId; }
 
 	void SetProfileId(const std::string& profileId) { m_ProfileId = profileId; }
+    void SetAccessToken(const std::string& token) { m_AccessToken = token; }
 
 	bool IsAuthenticated() const { return !m_AccessToken.empty(); }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <networking/connection/GameConnection.hpp>
+#include <networking/connection/Connection.hpp>
 
 namespace mcidle {
 
@@ -15,7 +15,12 @@ public:
             std::shared_ptr<mcidle::game::GameState>,
             std::size_t);
 
+    void SetServerName(std::string);
+    void SetOnlineMode(bool);
     bool Setup(mcidle::util::Yggdrasil&) override;
+private:
+    std::string m_ServerName;
+    bool m_OnlineMode;
 };
 
 } // ns mcidle
