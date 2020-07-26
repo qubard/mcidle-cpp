@@ -18,6 +18,7 @@ void Respawn::Mutate(mcidle::game::GameState &state)
 {
     state.SetDimension(m_Dimension);
     state.SetGamemode(m_Gamemode);
+    printf("Respawn received, dim: %d gamemode: %d\n", m_Dimension, m_Gamemode);
 }
 
 Packet &Respawn::Serialize()

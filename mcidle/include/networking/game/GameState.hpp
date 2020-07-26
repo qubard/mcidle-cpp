@@ -45,7 +45,7 @@ public:
 
     // JoinGame information
     void SetGamemode(u8);
-    void SetDimension(u8);
+    void SetDimension(s32);
     void SetPlayerId(s32);
     void SetDifficulty(u8);
     void SetMaxPlayers(u8);
@@ -53,12 +53,13 @@ public:
     void SetDebugInfo(bool);
     
     u8 Gamemode() const;
-    u8 Dimension() const;
+    s32 Dimension() const;
     s32 PlayerId() const;
     u8 Difficulty() const;
     u8 MaxPlayers() const;
     std::string LevelType() const;
     bool DebugInfo() const;
+    s32 Threshold() const;
 
     void SetSpawnPosition(s64, s64, s64);
     s64 SpawnX() const;
@@ -82,7 +83,6 @@ public:
     void UnloadChunk(s32, s32);
 
     game::ChunkMap& LoadedChunks();
-    s32 Dimension();
 private:
     Player m_Player;
     u8 m_Difficulty;

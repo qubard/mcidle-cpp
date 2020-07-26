@@ -101,32 +101,32 @@ bool Yggdrasil::Authenticate(const std::string& username, const std::string& pas
 		return false;
 	}
 
-        auto errorNode = result.value("error", json());
-        if (!errorNode.is_null())
-            throw YggdrasilException(errorNode.get<std::string>(), result["errorMessage"].get<std::string>());
+    auto errorNode = result.value("error", json());
+    if (!errorNode.is_null())
+        throw YggdrasilException(errorNode.get<std::string>(), result["errorMessage"].get<std::string>());
 
-        auto accessTokenNode = result.value("accessToken", json());
-        if (accessTokenNode.is_null())
-            return false;
+    auto accessTokenNode = result.value("accessToken", json());
+    if (accessTokenNode.is_null())
+        return false;
 
-        m_AccessToken = accessTokenNode.get<std::string>();
+    m_AccessToken = accessTokenNode.get<std::string>();
 
-        auto clientTokenNode = result.value("clientToken", json());
+    auto clientTokenNode = result.value("clientToken", json());
 
-        if (!clientTokenNode.is_null())
-            m_ClientToken = clientTokenNode.get<std::string>();
-        else
-            m_ClientToken = authPayload["clientToken"].get<std::string>();
+    if (!clientTokenNode.is_null())
+        m_ClientToken = clientTokenNode.get<std::string>();
+    else
+        m_ClientToken = authPayload["clientToken"].get<std::string>();
 
-        auto selectedProfileNode = result.value("selectedProfile", json());
+    auto selectedProfileNode = result.value("selectedProfile", json());
 
-        if (selectedProfileNode.is_null())
-            throw YggdrasilException("No minecraft license attached to Mojang account.");
+    if (selectedProfileNode.is_null())
+        throw YggdrasilException("No minecraft license attached to Mojang account.");
 
-        m_ProfileId = selectedProfileNode["id"].get<std::string>();
-        m_PlayerName = selectedProfileNode["name"].get<std::string>();
+    m_ProfileId = selectedProfileNode["id"].get<std::string>();
+    m_PlayerName = selectedProfileNode["name"].get<std::string>();
 
-        return true;
+    return true;
 }
 
 std::pair<std::string, std::string> Yggdrasil::Refresh(const std::string& accessToken, const std::string& clientToken) 

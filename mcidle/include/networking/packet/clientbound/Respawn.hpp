@@ -27,7 +27,7 @@ public:
     void Deserialize(ByteBuffer &) override;
 
 private:
-    int m_Dimension;
+    s32 m_Dimension;
     u8 m_Difficulty;
     u8 m_Gamemode;
     std::string m_Level;

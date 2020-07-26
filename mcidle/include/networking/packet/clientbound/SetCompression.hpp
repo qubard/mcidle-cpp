@@ -13,6 +13,8 @@ public:
     SetCompression();
     SetCompression(s32);
 
+    void Mutate(game::GameState &) override;
+
     s32 Threshold() const;
 
     Packet &Serialize() override;

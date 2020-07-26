@@ -15,11 +15,11 @@ public:
             std::shared_ptr<mcidle::game::GameState>,
             std::size_t);
 
-    void SetServerName(std::string);
+    void SetServerIP(std::string);
     void SetOnlineMode(bool);
     bool Setup(mcidle::util::Yggdrasil&) override;
 private:
-    std::string m_ServerName;
+    std::string m_ServerIP;
     bool m_OnlineMode;
 };
 

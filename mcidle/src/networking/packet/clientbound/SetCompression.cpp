@@ -12,6 +12,11 @@ SetCompression::SetCompression(s32 threshold) : Packet(), m_Compression(threshol
 {
 }
 
+void SetCompression::Mutate(game::GameState &state)
+{
+    state.SetThreshold(m_Compression.Value());
+}
+
 Packet& SetCompression::Serialize()
 {
 	*m_FieldBuf << m_Compression;

@@ -23,7 +23,7 @@ private:
     std::recursive_mutex m_StateLock;
     std::shared_ptr<mcidle::game::GameState> m_State;
 
-    std::shared_ptr<Connection> m_Dest;
+    std::shared_ptr<Connection> m_Sink;
     std::shared_ptr<Connection> m_Source;
 };
 

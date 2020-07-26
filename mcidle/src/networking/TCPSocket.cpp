@@ -6,12 +6,24 @@
 
 namespace mcidle {
 
+TCPSocket::TCPSocket(s32 bindPort) : m_Service(new boost::asio::io_service), 
+    m_Socket(std::make_unique<tcp::socket>(*m_Service)) {
+    m_Acceptor = std::make_unique<tcp::acceptor>(*m_Service, 
+                 tcp::endpoint(tcp::v4(), bindPort));
+}
+
 TCPSocket::TCPSocket(TCPSocket& socket)
 {
 	m_Service = std::move(socket.m_Service);
 	m_Socket = std::move(socket.m_Socket);
 	m_Address = socket.m_Address;
 	m_Port = socket.m_Port;
+}
+
+TCPSocket::TCPSocket(std::string address, std::string port)
+		: m_Address(address), m_Port(port), m_Service(new boost::asio::io_service),
+		m_Socket(std::make_unique<tcp::socket>(*m_Service)) 
+{ 
 }
 
 bool TCPSocket::Connect()

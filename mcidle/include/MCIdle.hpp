@@ -2,6 +2,7 @@
 
 #include <common/Typedef.hpp>
 #include <networking/protocol/Protocol.hpp>
+#include <networking/connection/SConnection.hpp>
 #include <util/Yggdrasil.hpp>
 
 namespace mcidle {
@@ -9,9 +10,10 @@ namespace mcidle {
 class MCIdle 
 {
 public:
-    MCIdle(bool, std::string, std::shared_ptr<Protocol>, std::shared_ptr<Protocol>);
+    MCIdle(bool, std::string, std::shared_ptr<Protocol>, std::shared_ptr<Protocol>, util::Yggdrasil);
 
-    bool Login(std::string, std::string);
+    std::shared_ptr<game::GameState> GameState();
+    
     // Start MCIdle and return true if successful
     bool Start();
 private:
@@ -21,7 +23,9 @@ private:
     // The protocol for packets sent to the server
     std:: shared_ptr<Protocol> m_Protocol_SB;
     std::shared_ptr<game::GameState> m_State;
-    std::string m_ServerIp;
+
+    std::shared_ptr<SConnection> m_SConn;
+    std::string m_ServerIP;
     bool m_Online;
 };
 

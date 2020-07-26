@@ -83,7 +83,6 @@ public:
     virtual s32 PacketId(packet::clientbound::KeepAlive &);
     virtual s32 PacketId(packet::clientbound::ChunkData &);
 
-
 protected:
 	ProtocolMap m_InboundMap;
 	// Protocol number

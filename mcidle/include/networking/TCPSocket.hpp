@@ -13,15 +13,11 @@ using boost::asio::ip::tcp;
 class TCPSocket
 {
 public:
-	TCPSocket(s32 bindPort) : m_Service(new boost::asio::io_service), 
-		m_Socket(std::make_unique<tcp::socket>(*m_Service)) {
-		m_Acceptor = std::make_unique<tcp::acceptor>(*m_Service, 
-			tcp::endpoint(tcp::v4(), bindPort));
-	};
+    // Bind ctor
+	TCPSocket(s32);
 	TCPSocket(TCPSocket&);
-	TCPSocket(std::string address, std::string port)
-		: m_Address(address), m_Port(port), m_Service(new boost::asio::io_service),
-		m_Socket(std::make_unique<tcp::socket>(*m_Service)) { }
+    // Connect ctor
+	TCPSocket(std::string, std::string);
 
 	bool Connect();
 	bool Bind();

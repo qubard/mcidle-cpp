@@ -7,16 +7,16 @@ Proxy::Proxy(std::shared_ptr<Connection> source,
         std::shared_ptr<mcidle::game::GameState> state) : 
     m_Source(source), 
     m_State(state),
-    m_Dest(nullptr)
+    m_Sink(nullptr)
 {
 }
 
 // A proxy reads from `source` and writes to `sink`
 // after it is setup.
 Proxy::Proxy(std::shared_ptr<Connection> source, 
-        std::shared_ptr<Connection> destination, 
+        std::shared_ptr<Connection> sink, 
         std::shared_ptr<mcidle::game::GameState> state)
-    : m_Source(source), m_State(state), m_Dest(destination)
+    : m_Source(source), m_State(state), m_Sink(sink)
 {
 }
 

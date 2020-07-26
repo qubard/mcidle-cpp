@@ -20,7 +20,7 @@ void GameState::SetFoodStats(float health, s32 food, float saturation)
     m_Player.Food.Saturation = saturation;
 }
 
-void GameState::SetDimension(u8 dimension)
+void GameState::SetDimension(s32 dimension)
 {
     m_Player.Dimension = dimension;
 }
@@ -30,7 +30,7 @@ void GameState::SetGamemode(u8 gamemode)
     m_Player.Gamemode = gamemode;
 }
 
-s32 GameState::Dimension()
+s32 GameState::Dimension() const
 {
     return m_Player.Dimension;
 }
@@ -65,6 +65,11 @@ void GameState::LoadChunk(std::shared_ptr<Chunk> chunk)
     m_LoadedChunks[pos] = chunk;
 }
 
+s32 GameState::Threshold() const
+{
+    return m_Threshold;
+}
+
 void GameState::SetDifficulty(u8 difficulty)
 {
     m_Difficulty = difficulty;
@@ -93,11 +98,6 @@ void GameState::SetDebugInfo(bool debug)
 u8 GameState::Gamemode() const
 {
     return m_Player.Gamemode;
-}
-
-u8 GameState::Dimension() const
-{
-    return m_Player.Dimension;
 }
 
 s32 GameState::PlayerId() const
