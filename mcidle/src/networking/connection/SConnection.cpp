@@ -58,6 +58,7 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 
     // Enable encryption and read a packet
     auto compressionpkt = reinterpret_cast<mcidle::packet::clientbound::SetCompression*>(ReadPacket().get());
+    m_State->SetThreshold(compressionpkt->Threshold());
     SetCompression(compressionpkt->Threshold());
     m_Protocol->SetState(mcidle::state::PLAY);
 

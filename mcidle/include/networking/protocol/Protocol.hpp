@@ -20,6 +20,7 @@
 #include <networking/packet/clientbound/JoinGame.hpp>
 #include <networking/packet/clientbound/PlayerPositionLook.hpp>
 #include <networking/packet/clientbound/SpawnPosition.hpp>
+#include <networking/packet/clientbound/UnloadChunk.hpp>
 
 #include <unordered_map>
 

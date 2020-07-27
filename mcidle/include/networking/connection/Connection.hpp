@@ -57,6 +57,7 @@ private:
 
     std::shared_ptr<TCPSocket> m_Socket;
     std::unique_ptr<AesCtx> m_Aes;
+protected:
     std::shared_ptr<mcidle::game::GameState> m_State;
 };
 

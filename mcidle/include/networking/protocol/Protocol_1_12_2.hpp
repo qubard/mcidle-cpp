@@ -53,6 +53,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x46,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnPosition>(); },
       },
+    {
+          0x1D,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UnloadChunk>(); },
+      },
 
       {
           0x35,

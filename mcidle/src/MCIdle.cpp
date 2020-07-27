@@ -38,8 +38,11 @@ bool MCIdle::Start()
 
     // Create a pipe for writing to the client sink
     m_Client = std::make_shared<thread::Pipe>(20);
+    m_Server = std::make_shared<thread::Pipe>(5);
+
     // Start the pipe in another thread
     boost::thread th(boost::ref(*m_Client));
+    boost::thread th2(boost::ref(*m_Server));
 
     boost::thread([&]() {
 		for (;;) {
@@ -87,6 +90,9 @@ bool MCIdle::Start()
 
             mc_conn->SendPacket(mcidle::packet::clientbound::SetCompression(state->Threshold()));
 
+            printf("Set compression to %d\n", state->Threshold());
+            // This is buggy..need to read compression then set the protocol state..
+            // or it doesn't matter
             mc_conn->SetCompression(state->Threshold());
 
             mc_conn->SendPacket(mcidle::packet::clientbound::LoginSuccess("cc78083d-7a7e-40ca-9abb-7edfd2e01383", loginStart->Username()));
@@ -134,12 +140,15 @@ bool MCIdle::Start()
 
             mc_conn->SendPacket(keepAlive);
 
-            // Set the sink to point at this client
+            // Set the pipe's sink to point at the new client
             m_Client->SetSink(mc_conn);
 
+            m_Server->SetSink(m_ServerConn);
             // If we hang here then the player joins properly with chunks received
             // The problem is the socket closes before we can do that
-            for (;;)
+            Proxy proxy(mc_conn, m_Server, m_State);
+            proxy.Run();
+            /*for (;;)
             {
                 auto packet = mc_conn->ReadPacket();
                 if (packet != nullptr)
@@ -151,7 +160,8 @@ bool MCIdle::Start()
                 {
                     break;
                 }
-            }
+            }*/
+            m_Server->SetSink(nullptr);
             m_Client->SetSink(nullptr);
         }
         printf("finished\n");
