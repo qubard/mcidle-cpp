@@ -7,11 +7,11 @@
 
 namespace mcidle {
 
-Connection::Connection(std::unique_ptr<TCPSocket> socket, 
+Connection::Connection(std::shared_ptr<TCPSocket> socket, 
         std::shared_ptr<mcidle::Protocol> protocol,
         std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
-    : m_Socket(std::move(socket))
+    : m_Socket(socket)
     , m_ReadSize(readSize)
     , m_Aes(nullptr)
     , m_ReadBuf(readSize)

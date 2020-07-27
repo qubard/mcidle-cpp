@@ -61,7 +61,7 @@ void GameState::SetAngles(float pitch, float yaw)
 
 void GameState::LoadChunk(std::shared_ptr<Chunk> chunk) 
 {
-    game::ChunkPos pos = static_cast<game::ChunkPos>(chunk->ChunkX) << 32 | static_cast<game::ChunkPos>(chunk->ChunkZ);
+    game::ChunkPos pos = (static_cast<u64>(chunk->ChunkX) << 32) | static_cast<u32>(chunk->ChunkZ & 0xFFFFFFFF);
     m_LoadedChunks[pos] = chunk;
 }
 
@@ -180,7 +180,7 @@ game::ChunkMap& GameState::LoadedChunks()
 
 void GameState::UnloadChunk(s32 x, s32 z)
 {
-    game::ChunkPos pos = static_cast<game::ChunkPos>(x) << 32 | static_cast<game::ChunkPos>(z);
+    game::ChunkPos pos = (static_cast<u64>(x) << 32) | static_cast<u32>(z & 0xFFFFFFFF);
     m_LoadedChunks.erase(pos);
 }
 

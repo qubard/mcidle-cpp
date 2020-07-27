@@ -14,7 +14,7 @@ namespace mcidle {
 class Connection
 {
 public:
-    Connection(std::unique_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::shared_ptr<mcidle::game::GameState>, std::size_t);
+    Connection(std::shared_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::shared_ptr<mcidle::game::GameState>, std::size_t);
 
     // Equivalent to enabling encryption
     Connection &SetAes(std::unique_ptr<AesCtx> &);
@@ -55,7 +55,7 @@ private:
     std::size_t m_ReadSize;
 	std::size_t m_LastRecSize;
 
-    std::unique_ptr<TCPSocket> m_Socket;
+    std::shared_ptr<TCPSocket> m_Socket;
     std::unique_ptr<AesCtx> m_Aes;
     std::shared_ptr<mcidle::game::GameState> m_State;
 };

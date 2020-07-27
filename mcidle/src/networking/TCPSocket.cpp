@@ -61,8 +61,6 @@ bool TCPSocket::Bind()
 		// this, boost::asio::placeholders::error));
 		// m_Service->run();
 		m_Acceptor->accept(*m_Socket);
-
-		std::cout << "Accepted client\n";
 	}
 	catch (boost::system::system_error & e)
 	{

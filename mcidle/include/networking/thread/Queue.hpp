@@ -9,30 +9,36 @@ namespace thread {
 // A simple thread-safe blocking queue which
 // is itself lockable
 template <typename T>
-class SafeQueue : public boost::basic_lockable_adapter<boost::mutex>{
-    SafeQueue();
+class Queue : public boost::basic_lockable_adapter<boost::mutex> {
+public:
+    Queue(){}
 
-    void Push(T&& val)
+    void Push(T val)
     {
-        boost::lock_guard<SafeQueue<T>> guard(*this);
+        boost::lock_guard<Queue<T>> guard(*this);
         m_Queue.push_back(val);
     }
 
-    T& Pop()
+    void Push(T&& val)
     {
-        boost::lock_guard<SafeQueue<T>> guard(*this);
-        return m_Queue.pop_front();
+        boost::lock_guard<Queue<T>> guard(*this);
+        m_Queue.push_back(val);
+    }
+
+    T Pop()
+    {
+        auto last = m_Queue.front();
+        m_Queue.pop_front();
+        return last;
     }
 
     bool Empty() 
     {
-        boost::lock_guard<SafeQueue<T>> guard(*this);
         return m_Queue.empty();
     }
 
     std::size_t Size()
     {
-        boost::lock_guard<SafeQueue<T>> guard(*this);
         return m_Queue.size();
     }
 

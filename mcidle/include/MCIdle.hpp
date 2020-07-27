@@ -5,6 +5,8 @@
 #include <networking/connection/SConnection.hpp>
 #include <util/Yggdrasil.hpp>
 
+#include <networking/thread/Pipe.hpp>
+
 namespace mcidle {
 
 class MCIdle 
@@ -24,7 +26,10 @@ private:
     std:: shared_ptr<Protocol> m_Protocol_SB;
     std::shared_ptr<game::GameState> m_State;
 
-    std::shared_ptr<SConnection> m_SConn;
+    std::shared_ptr<thread::Pipe> m_Client;
+    std::shared_ptr<thread::Pipe> m_Server;
+
+    std::shared_ptr<SConnection> m_ServerConn;
     std::string m_ServerIP;
     bool m_Online;
 };

@@ -39,7 +39,7 @@ const u8 ADVENTURE = 2;
 
 using Section = std::vector<u64>;
 
-typedef u64 ChunkPos;
+typedef s64 ChunkPos;
 
 struct Chunk {
     s32 ChunkX;

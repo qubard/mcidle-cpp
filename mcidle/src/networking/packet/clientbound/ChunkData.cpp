@@ -222,11 +222,6 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 
         u32 val = 0;
 
-        // Could it be that the data has to be written in big endian?
-        // Answer: Yes.
-        // Well, no..we have to reverse the endianness of the index
-        // and it'll be ok
-
         if (startLong == endLong)
         {
             val = (u32)(data[startLong] >> startOffset);
