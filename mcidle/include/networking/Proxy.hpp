@@ -20,8 +20,6 @@ public:
     // and mutate local game state if needed
     void Run();
 private:
-    // Mutex over game state (re-entrant lock)
-    std::recursive_mutex m_StateLock;
     std::shared_ptr<mcidle::game::GameState> m_State;
 
     std::shared_ptr<thread::Pipe> m_Sink;

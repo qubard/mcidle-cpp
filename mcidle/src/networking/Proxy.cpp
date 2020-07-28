@@ -46,9 +46,7 @@ void Proxy::Run()
             // Use the packet to mutate the game state attached to the proxy
             if (m_State != nullptr)
             {
-                m_StateLock.lock();
                 packet->Mutate(*m_State);
-                m_StateLock.unlock();               
             }
         } 
         // This only occurs when the socket is closed

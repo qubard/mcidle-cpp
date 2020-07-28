@@ -7,10 +7,9 @@
 namespace mcidle {
 namespace thread {
 
-// The role of a Pipe is simply to send already written
-// packets to the connection sink so that even if
-// the sink disconnects the source continues
-// operating
+// The role of a Pipe is simply to pump already written
+// packets to the connected socket (sink) in a thread safe manner
+// so that the caller doesn't have to worry about it
 class Pipe
 {
 public:
@@ -34,7 +33,7 @@ private:
     Queue<std::shared_ptr<Packet>> m_Queue;
 
     // The rate at which the pipe sends data
-    u32 m_Rate;
+    u32 m_RateMS;
 };
 
 }

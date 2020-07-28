@@ -8,11 +8,11 @@
 namespace mcidle {
 namespace thread {
 
-Pipe::Pipe(u32 rate) : m_Rate(rate)
+Pipe::Pipe(u32 rate) : m_RateMS(rate)
 {
 }
 
-Pipe::Pipe(u32 rate, std::shared_ptr<Connection> sink) : m_Rate(rate), m_Sink(sink)
+Pipe::Pipe(u32 rate, std::shared_ptr<Connection> sink) : m_RateMS(rate), m_Sink(sink)
 {
 }
 
@@ -32,7 +32,7 @@ void Pipe::Start()
 {
     for(;;)
     {
-        auto PIPE_RATE = boost::chrono::milliseconds(m_Rate);
+        auto PIPE_RATE = boost::chrono::milliseconds(m_RateMS);
 
         while (!m_Queue.Empty())
         {

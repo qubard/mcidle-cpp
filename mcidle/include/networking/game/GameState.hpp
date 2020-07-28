@@ -1,7 +1,7 @@
 #pragma once
 
 #include <common/Typedef.hpp>
-#include <mutex>
+#include <boost/thread.hpp>
 
 namespace mcidle {
 
@@ -83,7 +83,10 @@ public:
     void UnloadChunk(s32, s32);
 
     game::ChunkMap& LoadedChunks();
+
 private:
+    mutable boost::mutex m_Mutex;
+
     Player m_Player;
     u8 m_Difficulty;
     u8 m_MaxPlayers;
@@ -93,7 +96,6 @@ private:
     s32 m_Threshold;
 
     ChunkMap m_LoadedChunks;
-    mutable std::mutex m_Mutex;
 };
 
 } // namespace game
