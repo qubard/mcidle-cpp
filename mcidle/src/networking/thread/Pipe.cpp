@@ -45,9 +45,9 @@ void Pipe::Start()
             if (m_Sink != nullptr) 
             {
                 // Send each packet
-                if (pkt->Id() != 0x09 && pkt->Id() != 0x22 && pkt->Id() != 0x12 && pkt->Id() != 0xC && pkt->Id() != 0x3e && pkt->Id() != 0x1a && pkt->Id() != 0x04 && pkt->Id() != 0x26 && pkt->Id() != 0x36 && pkt->Id() != 0x27 && pkt->Id() != 0x4C && pkt->Id() != 0x0A && pkt->Id() != 0x05 && pkt->Id() != 0x06 && pkt->Id() != 0x08 && pkt->Id() != 0x07 && pkt->Id() != 0x0B)
+                if (pkt->Id() != 0x22 && pkt->Id() != 0x12 && pkt->Id() != 0xC && pkt->Id() != 0x3e && pkt->Id() != 0x04 && pkt->Id() != 0x26 && pkt->Id() != 0x36 && pkt->Id() != 0x27 && pkt->Id() != 0x4C && pkt->Id() != 0x05 && pkt->Id() != 0x06 && pkt->Id() != 0x07 && pkt->Id() != 0x0B)
                 {
-                    printf("Sent packet %x..\n", pkt->Id());
+                    //printf("Sent packet %x..\n", pkt->Id());
                     auto buf = pkt->RawBuffer();
                     m_Sink->SendBuffer(buf);
                 }

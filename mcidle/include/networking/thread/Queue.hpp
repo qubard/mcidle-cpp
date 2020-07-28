@@ -19,12 +19,6 @@ public:
         m_Queue.push_back(val);
     }
 
-    void Push(T&& val)
-    {
-        boost::lock_guard<Queue<T>> guard(*this);
-        m_Queue.push_back(val);
-    }
-
     T Pop()
     {
         auto last = m_Queue.front();

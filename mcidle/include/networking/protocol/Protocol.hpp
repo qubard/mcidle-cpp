@@ -21,6 +21,7 @@
 #include <networking/packet/clientbound/PlayerPositionLook.hpp>
 #include <networking/packet/clientbound/SpawnPosition.hpp>
 #include <networking/packet/clientbound/UnloadChunk.hpp>
+#include <networking/packet/clientbound/MultiBlockChange.hpp>
 
 #include <unordered_map>
 

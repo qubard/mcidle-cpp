@@ -26,7 +26,7 @@ add_subdirectory(json)
 set(mcidle_include_dirs ${PROJECT_SOURCE_DIR}/mcidle/include)
 file(GLOB_RECURSE source_files "mcidle/src/*" "mcidle/include/*")
 
-find_package(Boost 1.72.0 REQUIRED COMPONENTS system thread)
+find_package(Boost 1.72.0 REQUIRED COMPONENTS system thread chrono)
 find_package(OpenSSL REQUIRED)
 find_package(CURL REQUIRED)
 

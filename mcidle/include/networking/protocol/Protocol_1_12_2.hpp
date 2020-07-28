@@ -57,6 +57,11 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x1D,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UnloadChunk>(); },
       },
+        {
+          0x10,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::MultiBlockChange>(); },
+      },
+
 
       {
           0x35,
@@ -74,7 +79,7 @@ static ProtocolMap clientboundMap_1_12_2 = {
       {
           0x1E,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::GameState>(); },
-      }}}};
+}}}};
 
 static ProtocolMap serverboundMap_1_12_2 =
 {

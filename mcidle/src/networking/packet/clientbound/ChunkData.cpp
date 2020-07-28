@@ -9,7 +9,7 @@ ChunkData::ChunkData()
 {
     m_Sections = std::make_shared<std::unordered_map<s32, game::Section>>();
     m_LightMap = std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
-    m_Skylight = std::make_shared<std::vector<u8>>();
+    m_Skylight = std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
     m_Biomes = std::make_shared<std::vector<u8>>();
 }
 
@@ -18,7 +18,7 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 {
 }
 
-ChunkData::ChunkData(game::Chunk&& chunk) : m_ChunkX(chunk.ChunkX), m_ChunkZ(chunk.ChunkZ), 
+ChunkData::ChunkData(game::Chunk& chunk) : m_ChunkX(chunk.ChunkX), m_ChunkZ(chunk.ChunkZ), 
     m_Sections(chunk.Sections), m_Skylight(chunk.Skylight), m_Biomes(chunk.Biomes),
     m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(chunk.LightMap)
 {
@@ -37,18 +37,17 @@ void ChunkData::Mutate(mcidle::game::GameState &state)
 {
     // dangerous, but necessary since we need to keep the
     // current pointer alive but avoid expensive copies
-    auto p = new game::Chunk();
+    auto p = std::make_shared<game::Chunk>();
     p->ChunkX = m_ChunkX;
     p->ChunkZ = m_ChunkZ;
-    p->Sections = m_Sections;
-    p->Skylight = m_Skylight;
-    p->LightMap = m_LightMap;
-    p->Biomes = m_Biomes;
+    p->Sections = std::move(m_Sections);
+    p->Skylight = std::move(m_Skylight);
+    p->LightMap = std::move(m_LightMap);
+    p->Biomes = std::move(m_Biomes);
     p->GroundUp = m_GroundUp;
     p->PrimaryBitMask = m_PrimaryBitMask.Value();
 
-    auto ch = std::shared_ptr<game::Chunk>(p);
-    state.LoadChunk(ch);
+    state.LoadChunk(p);
 }
 
 std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
@@ -74,7 +73,7 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 	std::vector<u64> data;
 
 	// Calculate how many longs we need
-	auto dataSize = (SECTION_SIZE * SECTION_SIZE * SECTION_SIZE) * bitsPerBlock / 64;
+	auto dataSize = (game::BLOCK_COUNT) * bitsPerBlock / 64;
 	data.resize(dataSize);
 
 	// Direct format, don't write palette
@@ -82,7 +81,7 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 	buf << VarInt(0);
 
 	u32 valueMask = (1 << bitsPerBlock) - 1;
-    for (s32 blockNumber = 0; blockNumber < BLOCK_COUNT; blockNumber++)
+    for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT; blockNumber++)
     {
         s32 startLong = (blockNumber * bitsPerBlock) / 64;
 
@@ -122,10 +121,9 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 	}
 
     // Write skylight if in overworld
-    if (m_Skylight->size() > 0)
+    if (m_Skylight->find(section) != m_Skylight->end())
     {
-        // data is u64
-        buf.Write(m_Skylight->data(), m_Skylight->size());
+        buf.Write((*m_Skylight)[section].data(), (*m_Skylight)[section].size());
     }
 }
 
@@ -144,7 +142,7 @@ Packet& ChunkData::Serialize()
 
     ByteBuffer dataBuf;
 
-	for (int section = 0; section < SECTION_SIZE; section++)
+	for (s32 section = 0; section < game::SECTION_SIZE; section++)
 	{
 		// Is the section not empty?
 		if (primaryMask & (1 << section))
@@ -212,9 +210,9 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
     // Convert the data array to big endian (byte ordering)
     for (u64& l : data) std::reverse((u8*)&l, (u8*)&l + 8);
 
-	(*m_Sections)[section] = std::vector<u64>(SECTION_SIZE * SECTION_SIZE * SECTION_SIZE);
+	(*m_Sections)[section] = std::vector<u64>(game::BLOCK_COUNT);
 
-    for (s32 blockNumber = 0; blockNumber < BLOCK_COUNT; blockNumber++)
+    for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT; blockNumber++)
     {
         s32 startLong = (blockNumber * bits_per_block) / 64;
         s32 startOffset = (blockNumber * bits_per_block) % 64;
@@ -241,7 +239,7 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
     }
 
 	(*m_LightMap)[section] = std::vector<u8>();
-	(*m_LightMap)[section].resize(BLOCK_COUNT >> 1);
+	(*m_LightMap)[section].resize(game::BLOCK_COUNT >> 1);
 
 	// Read half a byte per block of block light
 	buf.Read((*m_LightMap)[section].data(), (*m_LightMap)[section].size());
@@ -249,9 +247,11 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	// Only exists in the overworld
     if (m_State->Dimension() == mcidle::game::dimension::OVERWORLD)
     {
-        m_Skylight->resize(BLOCK_COUNT >> 1);
+        (*m_Skylight)[section] = std::vector<u8>();
+        // Half a byte of skylight data per block
+        (*m_Skylight)[section].resize(game::BLOCK_COUNT >> 1);
 
-        buf.Read(m_Skylight->data(), m_Skylight->size());
+        buf.Read((*m_Skylight)[section].data(), (*m_Skylight)[section].size());
     }
 }
 

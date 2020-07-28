@@ -9,14 +9,11 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-const s32 SECTION_SIZE = 16;
-const s32 BLOCK_COUNT = SECTION_SIZE * SECTION_SIZE * SECTION_SIZE;
-
 class ChunkData : public Packet
 {
 public:
     ChunkData();
-    ChunkData(game::Chunk&&);
+    ChunkData(game::Chunk&);
     ChunkData(s32, s32, bool, s32);
     ChunkData(ChunkData&&);
 
@@ -36,9 +33,10 @@ private:
 	// Map section height (y=0, y=15) to the section
 	// In world coordinates section height * 16 is y-pos
     std::shared_ptr<std::unordered_map<s32, game::Section>> m_Sections;
+    // Half a byte of lighting information per block
     std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> m_LightMap;
+    std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> m_Skylight;
 
-    std::shared_ptr<std::vector<u8>> m_Skylight;
     std::shared_ptr<std::vector<u8>> m_Biomes;
 
 	s32 m_ChunkX;

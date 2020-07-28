@@ -61,8 +61,30 @@ void GameState::SetAngles(float pitch, float yaw)
 
 void GameState::LoadChunk(std::shared_ptr<Chunk> chunk) 
 {
-    game::ChunkPos pos = (static_cast<u64>(chunk->ChunkX) << 32) | static_cast<u32>(chunk->ChunkZ & 0xFFFFFFFF);
-    m_LoadedChunks[pos] = chunk;
+    auto pos = CalcChunkPos(chunk->ChunkX, chunk->ChunkZ);
+    // new chunks may be added so we have to OR them
+    // then replace the sections manually
+    if (m_LoadedChunks.find(pos) == m_LoadedChunks.end())
+    {
+        m_LoadedChunks[pos] = chunk;
+    }
+    else
+    {
+        auto chnk = m_LoadedChunks[pos];
+        // Update (replace) sections
+        for (s32 y = 0; y < game::SECTION_SIZE; y++)
+        {
+            if (chunk->PrimaryBitMask & (1 << y))
+            {
+                // Update lighting information
+                (*chnk->Sections)[y] = std::move((*chunk->Sections)[y]);
+                (*chnk->LightMap)[y] = std::move((*chunk->LightMap)[y]);
+                (*chnk->Skylight)[y] = std::move((*chunk->Skylight)[y]);
+                // Make sure to update the mask to include the new or updated section
+                chnk->PrimaryBitMask |= 1 << y;
+            }
+        }
+    }
 }
 
 s32 GameState::Threshold() const
@@ -180,8 +202,7 @@ game::ChunkMap& GameState::LoadedChunks()
 
 void GameState::UnloadChunk(s32 x, s32 z)
 {
-    game::ChunkPos pos = (static_cast<u64>(x) << 32) | static_cast<u32>(z & 0xFFFFFFFF);
-    m_LoadedChunks.erase(pos);
+    m_LoadedChunks.erase(CalcChunkPos(x, z));
 }
 
 } // namespace game

@@ -195,10 +195,10 @@ std::shared_ptr<Packet> Connection::ReadPacket()
         packet->SetFieldBuffer(decompressed);
     }
 
-        // Field buf is valid, read the packet ID and set it
-        mcidle::VarInt id;
-        *packet->FieldBuffer() >> id;
-        packet->SetId(id.Value());
+    // Field buf is valid, read the packet ID and set it
+    mcidle::VarInt id;
+    *packet->FieldBuffer() >> id;
+    packet->SetId(id.Value());
 
     auto inboundMap = m_Protocol->InboundMap();
 

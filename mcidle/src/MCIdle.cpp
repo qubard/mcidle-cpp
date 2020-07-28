@@ -37,8 +37,8 @@ bool MCIdle::Start()
         return false;
 
     // Create a pipe for writing to the client sink
-    m_Client = std::make_shared<thread::Pipe>(20);
-    m_Server = std::make_shared<thread::Pipe>(5);
+    m_Client = std::make_shared<thread::Pipe>(1);
+    m_Server = std::make_shared<thread::Pipe>(1);
 
     // Start the pipe in another thread
     boost::thread th(boost::ref(*m_Client));
@@ -127,7 +127,7 @@ bool MCIdle::Start()
 
             for (auto& chunk_ptr : chunks)
             {
-                mcidle::packet::clientbound::ChunkData chunkpkt(std::move(*chunk_ptr.second));
+                mcidle::packet::clientbound::ChunkData chunkpkt(*chunk_ptr.second);
                 mc_conn->SendPacket(chunkpkt);
             }
 
@@ -148,19 +148,7 @@ bool MCIdle::Start()
             // The problem is the socket closes before we can do that
             Proxy proxy(mc_conn, m_Server, m_State);
             proxy.Run();
-            /*for (;;)
-            {
-                auto packet = mc_conn->ReadPacket();
-                if (packet != nullptr)
-                {
-                    printf("Received from client: 0x%x\n", packet->Id());
-                    std::cout << packet->RawBuffer()->Hex() << "\n";
-                }
-                else
-                {
-                    break;
-                }
-            }*/
+
             m_Server->SetSink(nullptr);
             m_Client->SetSink(nullptr);
         }
