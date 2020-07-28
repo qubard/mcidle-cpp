@@ -37,7 +37,10 @@ const u8 ADVENTURE = 2;
 
 } // ns game
 
-using Section = std::vector<u64>;
+// Each element in this array holds the encoded 
+// block ID (typically bits_per_block <= 13 so we round
+// to a short)
+using Section = std::vector<u16>;
 
 typedef s64 ChunkPos;
 
@@ -56,6 +59,7 @@ inline s32 ChunkPosToBlockNum(s32 x, s32 y, s32 z)
     return (((y * SECTION_HEIGHT) + z) * SECTION_WIDTH) + x;
 }
 
+// Intermediate/deserialized representation of a chunk
 struct Chunk {
     s32 ChunkX;
     s32 ChunkZ;

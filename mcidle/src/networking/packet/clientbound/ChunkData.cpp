@@ -210,7 +210,8 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
     // Convert the data array to big endian (byte ordering)
     for (u64& l : data) std::reverse((u8*)&l, (u8*)&l + 8);
 
-	(*m_Sections)[section] = std::vector<u64>(game::BLOCK_COUNT);
+    // Initialize the section
+	(*m_Sections)[section] = game::Section(game::BLOCK_COUNT);
 
     for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT; blockNumber++)
     {
