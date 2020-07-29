@@ -36,7 +36,6 @@ void UnloadChunk::Deserialize(ByteBuffer & buf)
 
 void UnloadChunk::Mutate(mcidle::game::GameState &state)
 {
-    printf("Unloaded chunk %d %d\n", m_ChunkX, m_ChunkZ);
     state.UnloadChunk(m_ChunkX, m_ChunkZ);
 }
 

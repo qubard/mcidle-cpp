@@ -52,8 +52,8 @@ void MultiBlockChange::Mutate(mcidle::game::GameState &state)
     game::ChunkMap& m = state.LoadedChunks();
     auto pos = game::CalcChunkPos(m_ChunkX, m_ChunkZ);
 
-    if (m.find(pos) == m.end()) 
-        throw std::runtime_error("Chunk is not loaded for MultiBlockChange!");
+    // Ignore unloaded chunks
+    if (m.find(pos) == m.end()) return;
 
     // Lookup the chunk using its x, z pos
     auto chnk = m[pos];
@@ -61,16 +61,19 @@ void MultiBlockChange::Mutate(mcidle::game::GameState &state)
     {
         s32 posY = r.BlockY >> 4; // Chunk Y from world Y
 
-        if ((*chnk->Sections).find(posY) == (*chnk->Sections).end()) 
-            throw std::runtime_error("MultiBlockChange trying to update block in non-existent section!");
+        if ((*chnk->Sections).find(posY) != (*chnk->Sections).end()) 
+        {
+            s32 blockID = r.BlockID.Value();
+            // These coordinates are relative to the chunk (0-15)
+            s32 posZ = r.PosXZ & 0xF;
+            s32 posX = (r.PosXZ >> 4) & 0xF;
 
-        s32 blockID = r.BlockID.Value();
-        // These coordinates are relative to the chunk (0-15)
-        s32 posZ = r.PosXZ & 0xF;
-        s32 posX = (r.PosXZ >> 4) & 0xF;
-
-        auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY % 16, posZ);
-        (*chnk->Sections)[posY][blockNum] = 0;
+            auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY % 16, posZ);
+            (*chnk->Sections)[posY][blockNum] = 0;
+        }
+        else {
+            printf("MultiBlockChange trying to update block in non-existent section!\n");
+        }
     }
 }
 

@@ -37,8 +37,8 @@ bool MCIdle::Start()
         return false;
 
     // Create a pipe for writing to the client sink
-    m_Client = std::make_shared<thread::Pipe>(1);
-    m_Server = std::make_shared<thread::Pipe>(1);
+    m_Client = std::make_shared<thread::Pipe>(20);
+    m_Server = std::make_shared<thread::Pipe>(20);
 
     // Start the pipe in another thread
     boost::thread th(boost::ref(*m_Client));
