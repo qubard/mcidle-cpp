@@ -74,6 +74,14 @@ struct Chunk {
     s32 PrimaryBitMask;
 };
 
+inline void CreateNewSection(std::shared_ptr<Chunk>& chunk, s32 y)
+{
+    (*chunk->Sections)[y] = Section(BLOCK_COUNT);
+    (*chunk->LightMap)[y] = std::vector<u8>(BLOCK_COUNT >> 1);
+    (*chunk->Skylight)[y] = std::vector<u8>(BLOCK_COUNT >> 1);
+    chunk->PrimaryBitMask |= 1 << y;
+}
+
 using ChunkMap = std::unordered_map<ChunkPos, std::shared_ptr<Chunk>>;
 
 } // ns dimension

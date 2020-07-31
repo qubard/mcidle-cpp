@@ -64,18 +64,17 @@ void BlockChange::Mutate(mcidle::game::GameState &state)
     auto chnk = m[pos];
     s32 posY = m_Y / game::SECTION_SIZE; // Chunk Y from world Y
 
-    if ((*chnk->Sections).find(posY) != (*chnk->Sections).end()) 
+    // Create a new section if it doesn't exist in the chunk
+    if ((*chnk->Sections).find(posY) == (*chnk->Sections).end()) 
     {
-        // These coordinates are relative to the chunk (0-15)
-        auto blockNum = game::ChunkPosToBlockNum(m_X & 0xF, m_Y & 0xF, m_Z & 0xF);
-        (*chnk->Sections)[posY][blockNum] = m_BlockID;
-        printf("Set block..\n");
-    }
-    else {
+        CreateNewSection(chnk, posY);
         // Have to create a new section!!
         printf("BlockChange trying to update block in non-existent section!\n");
     }
 
+    // These coordinates are relative to the chunk (0-15)
+    auto blockNum = game::ChunkPosToBlockNum(m_X & 0xF, m_Y & 0xF, m_Z & 0xF);
+    (*chnk->Sections)[posY][blockNum] = m_BlockID;
 }
 
 } // ns clientbound

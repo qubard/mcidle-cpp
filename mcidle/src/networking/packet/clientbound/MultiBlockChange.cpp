@@ -61,19 +61,19 @@ void MultiBlockChange::Mutate(mcidle::game::GameState &state)
     {
         s32 posY = r.BlockY / game::SECTION_SIZE; // Chunk Y from world Y
 
-        if ((*chnk->Sections).find(posY) != (*chnk->Sections).end()) 
+        // Create a new section if it doesn't exist in the chunk
+        if ((*chnk->Sections).find(posY) == (*chnk->Sections).end()) 
         {
-            s32 blockID = r.BlockID.Value();
-            // These coordinates are relative to the chunk (0-15)
-            s32 posZ = r.PosXZ & 0xF;
-            s32 posX = (r.PosXZ >> 4) & 0xF;
+            CreateNewSection(chnk, posY);
+        }
 
-            auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY % game::SECTION_SIZE, posZ);
-            (*chnk->Sections)[posY][blockNum] = blockID;
-        }
-        else {
-            printf("MultiBlockChange trying to update block in non-existent section!\n");
-        }
+        s32 blockID = r.BlockID.Value();
+        // These coordinates are relative to the chunk (0-15)
+        s32 posZ = r.PosXZ & 0xF;
+        s32 posX = (r.PosXZ >> 4) & 0xF;
+
+        auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY & game::SECTION_SIZE, posZ);
+        (*chnk->Sections)[posY][blockNum] = blockID;
     }
 }
 
