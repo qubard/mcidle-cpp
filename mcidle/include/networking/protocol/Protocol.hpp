@@ -22,6 +22,7 @@
 #include <networking/packet/clientbound/SpawnPosition.hpp>
 #include <networking/packet/clientbound/UnloadChunk.hpp>
 #include <networking/packet/clientbound/MultiBlockChange.hpp>
+#include <networking/packet/clientbound/BlockChange.hpp>
 
 #include <unordered_map>
 

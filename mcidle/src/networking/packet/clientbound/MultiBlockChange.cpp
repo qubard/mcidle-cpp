@@ -59,7 +59,7 @@ void MultiBlockChange::Mutate(mcidle::game::GameState &state)
     auto chnk = m[pos];
     for (Record& r: m_Records)
     {
-        s32 posY = r.BlockY >> 4; // Chunk Y from world Y
+        s32 posY = r.BlockY / game::SECTION_SIZE; // Chunk Y from world Y
 
         if ((*chnk->Sections).find(posY) != (*chnk->Sections).end()) 
         {
@@ -68,8 +68,8 @@ void MultiBlockChange::Mutate(mcidle::game::GameState &state)
             s32 posZ = r.PosXZ & 0xF;
             s32 posX = (r.PosXZ >> 4) & 0xF;
 
-            auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY % 16, posZ);
-            (*chnk->Sections)[posY][blockNum] = 0;
+            auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY % game::SECTION_SIZE, posZ);
+            (*chnk->Sections)[posY][blockNum] = blockID;
         }
         else {
             printf("MultiBlockChange trying to update block in non-existent section!\n");

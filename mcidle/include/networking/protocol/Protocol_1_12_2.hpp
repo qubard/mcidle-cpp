@@ -61,8 +61,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x10,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::MultiBlockChange>(); },
       },
-
-
+        {
+          0x0B,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::BlockChange>(); },
+      },
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
