@@ -62,7 +62,7 @@ void BlockChange::Mutate(mcidle::game::GameState &state)
 
     // Lookup the chunk using its x, z pos
     auto chnk = m[pos];
-    s32 posY = m_Y / 16; // Chunk Y from world Y
+    s32 posY = m_Y / game::SECTION_SIZE; // Chunk Y from world Y
 
     if ((*chnk->Sections).find(posY) != (*chnk->Sections).end()) 
     {
