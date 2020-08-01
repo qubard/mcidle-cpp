@@ -8,11 +8,16 @@ namespace mcidle {
 namespace packet {
 namespace clientbound {
 
-class UpdateHealth : public Packet
+struct Record {
+    s8 X;
+    s8 Y;
+    s8 Z;
+};
+
+class Explosion : public Packet
 {
 public:
-    UpdateHealth();
-    UpdateHealth(float, s32, float);
+    Explosion();
 
     void Mutate(mcidle::game::GameState &) override;
 
@@ -20,9 +25,15 @@ public:
     void Deserialize(ByteBuffer &) override;
 
 private:
-    float m_Health;
-    VarInt m_Food;
-    float m_Saturation;
+    float m_X;
+    float m_Y;
+    float m_Z;
+    float m_Radius;
+    s32 m_RecordCount;
+    float m_MotionX;
+    float m_MotionY;
+    float m_MotionZ;
+    std::vector<Record> m_Records;
 };
 
 }  // namespace clientbound

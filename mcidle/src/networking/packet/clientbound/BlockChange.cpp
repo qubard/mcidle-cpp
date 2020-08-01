@@ -42,16 +42,15 @@ void BlockChange::Deserialize(ByteBuffer &buf)
 
 void BlockChange::Mutate(mcidle::game::GameState &state)
 {
-    printf("Received block change for %lld, %lld, %lld, id: %d, meta: %d\n", m_X, m_Y, m_Z, m_BlockID >> 4, m_BlockID & 0xF);
     game::ChunkMap& m = state.LoadedChunks();
 
     s32 chunkX = m_X / game::SECTION_SIZE;
     s32 chunkZ = m_Z / game::SECTION_SIZE;
-    if (m_X < 0 && m_X % game::SECTION_SIZE != 0)
+    if (m_X < 0 && (m_X % game::SECTION_SIZE) != 0)
     {
         chunkX--;
     }
-    if (m_Z < 0 && m_Z % game::SECTION_SIZE != 0)
+    if (m_Z < 0 && (m_Z % game::SECTION_SIZE) != 0)
     {
         chunkZ--;
     }
@@ -75,6 +74,7 @@ void BlockChange::Mutate(mcidle::game::GameState &state)
     // These coordinates are relative to the chunk (0-15)
     auto blockNum = game::ChunkPosToBlockNum(m_X & 0xF, m_Y & 0xF, m_Z & 0xF);
     (*chnk->Sections)[posY][blockNum] = m_BlockID;
+    printf("Block change %d, %d, %d, id: %d, meta: %d\n", m_X, m_Y, m_Z, m_BlockID >> 4, m_BlockID & 0xF);
 }
 
 } // ns clientbound

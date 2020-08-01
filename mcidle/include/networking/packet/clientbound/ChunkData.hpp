@@ -39,6 +39,8 @@ private:
 
     std::shared_ptr<std::vector<u8>> m_Biomes;
 
+    // Dimension is only present when we convert from game::Chunk
+    s32 m_Dimension;
 	s32 m_ChunkX;
 	s32 m_ChunkZ;
 	bool m_GroundUp;

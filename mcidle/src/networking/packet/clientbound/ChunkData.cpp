@@ -20,14 +20,15 @@ ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
 
 ChunkData::ChunkData(game::Chunk& chunk) : m_ChunkX(chunk.ChunkX), m_ChunkZ(chunk.ChunkZ), 
     m_Sections(chunk.Sections), m_Skylight(chunk.Skylight), m_Biomes(chunk.Biomes),
-    m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(chunk.LightMap)
+    m_GroundUp(chunk.GroundUp), m_PrimaryBitMask(chunk.PrimaryBitMask), m_LightMap(chunk.LightMap),
+    m_Dimension(chunk.Dimension)
 {
 }
 
 // Move from another chunk packet, cheaper than calling copy ctor
 ChunkData::ChunkData(ChunkData&& o) :  m_ChunkX(o.m_ChunkX), m_ChunkZ(o.m_ChunkZ), m_GroundUp(o.m_GroundUp),
     m_PrimaryBitMask(o.m_PrimaryBitMask), m_Biomes(std::move(o.m_Biomes)), m_Sections(std::move(o.m_Sections)),
-    m_LightMap(std::move(o.m_LightMap)), m_Skylight(std::move(o.m_Skylight))
+    m_LightMap(std::move(o.m_LightMap)), m_Skylight(std::move(o.m_Skylight)), m_Dimension(o.m_Dimension)
 {
     // Share the raw buffer ptr in case we want to do forwarding
     SetRawBuffer(o.RawBuffer());
@@ -46,6 +47,7 @@ void ChunkData::Mutate(mcidle::game::GameState &state)
     p->Biomes = std::move(m_Biomes);
     p->GroundUp = m_GroundUp;
     p->PrimaryBitMask = m_PrimaryBitMask.Value();
+    p->Dimension = m_Dimension;
 
     state.LoadChunk(p);
 }
@@ -121,7 +123,7 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 	}
 
     // Write skylight if in overworld
-    if (m_Skylight->find(section) != m_Skylight->end())
+    if (m_Dimension == game::dimension::OVERWORLD)
     {
         buf.Write((*m_Skylight)[section].data(), (*m_Skylight)[section].size());
     }
@@ -245,8 +247,14 @@ inline void ChunkData::ReadSection(ByteBuffer& buf, int ChunkX, int ChunkZ, int 
 	// Read half a byte per block of block light
 	buf.Read((*m_LightMap)[section].data(), (*m_LightMap)[section].size());
 
-	// Only exists in the overworld
-    if (m_State->Dimension() == mcidle::game::dimension::OVERWORLD)
+    s32 dim = m_State->Dimension();
+
+    // Set the dimension after deserializing which avoids
+    // lookup on state later when serializing
+    m_Dimension = dim;
+
+    // Only exists in the overworld
+    if (dim == mcidle::game::dimension::OVERWORLD)
     {
         (*m_Skylight)[section] = std::vector<u8>();
         // Half a byte of skylight data per block
