@@ -1,0 +1,28 @@
+#pragma once
+
+#include <networking/game/GameState.hpp>
+#include <networking/packet/Packet.hpp>
+
+namespace mcidle {
+namespace packet {
+namespace clientbound {
+
+class {{.Name}} : public Packet
+{
+public:
+    {{.Name}}();
+    {{.Name}}({{ range $i, $e := .Fields}}{{if $i}}, {{end}}{{.Type}}{{ end}});
+
+    void Mutate(mcidle::game::GameState &) override;
+
+    Packet &Serialize() override;
+    void Deserialize(ByteBuffer &) override;
+private:
+    {{- range $i, $e := .Fields}}
+    {{$e.Type}} m_{{$e.Name}};
+    {{- end }}
+};
+
+}  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle

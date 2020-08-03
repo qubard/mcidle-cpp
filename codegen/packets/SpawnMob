@@ -1,0 +1,14 @@
+SpawnMob
+VarInt EntityID
+UUID EntityUUID
+VarInt Type
+double X
+double Y
+double Z
+s8 Yaw
+s8 Pitch
+s8 HeadPitch
+s16 MotionX
+s16 MotionY
+s16 MotionZ
+Metadata Meta

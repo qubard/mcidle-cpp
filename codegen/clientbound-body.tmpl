@@ -1,0 +1,41 @@
+#include <networking/packet/clientbound/{{.Name}}.hpp>
+
+namespace mcidle {
+namespace packet {
+namespace clientbound {
+
+{{.Name}}::{{.Name}}()
+{
+}
+
+{{.Name}}::{{.Name}}({{ range $i, $e := .Fields}}{{if $i}}, {{end}}{{.Type}} {{.Name}}{{ end}})
+    : {{ range $i, $e := .Fields}}{{if $i}}, {{end}}m_{{.Name}}({{.Name}}){{ end}}
+{
+}
+
+void {{.Name}}::Mutate(mcidle::game::GameState &state)
+{
+}
+
+Packet& {{.Name}}::Serialize()
+{
+    {{- with .Fields -}}
+    {{ range . }}
+    *m_FieldBuf << m_{{.Name}};
+    {{- end }}
+    {{- end }}
+    return *this;
+}
+
+void {{.Name}}::Deserialize(ByteBuffer &buf)
+{
+    {{- with .Fields -}}
+    {{ range . }}
+    buf >> m_{{.Name}};
+    {{- end }}
+    {{- end }}
+}
+
+}  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle
