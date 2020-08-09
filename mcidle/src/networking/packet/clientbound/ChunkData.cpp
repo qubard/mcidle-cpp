@@ -1,6 +1,8 @@
 #include <networking/packet/clientbound/ChunkData.hpp>
 #include <networking/types/VarInt.hpp>
 
+#include <networking/types/nbt/NBT.hpp>
+
 namespace mcidle {
 namespace packet {
 namespace clientbound {
@@ -301,8 +303,25 @@ void ChunkData::Deserialize(ByteBuffer& buf)
 	}
 
     // Read block entities
-    //VarInt numBlockEntities;
-    //buf >> numBlockEntities;
+    VarInt numBlockEntities;
+    buf >> numBlockEntities;
+
+    if (numBlockEntities.Value() != 0)
+    {
+        printf("Num block entities: %d\n", numBlockEntities.Value());
+
+        s32 len = numBlockEntities.Value();
+        while (len > 0)
+        {
+            u8 type;
+            buf >> type;
+            if (type != nbt::TAG_COMPOUND)
+                throw std::runtime_error("Unexpected tag type (expected TagCompound)!\n");
+            nbt::TagCompound tag;
+            buf >> tag;
+            len--;
+        }
+    }
 }
 
 } // ns clientbound

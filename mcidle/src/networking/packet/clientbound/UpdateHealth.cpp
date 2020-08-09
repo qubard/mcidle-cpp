@@ -1,4 +1,3 @@
-#include <networking/game/GameState.hpp>
 #include <networking/packet/clientbound/UpdateHealth.hpp>
 
 namespace mcidle {

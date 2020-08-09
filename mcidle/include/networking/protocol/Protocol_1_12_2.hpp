@@ -79,6 +79,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::JoinGame>(); },
       },
       {
+          0x03,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnMob>(); },
+      },
+      {
         0x0F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChatMessage>(); },
 

@@ -8,6 +8,7 @@
 // Source: mclib
 
 namespace mcidle {
+namespace lib {
 
 class DataBuffer;
 
@@ -25,7 +26,8 @@ public:
 	static UUID FromString(const std::string& str, bool dashes = true);
 	static UUID FromString(const std::wstring& str, bool dashes = true);
 
-	bool operator<(const UUID& r) const {
+	bool operator<(const UUID& r) const 
+    {
 		const UUID& l = *this;
 		if (l.GetUpperBits() < r.GetUpperBits()) return true;
 		if (l.GetUpperBits() > r.GetUpperBits()) return false;
@@ -44,4 +46,5 @@ DataBuffer& operator>>(DataBuffer& in, UUID& uuid);
 std::ostream& operator<<(std::ostream& out, const UUID& uuid);
 std::wostream& operator<<(std::wostream& out, const UUID& uuid);
 
+} // ns lib
 } // ns mcidle

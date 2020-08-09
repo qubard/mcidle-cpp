@@ -1,5 +1,5 @@
 #include <networking/packet/clientbound/BlockChange.hpp>
-#include <networking/types/Location.hpp>
+#include <networking/types/Position.hpp>
 #include <networking/types/VarInt.hpp>
 
 #include <iostream>
@@ -18,7 +18,7 @@ BlockChange::BlockChange(s32 x, s32 y, s32 z, s32 blockID) : m_X(x), m_Y(y), m_Z
 
 Packet &BlockChange::Serialize()
 {
-    Location loc { m_X, m_Y, m_Z };
+    Position loc { m_X, m_Y, m_Z };
     *m_FieldBuf << loc;
     *m_FieldBuf << VarInt(m_BlockID);
 
@@ -27,7 +27,7 @@ Packet &BlockChange::Serialize()
 
 void BlockChange::Deserialize(ByteBuffer &buf)
 {
-    Location loc;
+    Position loc;
     buf >> loc;
 
     m_X = loc.X;

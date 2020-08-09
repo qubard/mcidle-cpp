@@ -1,9 +1,9 @@
-#include <networking/types/Location.hpp>
+#include <networking/types/Position.hpp>
 
 namespace mcidle {
 
 // This code is very version specific!!!
-ByteBuffer& operator>>(ByteBuffer& buf, Location& loc)
+ByteBuffer& operator>>(ByteBuffer& buf, Position& loc)
 {
     u64 pos;
     buf >> pos;
@@ -22,7 +22,7 @@ ByteBuffer& operator>>(ByteBuffer& buf, Location& loc)
     return buf;
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, Location& loc)
+ByteBuffer& operator<<(ByteBuffer& buf, Position& loc)
 {
     s64 pos = ((loc.X & 0x3FFFFFF) << 38) | ((loc.Y & 0xFFF) << 26) | (loc.Z & 0x3FFFFFF);
     buf << pos;

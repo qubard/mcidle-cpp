@@ -6,8 +6,10 @@
 #include <cassert>
 
 namespace mcidle {
+namespace lib {
 
-std::string UUID::ToString(bool dashes) const {
+std::string UUID::ToString(bool dashes) const 
+{
 	ByteBuffer buffer;
 	buffer << *this;
 
@@ -34,12 +36,14 @@ std::string UUID::ToString(bool dashes) const {
 	return out.str();
 }
 
-UUID UUID::FromString(const std::string& str, bool dashes) {
+UUID UUID::FromString(const std::string& str, bool dashes) 
+{
 	std::wstring wstr(str.begin(), str.end());
 	return UUID::FromString(wstr, dashes);
 }
 
-UUID UUID::FromString(const std::wstring& str, bool dashes) {
+UUID UUID::FromString(const std::wstring& str, bool dashes) 
+{
 	if (dashes)
 		assert(str.length() == 36);
 	else
@@ -84,15 +88,18 @@ UUID UUID::FromString(const std::wstring& str, bool dashes) {
 	return uuid;
 }
 
-std::ostream& operator<<(std::ostream& out, const UUID& uuid) {
+std::ostream& operator<<(std::ostream& out, const UUID& uuid) 
+{
 	out << uuid.ToString();
 	return out;
 }
 
-std::wostream& operator<<(std::wostream& out, const UUID& uuid) {
+std::wostream& operator<<(std::wostream& out, const UUID& uuid) 
+{
 	std::string str = uuid.ToString();
 	out << std::wstring(str.begin(), str.end());
 	return out;
 }
 
+} // ns lib
 } // ns mc
