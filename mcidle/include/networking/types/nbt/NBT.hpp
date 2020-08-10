@@ -126,6 +126,9 @@ using TagString = TagPod<NBTString>;
 using TagIntArray = TagList<VarInt>;
 using TagLongArray = TagList<VarLong>;
 
+// Deserialize a tag compound without reading the initial type
+void DeserializeTagCompound(ByteBuffer&, TagCompound&);
+
 template <typename T>
 ByteBuffer& operator>>(ByteBuffer&, TagList<T>&);
 // Read an NBTString (prefixed with 2 byte len)

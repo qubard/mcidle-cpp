@@ -52,6 +52,7 @@ void ChunkData::Mutate(mcidle::game::GameState &state)
     p->Dimension = m_Dimension;
 
     state.LoadChunk(p);
+    printf("Loaded chunk %d %d into state!\n", m_ChunkX, m_ChunkZ);
 }
 
 std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
@@ -94,9 +95,6 @@ inline void ChunkData::WriteSection(ByteBuffer& buf, s32 section, u8 bitsPerBloc
 
         u64 value = (*m_Sections)[section][blockNumber];
         value &= valueMask;
-
-        auto id = value >> 4;
-        auto meta = value & 0xF;
 
         data[startLong] |= value << startOffset;
 
@@ -313,10 +311,6 @@ void ChunkData::Deserialize(ByteBuffer& buf)
         s32 len = numBlockEntities.Value();
         while (len > 0)
         {
-            u8 type;
-            buf >> type;
-            if (type != nbt::TAG_COMPOUND)
-                throw std::runtime_error("Unexpected tag type (expected TagCompound)!\n");
             nbt::TagCompound tag;
             buf >> tag;
             len--;

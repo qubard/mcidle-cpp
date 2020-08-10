@@ -81,6 +81,8 @@ public:
     // Load a chunk into the `m_LoadedChunks` table
     void LoadChunk(std::shared_ptr<Chunk>);
     void UnloadChunk(s32, s32);
+    // Set the block at x, y, z in world space to blockID
+    void SetChunkBlock(s32, s32, s32, s32);
 
     game::ChunkMap& LoadedChunks();
 

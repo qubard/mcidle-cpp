@@ -143,6 +143,9 @@ struct Metadata {
     MetaValue Value;
 };
 
+ByteBuffer& operator<<(ByteBuffer&, Slot&);
+ByteBuffer& operator>>(ByteBuffer&, Slot&);
+
 void WriteMetaValue(ByteBuffer&, MetaValue&, u8);
 void ReadMetaValue(ByteBuffer&, MetaValue&, u8);
 

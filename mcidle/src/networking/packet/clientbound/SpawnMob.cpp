@@ -50,7 +50,7 @@ void SpawnMob::Deserialize(ByteBuffer &buf)
     buf >> m_MotionX;
     buf >> m_MotionY;
     buf >> m_MotionZ;
-    buf >> m_Meta;
+    //buf >> m_Meta;
 }
 
 }  // namespace clientbound

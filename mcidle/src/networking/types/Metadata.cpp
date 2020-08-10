@@ -1,4 +1,5 @@
 #include <networking/types/Metadata.hpp>
+#include <iostream>
 
 namespace mcidle {
 
@@ -101,17 +102,21 @@ void ReadMetaValue(ByteBuffer& buf, MetaValue& value, u8 type)
     else if (type == metavalue::Type::String)
     {
         buf >> value.String;
+        std::cout << value.String << "\n";
     }
     else if (type == metavalue::Type::Chat)
     {
         buf >> value.Chat;
+        printf("chat\n");
     }
     else if (type == metavalue::Type::OptChat)
     {
+        printf("optchat\n");
         buf >> value.OptChat;
     }
     else if (type == metavalue::Type::Slot)
     {
+        printf("slot\n");
         buf >> value.Slot;
     }
     else if (type == metavalue::Type::Boolean)
@@ -179,17 +184,49 @@ ByteBuffer& operator<<(ByteBuffer& buf, Metadata& metadata)
 
 ByteBuffer& operator>>(ByteBuffer& buf, Metadata& metadata)
 {
-    printf("Begun reading meta value\n");
-    buf >> metadata.Index;
-    if (metadata.Index != 0xFF)
+    printf("*********Begun reading meta value\n");
+    // This is an array, but it has no length
+    // so we read until the packet is consumed 
+    while (buf.Avail())
     {
-        buf >> metadata.Type;
-        u8 type = metadata.Type.Value();
-        printf("Type: %d\n", metadata.Type.Value());
-        ReadMetaValue(buf, metadata.Value, type);
-        printf("Finished reading meta value\n");
+        buf >> metadata.Index;
+        if (metadata.Index != 0xFF)
+        {
+            buf >> metadata.Type;
+            u8 type = metadata.Type.Value();
+            printf("Type: %d\n", metadata.Type.Value());
+            ReadMetaValue(buf, metadata.Value, type);
+            printf("Finished reading meta value\n");
+        }
+        else {
+            printf("Meta index is 0xFF\n");
+        }
+        printf("Remaining : %d out of %d, avail :%d\n", buf.ReadOffset(), buf.Size(), buf.Avail());
     }
-    printf("Remaining : %d out of %d\n", buf.ReadOffset(), buf.Size());
+    return buf;
+}
+
+ByteBuffer& operator>>(ByteBuffer& buf, Slot& slot)
+{
+    u8 present;
+    buf >> present;
+    printf("present: %d\n", present);
+
+    slot.Present = present > 0;
+    if (slot.Present)
+    {
+        buf >> slot.ItemID;
+        buf >> slot.ItemCount;
+        printf("Item id: %d, count : %d\n", slot.ItemID, slot.ItemCount);
+        buf >> slot.NBT;
+    } else {
+        printf("Not present slot\n");
+    }
+    return buf;
+}
+
+ByteBuffer& operator<<(ByteBuffer& buf, Slot& slot)
+{
     return buf;
 }
 
@@ -200,23 +237,27 @@ ByteBuffer& operator<<(ByteBuffer& buf, Particle&)
 {
     buf << VarInt(0);
     buf << VarInt(0);
+    return buf;
 }
 
 ByteBuffer& operator<<(ByteBuffer& buf, UUID& uuid)
 {
     buf << uuid.First;
     buf << uuid.Second; 
+    return buf;
 }
 
 ByteBuffer& operator>>(ByteBuffer& buf, UUID& uuid)
 {
     buf >> uuid.First;
     buf >> uuid.Second;
+    return buf;
 }
 
 ByteBuffer& operator>>(ByteBuffer& buf, Particle&)
 {
     // Don't need to deserialize
+    return buf;
 }
 
 } // ns mcidle

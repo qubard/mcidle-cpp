@@ -45,13 +45,14 @@ ByteBuffer& operator>>(ByteBuffer& buf, TagPod<T>& value)
     return buf;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
+void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
 {
-    TagType type;
     NBTString name;
     buf >> name;
     std::cout << "name of tag compound: " << name.Value() << "\n";
     printf("Trying to decode tag compound\n");
+
+    TagType type = TAG_END;
     do
     {
         buf >> type;
@@ -109,7 +110,7 @@ ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
         } else if (type == TAG_COMPOUND)
         {
             TagCompound tag;
-            buf >> tag;
+            DeserializeTagCompound(buf, tag);
             value.PushCompound(tag);
         } else if (type == TAG_INT_ARRAY)
         {
@@ -125,6 +126,18 @@ ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
     } while (type != TAG_END);
 
     printf("------------------\n");
+}
+
+ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
+{
+    TagType type;
+    buf >> type;
+    
+    if (type == TAG_END) return buf;
+
+    printf("Deserializing tag type: %d\n %d %d\n", type, buf.ReadOffset(), buf.Size());
+    
+    DeserializeTagCompound(buf, value);
 
 	return buf;
 }

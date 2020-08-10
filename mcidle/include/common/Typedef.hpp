@@ -87,6 +87,7 @@ inline void CreateNewSection(std::shared_ptr<Chunk>& chunk, s32 y)
     chunk->PrimaryBitMask |= 1 << y;
 }
 
+// A mapping from the chunk position to an deserialized chunk representation
 using ChunkMap = std::unordered_map<ChunkPos, std::shared_ptr<Chunk>>;
 
 } // ns dimension

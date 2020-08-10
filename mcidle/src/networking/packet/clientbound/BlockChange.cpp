@@ -42,39 +42,7 @@ void BlockChange::Deserialize(ByteBuffer &buf)
 
 void BlockChange::Mutate(mcidle::game::GameState &state)
 {
-    game::ChunkMap& m = state.LoadedChunks();
-
-    s32 chunkX = m_X / game::SECTION_SIZE;
-    s32 chunkZ = m_Z / game::SECTION_SIZE;
-    if (m_X < 0 && (m_X % game::SECTION_SIZE) != 0)
-    {
-        chunkX--;
-    }
-    if (m_Z < 0 && (m_Z % game::SECTION_SIZE) != 0)
-    {
-        chunkZ--;
-    }
-    auto pos = game::CalcChunkPos(chunkX, chunkZ);
-
-    // Ignore unloaded chunks
-    if (m.find(pos) == m.end()) return;
-
-    // Lookup the chunk using its x, z pos
-    auto chnk = m[pos];
-    s32 posY = m_Y / game::SECTION_SIZE; // Chunk Y from world Y
-
-    // Create a new section if it doesn't exist in the chunk
-    if ((*chnk->Sections).find(posY) == (*chnk->Sections).end()) 
-    {
-        CreateNewSection(chnk, posY);
-        // Have to create a new section!!
-        printf("BlockChange trying to update block in non-existent section!\n");
-    }
-
-    // These coordinates are relative to the chunk (0-15)
-    auto blockNum = game::ChunkPosToBlockNum(m_X & 0xF, m_Y & 0xF, m_Z & 0xF);
-    (*chnk->Sections)[posY][blockNum] = m_BlockID;
-    printf("Block change %d, %d, %d, id: %d, meta: %d\n", m_X, m_Y, m_Z, m_BlockID >> 4, m_BlockID & 0xF);
+    state.SetChunkBlock(m_X, m_Y, m_Z, m_BlockID);
 }
 
 } // ns clientbound

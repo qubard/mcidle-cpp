@@ -238,5 +238,38 @@ void GameState::UnloadChunk(s32 x, s32 z)
     m_LoadedChunks.erase(CalcChunkPos(x, z));
 }
 
+void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+
+    // Convert x, z to chunk space
+    s32 chunkX, chunkZ;
+    chunkX = x / game::SECTION_SIZE;
+    chunkZ = z / game::SECTION_SIZE;
+
+    if (chunkX < 0 && chunkX % game::SECTION_SIZE != 0)
+        chunkX--;
+    if (chunkZ < 0 && chunkZ % game::SECTION_SIZE != 0)
+        chunkZ--;
+
+    auto pos = game::CalcChunkPos(chunkX, chunkZ);
+
+    // Ignore unloaded chunks
+    if (m_LoadedChunks.find(pos) == m_LoadedChunks.end()) return;
+
+    // Lookup the chunk
+    auto chunk = m_LoadedChunks[pos];
+
+    s32 chunkY = y / game::SECTION_SIZE; // Chunk Y from world Y
+
+    // Create a new section if it doesn't exist in the chunk
+    if ((*chunk->Sections).find(chunkY) == (*chunk->Sections).end()) 
+        CreateNewSection(chunk, chunkY);
+
+    // Convert to relative block num coordinates
+    auto blockNum = game::ChunkPosToBlockNum(x & 0xF, y & 0xF, z & 0xF);
+    (*chunk->Sections)[chunkY][blockNum] = blockID;
+}
+
 } // namespace game
 } // namespace mcidle
