@@ -25,6 +25,7 @@
 #include <networking/packet/clientbound/BlockChange.hpp>
 #include <networking/packet/clientbound/Explosion.hpp>
 #include <networking/packet/clientbound/SpawnMob.hpp>
+#include <networking/packet/clientbound/SetSlot.hpp>
 
 #include <unordered_map>
 
@@ -87,6 +88,7 @@ public:
     virtual s32 PacketId(packet::clientbound::PlayerPositionLook &);
     virtual s32 PacketId(packet::clientbound::KeepAlive &);
     virtual s32 PacketId(packet::clientbound::ChunkData &);
+    virtual s32 PacketId(packet::clientbound::SetSlot &);
 
 protected:
 	ProtocolMap m_InboundMap;

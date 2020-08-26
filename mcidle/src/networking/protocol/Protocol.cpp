@@ -92,4 +92,10 @@ s32 Protocol::PacketId(packet::clientbound::KeepAlive &)
     throw std::runtime_error("Unimplemented clientbound::KeepAlive!");
 }
 
+s32 Protocol::PacketId(packet::clientbound::SetSlot &)
+{
+    throw std::runtime_error("Unimplemented clientbound::SetSlot!");
+}
+
+
 }  // namespace mcidle

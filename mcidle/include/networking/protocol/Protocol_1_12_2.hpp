@@ -69,7 +69,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x1C,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Explosion>(); },
       },
-
+      {
+          0x16,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SetSlot>(); },
+      },
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
@@ -153,6 +156,7 @@ public:
     s32 PacketId(packet::clientbound::SetCompression &) override;
     s32 PacketId(packet::clientbound::LoginSuccess &) override;
     s32 PacketId(packet::clientbound::EncryptionRequest &) override;
+    s32 PacketId(packet::clientbound::SetSlot &) override;
 
 };
 

@@ -232,10 +232,28 @@ game::ChunkMap& GameState::LoadedChunks()
     return m_LoadedChunks;
 }
 
+void GameState::SetInventorySlot(s16 slotNum, Slot slot)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_PlayerInventory[slotNum] = slot;
+}
+
+void GameState::ClearInventorySlot(s16 slotNum)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_PlayerInventory.erase(slotNum);
+}
+
 void GameState::UnloadChunk(s32 x, s32 z)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
     m_LoadedChunks.erase(CalcChunkPos(x, z));
+}
+
+std::unordered_map<s16, Slot> GameState::PlayerInventory()
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    return m_PlayerInventory;
 }
 
 void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
@@ -247,15 +265,21 @@ void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
     chunkX = x / game::SECTION_SIZE;
     chunkZ = z / game::SECTION_SIZE;
 
-    if (chunkX < 0 && chunkX % game::SECTION_SIZE != 0)
+    printf("%d %d %d %d\n", x, z, x % game::SECTION_SIZE, z % game::SECTION_SIZE);
+
+    if (x < 0 && x % game::SECTION_SIZE != 0)
         chunkX--;
-    if (chunkZ < 0 && chunkZ % game::SECTION_SIZE != 0)
+    if (z < 0 && z % game::SECTION_SIZE != 0)
         chunkZ--;
 
     auto pos = game::CalcChunkPos(chunkX, chunkZ);
 
     // Ignore unloaded chunks
-    if (m_LoadedChunks.find(pos) == m_LoadedChunks.end()) return;
+    if (m_LoadedChunks.find(pos) == m_LoadedChunks.end()) 
+    {
+        printf("Trying to place block at unloaded chunk %d %d\n", chunkX, chunkZ);
+        return;
+    }
 
     // Lookup the chunk
     auto chunk = m_LoadedChunks[pos];
@@ -263,7 +287,7 @@ void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
     s32 chunkY = y / game::SECTION_SIZE; // Chunk Y from world Y
 
     // Create a new section if it doesn't exist in the chunk
-    if ((*chunk->Sections).find(chunkY) == (*chunk->Sections).end()) 
+    if ((*chunk->Sections).find(chunkY) == (*chunk->Sections).end())
         CreateNewSection(chunk, chunkY);
 
     // Convert to relative block num coordinates

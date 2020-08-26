@@ -35,8 +35,10 @@ inline typename std::enable_if<k == boost::tuples::length<TupleStruct<Ts...>>::v
 */
 
 struct Slot {
-    bool Present;
-    VarInt ItemID; // if Present
+    bool Present; // not in <= 1.13
+    VarInt ItemIDInt; // if Present
+    s16 ItemIDShort; // Sometimes ItemID is a short
+    s16 ItemDamage; // not in >= 1.13
     u8 ItemCount; // if Present
     nbt::TagCompound NBT; // if Present
 };

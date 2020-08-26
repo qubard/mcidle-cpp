@@ -35,6 +35,7 @@ template <typename T>
 ByteBuffer& operator>>(ByteBuffer& buf, TagPod<T>& value)
 {
     T val;
+    printf("Reading name..\n");
     NBTString name;
     buf >> name;
     std::cout << "TagPod name: " << name.Value() << "\n";
@@ -45,19 +46,14 @@ ByteBuffer& operator>>(ByteBuffer& buf, TagPod<T>& value)
     return buf;
 }
 
-void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
-{
-    NBTString name;
-    buf >> name;
-    std::cout << "name of tag compound: " << name.Value() << "\n";
-    printf("Trying to decode tag compound\n");
 
+// Deserialize a tag compound without reading the name first
+void DeserializeTagCompoundInner(ByteBuffer& buf, TagCompound& value)
+{
     TagType type = TAG_END;
     do
     {
         buf >> type;
-        printf("Type: %d\n", type);
-
         if (type == TAG_SHORT)
         {
             TagShort tag;
@@ -75,7 +71,6 @@ void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
             TagInt tag;
             buf >> tag;
             value.Push(tag);
-            printf("Value: %d\n", tag.Value());
         }
         else if (type == TAG_FLOAT)
         {
@@ -98,15 +93,29 @@ void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
             TagString tag;
             buf >> tag;
             value.Push(tag);
-            std::cout << "Tag string: (" << tag.Name() << " : " << tag.Value().Value() << ")\n";
         } else if (type == TAG_LIST)
         {
             NBTString name;
             buf >> name;
             TagType listType;
             buf >> listType;
-            printf("Got tag list type: %d\n", listType);
-            throw std::runtime_error("unimplemented");
+
+            if (listType == TAG_COMPOUND)
+            {
+                s32 len;
+                buf >> len;
+                printf("got len: %d\n", len);
+                {
+                    DeserializeTagCompoundInner(buf, value);   
+                    len--;
+                }
+                printf("fin\n");
+                std::cout << buf.Hex() << "\n";
+            } 
+            else
+            {
+                throw std::runtime_error("unimplemented");
+            }
         } else if (type == TAG_COMPOUND)
         {
             TagCompound tag;
@@ -124,19 +133,28 @@ void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
             value.PushList(tag);
         }
     } while (type != TAG_END);
-
-    printf("------------------\n");
 }
 
+// Deserialize a tag compound with the name
+void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
+{
+    NBTString name;
+    buf >> name;
+    DeserializeTagCompoundInner(buf, value);
+}
+
+// Deserialize a root tag compound type
 ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
 {
     TagType type;
     buf >> type;
-    
-    if (type == TAG_END) return buf;
 
-    printf("Deserializing tag type: %d\n %d %d\n", type, buf.ReadOffset(), buf.Size());
-    
+    if (type == TAG_END) 
+        return buf;
+
+    if (type != TAG_COMPOUND) 
+        throw std::runtime_error("Expected tag compound for root type");
+
     DeserializeTagCompound(buf, value);
 
 	return buf;

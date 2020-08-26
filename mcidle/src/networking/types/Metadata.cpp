@@ -1,5 +1,4 @@
 #include <networking/types/Metadata.hpp>
-#include <iostream>
 
 namespace mcidle {
 
@@ -208,25 +207,32 @@ ByteBuffer& operator>>(ByteBuffer& buf, Metadata& metadata)
 
 ByteBuffer& operator>>(ByteBuffer& buf, Slot& slot)
 {
-    u8 present;
-    buf >> present;
-    printf("present: %d\n", present);
+    // This changes for game versions
+    buf >> slot.ItemIDShort;
 
-    slot.Present = present > 0;
-    if (slot.Present)
+    printf("item id: %d\n", slot.ItemIDShort);
+
+    if (slot.ItemIDShort != -1)
     {
-        buf >> slot.ItemID;
         buf >> slot.ItemCount;
-        printf("Item id: %d, count : %d\n", slot.ItemID, slot.ItemCount);
+        buf >> slot.ItemDamage;
+        printf("Reading slot nbt\n");
         buf >> slot.NBT;
-    } else {
-        printf("Not present slot\n");
     }
     return buf;
 }
 
 ByteBuffer& operator<<(ByteBuffer& buf, Slot& slot)
 {
+    buf << slot.ItemIDShort;
+
+    if (slot.ItemIDShort != -1)
+    {
+        buf << slot.ItemCount;
+        buf << slot.ItemDamage;
+        // don't write nbt for now
+        buf << (u8)0;
+    }
     return buf;
 }
 

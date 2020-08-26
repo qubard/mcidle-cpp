@@ -38,6 +38,8 @@ void BlockChange::Deserialize(ByteBuffer &buf)
     buf >> tmp;
 
     m_BlockID = tmp.Value();
+
+    printf("Block change at %d, %d, %d to %d\n", m_X, m_Y, m_Z, m_BlockID);
 }
 
 void BlockChange::Mutate(mcidle::game::GameState &state)
