@@ -1,5 +1,7 @@
 #pragma once
 
+#include <networking/types/nbt/TagPod.hpp>
+
 namespace mcidle {
 namespace nbt {
 
@@ -19,6 +21,17 @@ const TagType TAG_LIST = 9;
 const TagType TAG_COMPOUND = 10;
 const TagType TAG_INT_ARRAY = 11;
 const TagType TAG_LONG_ARRAY = 12;
+
+using TagByte = TagPod<s8>;
+using TagShort = TagPod<s16>;
+using TagInt = TagPod<s32>;
+using TagLong = TagPod<s64>;
+using TagFloat = TagPod<float>;
+using TagDouble = TagPod<double>;
+//using TagByteArray = TagList<s8>;
+using TagString = TagPod<NBTString>;
+//using TagIntArray = TagList<VarInt>;
+//using TagLongArray = TagList<VarLong>;
 
 }
 }

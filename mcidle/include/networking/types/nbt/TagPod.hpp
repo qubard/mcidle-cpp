@@ -73,5 +73,25 @@ private:
     T m_Value;
 };
 
+template <typename T>
+ByteBuffer& operator>>(ByteBuffer& buf, TagPod<T>& value)
+{
+    NBTString name;
+    buf >> name;
+    T val;
+    buf >> val;
+    // Label the tag pod
+    value.SetName(name.Value());
+    value.SetValue(val);
+    return buf;
+}
+
+template <typename T>
+ByteBuffer& operator<<(ByteBuffer& buf, TagPod<T>& value)
+{
+    value.Serialize(buf);
+    return buf;
+}
+
 } // ns nbt
 } // ns mcidle

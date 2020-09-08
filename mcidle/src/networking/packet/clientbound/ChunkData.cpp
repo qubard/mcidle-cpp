@@ -1,7 +1,4 @@
 #include <networking/packet/clientbound/ChunkData.hpp>
-#include <networking/types/VarInt.hpp>
-
-#include <networking/types/nbt/NBT.hpp>
 
 namespace mcidle {
 namespace packet {

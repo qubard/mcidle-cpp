@@ -11,6 +11,17 @@ ByteBuffer& operator<<(ByteBuffer& buf, NBTString& str)
     return buf;
 }
 
+// Read an NBTString (prefixed with 2 byte len)
+ByteBuffer& operator>>(ByteBuffer& buf, NBTString& str)
+{
+	u16 len = buf.Read<u16>();
+	std::string tmp;
+	tmp.resize(len);
+	buf.Read((u8*)tmp.c_str(), len);
+    str.SetValue(tmp);
+    return buf;
+}
+
 ByteBuffer& operator<<(ByteBuffer& buf, NBTString&& str)
 {
     printf("called move semantics on nbtstring&&\n");

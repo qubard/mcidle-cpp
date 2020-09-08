@@ -27,6 +27,8 @@ private:
     std::string m_Value;
 };
 
+ByteBuffer& operator>>(ByteBuffer&, NBTString&);
+
 ByteBuffer& operator<<(ByteBuffer&, NBTString&);
 ByteBuffer& operator<<(ByteBuffer&, NBTString&&);
 

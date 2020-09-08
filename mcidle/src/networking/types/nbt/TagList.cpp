@@ -1,5 +1,5 @@
 #include <networking/types/nbt/TagList.hpp>
-#include <networking/types/nbt/NBT.hpp>
+#include <networking/types/nbt/TagCompound.hpp>
 
 namespace mcidle {
 namespace nbt {
@@ -84,6 +84,38 @@ void TagList::SetListType(TagType type)
 {
     m_ListType = type;
 }
+
+ByteBuffer& operator>>(ByteBuffer& buf, TagList& value)
+{
+    NBTString name;
+    buf >> name;
+    value.SetName(name.Value());
+
+    TagType listType;
+    buf >> listType;
+    value.SetListType(listType);
+
+    if (listType == TAG_COMPOUND)
+    {
+        s32 len;
+        buf >> len;
+        while (len > 0)
+        {
+            TagCompound tag;
+            DeserializeTagCompoundInner(buf, tag);   
+            len--;
+            value.Push(tag);
+        }
+    } 
+    else
+    {
+        throw std::runtime_error("unimplemented deserialize taglist");
+    }
+
+    return buf;
+}
+
+
 
 } // ns mcidle 
 } // ns nbt

@@ -1,7 +1,7 @@
 #pragma once 
 
 #include <networking/ByteBuffer.hpp>
-#include <networking/types/nbt/NBT.hpp>
+#include <networking/types/nbt/TagCompound.hpp>
 #include <networking/types/Position.hpp>
 #include <networking/types/VarInt.hpp>
 

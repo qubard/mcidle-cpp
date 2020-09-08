@@ -4,6 +4,8 @@
 #include <networking/types/nbt/Tag.hpp>
 #include <networking/types/nbt/TagListFwd.hpp>
 
+#include <iostream>
+
 namespace mcidle {
 namespace nbt {
 
@@ -22,6 +24,14 @@ public:
 private:
     std::vector<std::shared_ptr<Tag>> m_Tags;
 };
+
+ByteBuffer& operator>>(ByteBuffer&, TagCompound&);
+ByteBuffer& operator<<(ByteBuffer&, TagCompound&);
+
+void SerializeTagCompound(ByteBuffer&, TagCompound&);
+void SerializeTagCompoundInner(ByteBuffer&, TagCompound&);
+void DeserializeTagCompound(ByteBuffer&, TagCompound&);
+void DeserializeTagCompoundInner(ByteBuffer&, TagCompound&);
 
 } // ns nbt
 } // ns mcidle

@@ -32,5 +32,8 @@ public:
     TagType m_ListType;
 };
 
+template <typename T>
+ByteBuffer& operator>>(ByteBuffer&, TagList&);
+
 } // ns nbt
 } // ns mcidle
