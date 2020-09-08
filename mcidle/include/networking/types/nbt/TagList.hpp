@@ -12,11 +12,11 @@ namespace nbt {
 
 class TagList : public Tag {
 public:
-    void Push(s8 value);
-    void Push(NBTString& value);
-    void Push(VarInt& value);
-    void Push(VarLong& value);
-    void Push(TagCompound value);
+    void Push(s8);
+    void Push(NBTString&);
+    void Push(VarInt&);
+    void Push(VarLong&);
+    void Push(TagCompound);
     u32 Size() const;
     void Serialize(ByteBuffer& buf) override;
     TagType ListType() const;
@@ -32,7 +32,6 @@ public:
     TagType m_ListType;
 };
 
-template <typename T>
 ByteBuffer& operator>>(ByteBuffer&, TagList&);
 
 } // ns nbt

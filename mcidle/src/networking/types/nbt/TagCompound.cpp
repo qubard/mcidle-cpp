@@ -109,13 +109,13 @@ void DeserializeTagCompoundInner(ByteBuffer& buf, TagCompound& value)
                     len--;
                     lis->Push(tag);
                 }
+
+                value.Push(lis);
             } 
             else
             {
                 throw std::runtime_error("unimplemented list type");
             }
-
-            value.Push(lis);
         } else if (type == TAG_COMPOUND)
         {
             auto tag = std::make_shared<TagCompound>();
@@ -205,7 +205,7 @@ ByteBuffer& operator<<(ByteBuffer& buf, TagCompound& value)
 
     SerializeTagCompound(buf, value);
 
-	return buf;
+    return buf;
 }
 
 } // ns mcidle 

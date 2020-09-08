@@ -3,6 +3,7 @@
 #include <networking/types/nbt/NBTString.hpp>
 #include <networking/types/nbt/Tag.hpp>
 #include <networking/types/nbt/TagListFwd.hpp>
+#include <networking/types/nbt/TagPod.hpp>
 
 #include <iostream>
 

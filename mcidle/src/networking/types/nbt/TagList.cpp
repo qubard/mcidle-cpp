@@ -31,7 +31,7 @@ void TagList::Push(TagCompound value)
 
 u32 TagList::Size() const
 {
-    return m_Bytes.size() + m_Strings.size() + m_Longs.size() + m_Ints.size();
+    return m_Bytes.size() + m_Strings.size() + m_Longs.size() + m_Ints.size() + m_Tags.size();
 }
 
 void TagList::Serialize(ByteBuffer& buf) 
@@ -42,7 +42,7 @@ void TagList::Serialize(ByteBuffer& buf)
     std::cout << "List name is :" << m_Name << "\n";
     buf << m_ListType;
 
-    s32 size = m_Bytes.size() + m_Strings.size() + m_Longs.size() + m_Ints.size() + m_Tags.size();
+    s32 size = Size();
     buf << size;
     printf("Sending size.. %d %d %d %d\n", m_Bytes.size(), m_Strings.size(), m_Ints.size(), m_Tags.size());
 
