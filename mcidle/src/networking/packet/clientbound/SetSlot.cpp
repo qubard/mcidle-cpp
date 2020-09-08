@@ -22,6 +22,8 @@ void SetSlot::Mutate(mcidle::game::GameState &state)
     {
         state.SetInventorySlot(m_SlotNum, m_Slot);
     }
+    std::cout << "Received SetSlot\n";
+    std::cout << m_FieldBuf->Hex() << "\n";
 }
 
 Packet& SetSlot::Serialize()
@@ -38,6 +40,7 @@ void SetSlot::Deserialize(ByteBuffer &buf)
     buf >> m_WindowID;
     buf >> m_SlotNum;
     buf >> m_Slot;
+    std::cout << "Set slot packet: " << buf.Hex() << "\n";
 }
 
 }  // namespace clientbound

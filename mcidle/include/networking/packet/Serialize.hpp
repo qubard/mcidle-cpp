@@ -13,6 +13,7 @@ T &SerializeWrite(T &packet, Protocol &protocol, s32 compression)
     return packet;
 }
 
+// Need this to write and serialize packets without repetition
 template <typename T, typename... Ts>
 std::shared_ptr<T> CreatePacket(Protocol &protocol, s32 compression, Ts... args)
 {

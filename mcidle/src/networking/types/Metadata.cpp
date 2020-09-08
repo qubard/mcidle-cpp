@@ -218,6 +218,14 @@ ByteBuffer& operator>>(ByteBuffer& buf, Slot& slot)
         buf >> slot.ItemDamage;
         printf("Reading slot nbt\n");
         buf >> slot.NBT;
+        if (slot.ItemIDShort != -1)
+        {
+            printf("Ok slot is present..\n");
+            printf("Empty :%d !!!!\n", slot.NBT.Size());
+        } 
+        else {
+            printf("Not slot present!\n");
+        }
     }
     return buf;
 }
@@ -231,7 +239,8 @@ ByteBuffer& operator<<(ByteBuffer& buf, Slot& slot)
         buf << slot.ItemCount;
         buf << slot.ItemDamage;
         // don't write nbt for now
-        buf << (u8)0;
+        //buf << (u8)0;
+        buf << slot.NBT;
     }
     return buf;
 }

@@ -135,14 +135,14 @@ bool MCIdle::Start()
             printf("Sent spawn position size: %lu\n", size);
 
             // Send their inventory
-            //
             auto inv = state->PlayerInventory();
 
             for (auto& slot: inv)
             {
                 mcidle::packet::clientbound::SetSlot p(0, slot.first, slot.second);
+                printf("About to send set slot for slot num :%d item id short %d\n", slot.first, slot.second.ItemIDShort);
                 mc_conn->SendPacket(p);
-                printf("Sent set slot for slot num :%d %d\n", slot.first, slot.second.Present);
+                printf("Sent set slot for slot num :%d item id short %d\n", slot.first, slot.second.ItemIDShort);
             }
 
             s64 keepAliveId = 32919;
