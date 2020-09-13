@@ -1,8 +1,8 @@
 #pragma once
 
 #include <networking/connection/Connection.hpp>
-#include <networking/thread/Queue.hpp>
 #include <networking/packet/Packet.hpp>
+#include <deque>
 
 namespace mcidle {
 namespace thread {
@@ -30,7 +30,7 @@ private:
     void Start();
 
     std::shared_ptr<Connection> m_Sink;
-    Queue<std::shared_ptr<Packet>> m_Queue;
+    std::deque<std::shared_ptr<Packet>> m_Queue;
 
     // The rate at which the pipe sends data
     u32 m_RateMS;

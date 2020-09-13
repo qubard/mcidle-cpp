@@ -25,7 +25,7 @@ void Pipe::SetSink(std::shared_ptr<Connection> sink)
 void Pipe::Push(std::shared_ptr<Packet> packet)
 {
     boost::lock_guard<boost::recursive_mutex> guard(m_Mutex);
-    m_Queue.Push(packet);
+    m_Queue.push_back(packet);
 }
 
 void Pipe::Start()
@@ -34,14 +34,16 @@ void Pipe::Start()
     {
         auto PIPE_RATE = boost::chrono::milliseconds(m_RateMS);
 
-        while (!m_Queue.Empty())
+        while (!m_Queue.empty())
         {
             // Lock the pipe in case the sink is replaced
             boost::lock_guard<boost::recursive_mutex> guard(m_Mutex);
 
             // Guarantees that the queue is emptied even if sink 
             // doesn't exist
-            auto pkt = m_Queue.Pop();
+            auto pkt = m_Queue.front();
+            m_Queue.pop_front();
+
             if (m_Sink != nullptr) 
             {
                 // Send each packet
