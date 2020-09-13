@@ -44,7 +44,7 @@ public:
 
 	// Read `size` bytes into a destination address
 	void Read(u8*, std::size_t);
-	// Read `size` bytes into a desitination buffer
+	// Read `size` bytes into a destination buffer
 	void Read(ByteBuffer&, std::size_t);
 
 	u8& operator[](std::size_t);
@@ -71,6 +71,7 @@ public:
     {
         VarInt len = Read<VarInt>();
         auto size = len.Value() * sizeof(T);
+        printf("got size %d\n", size);
         vec.resize(vec.size() + size);
         Read((u8*)&vec[vec.size() - size], size);
         return *this;

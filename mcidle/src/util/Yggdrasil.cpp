@@ -215,7 +215,7 @@ void Yggdrasil::Invalidate(const std::string& accessToken, const std::string& cl
 	m_Http->PostJSON(m_AuthUrl + "invalidate", payload);
 }
 
-UUID Yggdrasil::PlayerUUID(const std::string& name) 
+lib::UUID Yggdrasil::PlayerUUID(const std::string& name) 
 {
 	std::string url = "https://api.mojang.com/users/profiles/minecraft/" + name;
 
@@ -238,10 +238,10 @@ UUID Yggdrasil::PlayerUUID(const std::string& name)
 
 	std::string uuidStr = result["id"].get<std::string>();
 
-	return UUID::FromString(uuidStr, false);
+	return lib::UUID::FromString(uuidStr, false);
 }
 
-json Yggdrasil::PlayerProfile(UUID& uuid) 
+json Yggdrasil::PlayerProfile(lib::UUID& uuid) 
 {
 	std::string url = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.ToString(false);
 

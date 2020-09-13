@@ -79,11 +79,15 @@ inline void CreateNewSection(std::shared_ptr<Chunk>& chunk, s32 y)
 {
     (*chunk->Sections)[y] = Section(BLOCK_COUNT);
     (*chunk->LightMap)[y] = std::vector<u8>(BLOCK_COUNT >> 1);
-    // Only create skylight if the chunk has it already (in the overworld)
-    (*chunk->Skylight)[y] = std::vector<u8>(BLOCK_COUNT >> 1);
+
+    // Only generate skylight for the section if in overworld
+    if (chunk->Dimension == game::dimension::OVERWORLD)
+        (*chunk->Skylight)[y] = std::vector<u8>(BLOCK_COUNT >> 1);
+
     chunk->PrimaryBitMask |= 1 << y;
 }
 
+// A mapping from the chunk position to an deserialized chunk representation
 using ChunkMap = std::unordered_map<ChunkPos, std::shared_ptr<Chunk>>;
 
 } // ns dimension

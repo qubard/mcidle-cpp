@@ -3,8 +3,6 @@
 
 #include <common/Compression.hpp>
 
-#include <iostream>
-
 namespace mcidle {
 
 Connection::Connection(std::shared_ptr<TCPSocket> socket, 

@@ -21,6 +21,7 @@ Packet &MultiBlockChange::Serialize()
         *m_FieldBuf << r.BlockY;
         *m_FieldBuf << r.BlockID;
     }
+    return *this;
 }
 
 void MultiBlockChange::Deserialize(ByteBuffer & buf) 
@@ -49,31 +50,9 @@ void MultiBlockChange::Deserialize(ByteBuffer & buf)
 
 void MultiBlockChange::Mutate(mcidle::game::GameState &state)
 {
-    game::ChunkMap& m = state.LoadedChunks();
-    auto pos = game::CalcChunkPos(m_ChunkX, m_ChunkZ);
-
-    // Ignore unloaded chunks
-    if (m.find(pos) == m.end()) return;
-
-    // Lookup the chunk using its x, z pos
-    auto chnk = m[pos];
     for (Record& r: m_Records)
     {
-        s32 posY = r.BlockY / game::SECTION_SIZE; // Chunk Y from world Y
-
-        // Create a new section if it doesn't exist in the chunk
-        if ((*chnk->Sections).find(posY) == (*chnk->Sections).end()) 
-        {
-            CreateNewSection(chnk, posY);
-        }
-
-        s32 blockID = r.BlockID.Value();
-        // These coordinates are relative to the chunk (0-15)
-        s32 posZ = r.PosXZ & 0xF;
-        s32 posX = (r.PosXZ >> 4) & 0xF;
-
-        auto blockNum = game::ChunkPosToBlockNum(posX, r.BlockY & game::SECTION_SIZE, posZ);
-        (*chnk->Sections)[posY][blockNum] = blockID;
+        state.SetChunkBlock((r.PosXZ & 0xF) * game::SECTION_SIZE, r.BlockY, ((r.PosXZ >> 4) & 0xF) * game::SECTION_SIZE, r.BlockID.Value());
     }
 }
 

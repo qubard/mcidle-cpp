@@ -240,7 +240,6 @@ ByteBuffer& operator>>(ByteBuffer& buf, VarInt& value)
 	return buf;
 }
 
-
 ByteBuffer& operator<<(ByteBuffer& buf, VarInt&& value)
 {
 	return buf << value;

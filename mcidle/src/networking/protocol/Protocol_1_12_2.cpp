@@ -72,12 +72,24 @@ s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::EncryptionRequest &)
     return 0x01;
 }
 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SetSlot &)
+{
+    return 0x16;
+}
+
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SpawnMob &)
+{
+    return 0x03;
+}
+
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::DestroyEntities &)
+{
+    return 0x32;
+}
 
 Protocol_1_12_2_SB::Protocol_1_12_2_SB(s32 versionNumber)
     : Protocol(serverboundMap_1_12_2, versionNumber, state::HANDSHAKE)
 {
 }
-
-
 
 }  // namespace mcidle

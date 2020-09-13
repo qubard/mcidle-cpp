@@ -24,6 +24,9 @@
 #include <networking/packet/clientbound/MultiBlockChange.hpp>
 #include <networking/packet/clientbound/BlockChange.hpp>
 #include <networking/packet/clientbound/Explosion.hpp>
+#include <networking/packet/clientbound/SpawnMob.hpp>
+#include <networking/packet/clientbound/SetSlot.hpp>
+#include <networking/packet/clientbound/DestroyEntities.hpp>
 
 #include <unordered_map>
 
@@ -86,6 +89,9 @@ public:
     virtual s32 PacketId(packet::clientbound::PlayerPositionLook &);
     virtual s32 PacketId(packet::clientbound::KeepAlive &);
     virtual s32 PacketId(packet::clientbound::ChunkData &);
+    virtual s32 PacketId(packet::clientbound::SetSlot &);
+    virtual s32 PacketId(packet::clientbound::SpawnMob &);
+    virtual s32 PacketId(packet::clientbound::DestroyEntities &);
 
 protected:
 	ProtocolMap m_InboundMap;

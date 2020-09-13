@@ -28,7 +28,7 @@ public:
 
 	bool operator==(const T value) const
 	{
-		return m_Value == static_cast<T>(value);
+		return m_Value == value;
 	}
 protected:
 	T m_Value;

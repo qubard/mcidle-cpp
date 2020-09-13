@@ -139,8 +139,8 @@ public:
 	 */
 	void Invalidate(const std::string& accessToken, const std::string& clientToken = 0);
 
-	UUID PlayerUUID(const std::string& name);
-	json PlayerProfile(UUID& uuid);
+    lib::UUID PlayerUUID(const std::string& name);
+	json PlayerProfile(lib::UUID& uuid);
 };
 
 } // namespace util

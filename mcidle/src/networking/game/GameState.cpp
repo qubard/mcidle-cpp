@@ -97,6 +97,25 @@ void GameState::LoadChunk(std::shared_ptr<Chunk> chunk)
     }
 }
 
+void GameState::LoadEntity(EntityData entity)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_LoadedEntities.push_back(entity);
+}
+
+void GameState::UnloadEntity(s32& id)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    for (auto idx = 0; idx < m_LoadedEntities.size(); idx++)
+    {
+        auto entity = m_LoadedEntities[idx];
+        if (entity.Id.Value() == id)
+        {
+            m_LoadedEntities.erase(m_LoadedEntities.begin() + idx);
+        }
+    }
+}
+
 s32 GameState::Threshold() const
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
@@ -232,10 +251,67 @@ game::ChunkMap& GameState::LoadedChunks()
     return m_LoadedChunks;
 }
 
+void GameState::SetInventorySlot(s16 slotNum, Slot slot)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_PlayerInventory[slotNum] = slot;
+}
+
+void GameState::ClearInventorySlot(s16 slotNum)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_PlayerInventory.erase(slotNum);
+}
+
 void GameState::UnloadChunk(s32 x, s32 z)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
     m_LoadedChunks.erase(CalcChunkPos(x, z));
+}
+
+std::unordered_map<s16, Slot> GameState::PlayerInventory()
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    return m_PlayerInventory;
+}
+
+void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+
+    // Convert x, z to chunk space
+    s32 chunkX, chunkZ;
+    chunkX = x / game::SECTION_SIZE;
+    chunkZ = z / game::SECTION_SIZE;
+
+    printf("%d %d %d %d\n", x, z, x % game::SECTION_SIZE, z % game::SECTION_SIZE);
+
+    if (x < 0 && x % game::SECTION_SIZE != 0)
+        chunkX--;
+    if (z < 0 && z % game::SECTION_SIZE != 0)
+        chunkZ--;
+
+    auto pos = game::CalcChunkPos(chunkX, chunkZ);
+
+    // Ignore unloaded chunks
+    if (m_LoadedChunks.find(pos) == m_LoadedChunks.end()) 
+    {
+        printf("Trying to place block at unloaded chunk %d %d\n", chunkX, chunkZ);
+        return;
+    }
+
+    // Lookup the chunk
+    auto chunk = m_LoadedChunks[pos];
+
+    s32 chunkY = y / game::SECTION_SIZE; // Chunk Y from world Y
+
+    // Create a new section if it doesn't exist in the chunk
+    if ((*chunk->Sections).find(chunkY) == (*chunk->Sections).end())
+        CreateNewSection(chunk, chunkY);
+
+    // Convert to relative block num coordinates
+    auto blockNum = game::ChunkPosToBlockNum(x & 0xF, y & 0xF, z & 0xF);
+    (*chunk->Sections)[chunkY][blockNum] = blockID;
 }
 
 } // namespace game

@@ -2,6 +2,7 @@
 
 #include <common/Typedef.hpp>
 #include <boost/thread.hpp>
+#include <networking/types/Metadata.hpp>
 
 namespace mcidle {
 
@@ -19,6 +20,7 @@ struct FoodStats {
     float Saturation;
 };
 
+// Similar to metadata's EntityData
 struct Player {
     s32 EntityId;
     double X;
@@ -51,6 +53,9 @@ public:
     void SetMaxPlayers(u8);
     void SetLevelType(std::string);
     void SetDebugInfo(bool);
+
+    void LoadEntity(EntityData);
+    void UnloadEntity(s32&);
     
     u8 Gamemode() const;
     s32 Dimension() const;
@@ -81,6 +86,12 @@ public:
     // Load a chunk into the `m_LoadedChunks` table
     void LoadChunk(std::shared_ptr<Chunk>);
     void UnloadChunk(s32, s32);
+    // Set the block at x, y, z in world space to blockID
+    void SetChunkBlock(s32, s32, s32, s32);
+    void SetInventorySlot(s16, Slot);
+    void ClearInventorySlot(s16);
+
+    std::unordered_map<s16, Slot> PlayerInventory();
 
     game::ChunkMap& LoadedChunks();
 
@@ -94,6 +105,10 @@ private:
     std::string m_LevelType;
 
     s32 m_Threshold;
+    // Inventory maps from slot number to Slot type
+    std::unordered_map<s16, Slot> m_PlayerInventory;
+
+    std::vector<EntityData> m_LoadedEntities;
 
     ChunkMap m_LoadedChunks;
 };

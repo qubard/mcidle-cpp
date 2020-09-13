@@ -69,7 +69,10 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x1C,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Explosion>(); },
       },
-
+      {
+          0x16,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SetSlot>(); },
+      },
       {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
@@ -79,8 +82,17 @@ static ProtocolMap clientboundMap_1_12_2 = {
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::JoinGame>(); },
       },
       {
+          0x03,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnMob>(); },
+      },
+      {
         0x0F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChatMessage>(); },
+
+      },
+      {
+        0x32,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::DestroyEntities>(); },
 
       },
       {
@@ -130,7 +142,6 @@ public:
     s32 PacketId(packet::serverbound::Handshake &) override;
     s32 PacketId(packet::serverbound::LoginStart &) override;
     s32 PacketId(packet::serverbound::EncryptionResponse &) override;
-
 };
 
 
@@ -149,7 +160,9 @@ public:
     s32 PacketId(packet::clientbound::SetCompression &) override;
     s32 PacketId(packet::clientbound::LoginSuccess &) override;
     s32 PacketId(packet::clientbound::EncryptionRequest &) override;
-
+    s32 PacketId(packet::clientbound::SetSlot &) override;
+    s32 PacketId(packet::clientbound::SpawnMob &) override;
+    s32 PacketId(packet::clientbound::DestroyEntities &) override;
 };
 
 }

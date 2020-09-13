@@ -1,7 +1,7 @@
 #include <networking/game/GameState.hpp>
 #include <networking/packet/clientbound/SpawnPosition.hpp>
 
-#include <networking/types/Location.hpp>
+#include <networking/types/Position.hpp>
 
 namespace mcidle {
 namespace packet {
@@ -23,14 +23,14 @@ void SpawnPosition::Mutate(mcidle::game::GameState &state)
 
 Packet& SpawnPosition::Serialize()
 {
-    Location loc { m_X, m_Y, m_Z };
+    Position loc { m_X, m_Y, m_Z };
     *m_FieldBuf << loc;
     return *this;
 }
 
 void SpawnPosition::Deserialize(ByteBuffer &buf)
 {
-    Location loc;
+    Position loc;
     buf >> loc;
 
     m_X = loc.X;
