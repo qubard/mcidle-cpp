@@ -21,6 +21,7 @@ public:
 
     T Pop()
     {
+        boost::lock_guard<Queue<T>> guard(*this);
         auto last = m_Queue.front();
         m_Queue.pop_front();
         return last;
