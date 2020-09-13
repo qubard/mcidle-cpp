@@ -97,6 +97,25 @@ void GameState::LoadChunk(std::shared_ptr<Chunk> chunk)
     }
 }
 
+void GameState::LoadEntity(EntityData entity)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    m_LoadedEntities.push_back(entity);
+}
+
+void GameState::UnloadEntity(s32& id)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    for (auto idx = 0; idx < m_LoadedEntities.size(); idx++)
+    {
+        auto entity = m_LoadedEntities[idx];
+        if (entity.Id.Value() == id)
+        {
+            m_LoadedEntities.erase(m_LoadedEntities.begin() + idx);
+        }
+    }
+}
+
 s32 GameState::Threshold() const
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);

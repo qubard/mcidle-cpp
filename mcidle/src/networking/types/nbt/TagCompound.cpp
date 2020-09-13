@@ -16,7 +16,7 @@ void TagCompound::Push(std::shared_ptr<Tag> tag)
 
 void TagCompound::Serialize(ByteBuffer& buf) 
 {
-    printf("Called tag compound serialize\n");
+    buf << *this;
 }
 
 std::vector<std::shared_ptr<Tag>>& TagCompound::Tags()
@@ -123,12 +123,14 @@ void DeserializeTagCompoundInner(ByteBuffer& buf, TagCompound& value)
             value.Push(tag);
         } else if (type == TAG_INT_ARRAY)
         {
+            throw std::runtime_error("unimplemented tag_int_array");
             /*TagList lis;
             lis.SetListType(TAG_INT);
             buf >> lis;
             value.Push(lis);*/
         } else if (type == TAG_LONG_ARRAY)
         {
+            throw std::runtime_error("unimplemented tag_long_array");
             /*TagList lis;
             lis.SetListType(TAG_LONG);
             buf >> lis;

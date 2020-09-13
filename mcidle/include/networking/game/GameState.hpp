@@ -20,6 +20,7 @@ struct FoodStats {
     float Saturation;
 };
 
+// Similar to metadata's EntityData
 struct Player {
     s32 EntityId;
     double X;
@@ -52,6 +53,9 @@ public:
     void SetMaxPlayers(u8);
     void SetLevelType(std::string);
     void SetDebugInfo(bool);
+
+    void LoadEntity(EntityData);
+    void UnloadEntity(s32&);
     
     u8 Gamemode() const;
     s32 Dimension() const;
@@ -103,6 +107,8 @@ private:
     s32 m_Threshold;
     // Inventory maps from slot number to Slot type
     std::unordered_map<s16, Slot> m_PlayerInventory;
+
+    std::vector<EntityData> m_LoadedEntities;
 
     ChunkMap m_LoadedChunks;
 };

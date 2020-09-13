@@ -97,5 +97,14 @@ s32 Protocol::PacketId(packet::clientbound::SetSlot &)
     throw std::runtime_error("Unimplemented clientbound::SetSlot!");
 }
 
+s32 Protocol::PacketId(packet::clientbound::SpawnMob &)
+{
+    throw std::runtime_error("Unimplemented clientbound::SpawnMob!");
+}
+
+s32 Protocol::PacketId(packet::clientbound::DestroyEntities &)
+{
+    throw std::runtime_error("Unimplemented clientbound::DestroyEntities!");
+}
 
 }  // namespace mcidle

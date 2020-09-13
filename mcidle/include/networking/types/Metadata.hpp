@@ -66,7 +66,7 @@ struct UUID {
 
 struct OptUUID {
     bool Present;
-    UUID UUID; // if Present
+    mcidle::UUID UUID; // if Present
 };
 
 struct OptBlockID {
@@ -78,6 +78,21 @@ struct VillagerData {
     VarInt Type;
     VarInt Profession;
     VarInt Level;
+};
+
+struct EntityData {
+    VarInt Id;
+    mcidle::UUID UUID;
+    VarInt Type;
+    double X;
+    double Y;
+    double Z;
+    u8 Yaw;
+    u8 Pitch;
+    u8 HeadPitch;
+    s16 MotionX;
+    s16 MotionY;
+    s16 MotionZ;
 };
 
 struct OptVarInt {
@@ -123,19 +138,19 @@ struct MetaValue {
     float Float;
     std::string String;
     std::string Chat;
-    OptChat OptChat;
-    Slot Slot;
+    mcidle::OptChat OptChat;
+    mcidle::Slot Slot;
     bool Boolean;
     Rotation Rot;
     Position Pos;
     OptPosition OptPos;
     mcidle::VarInt Direction;
-    OptUUID OptUUID;
-    OptBlockID OptBlockID;
+    mcidle::OptUUID OptUUID;
+    mcidle::OptBlockID OptBlockID;
     nbt::TagCompound NBT;
-    Particle Particle;
-    VillagerData VillagerData;
-    OptVarInt OptVarInt;
+    mcidle::Particle Particle;
+    mcidle::VillagerData VillagerData;
+    mcidle::OptVarInt OptVarInt;
     mcidle::VarInt Pose;
 };
 
