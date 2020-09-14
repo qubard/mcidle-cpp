@@ -54,6 +54,11 @@ ByteBuffer& ByteBuffer::operator<<(ByteBuffer& buf)
 	return *this;
 }
 
+std::size_t ByteBuffer::Remaining() const 
+{
+    return m_Data.size() - m_ReadOffset;
+}
+
 ByteBuffer& ByteBuffer::operator<<(std::string& str)
 {
     // Write the string length as a VarInt

@@ -36,6 +36,9 @@ public:
 	u8* Front();
 	u8* Back();
 
+    // The number of remaining bytes w.r.t the read offset
+    std::size_t Remaining() const;
+
 	std::size_t ReadOffset() const;
 
 	bool Avail() const;
@@ -71,7 +74,6 @@ public:
     {
         VarInt len = Read<VarInt>();
         auto size = len.Value() * sizeof(T);
-        printf("got size %d\n", size);
         vec.resize(vec.size() + size);
         Read((u8*)&vec[vec.size() - size], size);
         return *this;

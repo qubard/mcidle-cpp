@@ -275,6 +275,12 @@ std::unordered_map<s16, Slot> GameState::PlayerInventory()
     return m_PlayerInventory;
 }
 
+std::vector<EntityData> GameState::LoadedEntities()
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    return m_LoadedEntities;
+}
+
 void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);

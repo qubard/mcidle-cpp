@@ -91,7 +91,10 @@ public:
     void SetInventorySlot(s16, Slot);
     void ClearInventorySlot(s16);
 
+    // Return copies since we don't want to expose a direct
+    // reference to them (not thread safe)
     std::unordered_map<s16, Slot> PlayerInventory();
+    std::vector<EntityData> LoadedEntities();
 
     game::ChunkMap& LoadedChunks();
 

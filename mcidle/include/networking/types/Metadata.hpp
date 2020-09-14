@@ -93,6 +93,7 @@ struct EntityData {
     s16 MotionX;
     s16 MotionY;
     s16 MotionZ;
+    std::vector<s8> Meta;
 };
 
 struct OptVarInt {

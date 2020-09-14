@@ -145,6 +145,17 @@ bool MCIdle::Start()
                 printf("Sent set slot for slot num :%d item id short %d\n", slot.first, slot.second.ItemIDShort);
             }
 
+            // Send spawned entities
+            std::vector<EntityData> ents = state->LoadedEntities();
+
+            for (EntityData& ent: ents)
+            {
+                printf("Spawning mob..\n");
+                mcidle::packet::clientbound::SpawnMob p(ent);
+                mc_conn->SendPacket(p);
+                printf("Done Spawning mob..\n");
+            }
+
             s64 keepAliveId = 32919;
 
             auto keepAlive = mcidle::packet::clientbound::KeepAlive(keepAliveId);
