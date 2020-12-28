@@ -77,6 +77,16 @@ s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SetSlot &)
     return 0x16;
 }
 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::EntityLookRelMove &)
+{
+    return 0x27;
+}
+
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::EntityVelocity &)
+{
+    return 0x3E;
+}
+
 s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SpawnMob &)
 {
     return 0x03;

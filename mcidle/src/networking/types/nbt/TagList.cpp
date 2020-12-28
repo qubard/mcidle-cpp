@@ -69,7 +69,6 @@ void TagList::Serialize(ByteBuffer& buf)
             SerializeTagCompoundInner(buf, tag);
             printf("aaa...\n");
         }
-        printf("TTTTTTTTTT\n");
     } else {
         throw std::runtime_error("Unimplemented list type during serialization"); 
     }

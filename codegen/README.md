@@ -4,4 +4,4 @@
 
 # Example
 
-To generate `SpawnMob` run `go run gen.go < out/SpawnMob`. The files will be present in the `out/` directory.
+To generate `SpawnMob` run `go run gen.go < packets/SpawnMob`. The files will be present in the `out/` directory.

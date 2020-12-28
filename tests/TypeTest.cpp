@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "..\mcidle\include\networking\types\VarInt.hpp"
-#include "..\mcidle\include\networking\ByteBuffer.hpp"
+#include "../mcidle/include/networking/types/VarInt.hpp"
+#include "../mcidle/include/networking/ByteBuffer.hpp"
 
 BOOST_AUTO_TEST_CASE(encode_test)
 {

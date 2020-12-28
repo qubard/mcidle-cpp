@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE VarIntTest
 #include <boost/test/included/unit_test.hpp>
 
-#include "..\mcidle\include\networking\types\VarInt.hpp"
-#include "..\mcidle\include\networking\ByteBuffer.hpp"
+#include "../mcidle/include/networking/types/VarInt.hpp"
+#include "../mcidle/include/networking/ByteBuffer.hpp"
 
 BOOST_AUTO_TEST_CASE(decode_test)
 {

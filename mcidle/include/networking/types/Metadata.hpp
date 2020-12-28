@@ -82,11 +82,14 @@ struct VillagerData {
 
 struct EntityData {
     VarInt Id;
-    mcidle::UUID UUID;
+    std::vector<s8> UUID;
     VarInt Type;
     double X;
     double Y;
     double Z;
+    s64 ServerX;
+    s64 ServerY;
+    s64 ServerZ;
     u8 Yaw;
     u8 Pitch;
     u8 HeadPitch;

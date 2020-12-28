@@ -22,7 +22,7 @@ public:
 private:
     std::shared_ptr<mcidle::game::GameState> m_State;
 
-    std::shared_ptr<thread::Pipe> m_Sink;
+    std::shared_ptr<thread::Pipe> m_Dest;
     std::shared_ptr<Connection> m_Source;
 };
 

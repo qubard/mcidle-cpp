@@ -1,0 +1,8 @@
+EntityTeleport
+VarInt EntityID
+double X
+double Y
+double Z
+u8 Yaw
+u8 Pitch
+bool OnGround

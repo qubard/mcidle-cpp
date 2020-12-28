@@ -20,8 +20,8 @@ TCPSocket::TCPSocket(TCPSocket& socket)
 	m_Port = socket.m_Port;
 }
 
-TCPSocket::TCPSocket(std::string address, std::string port)
-		: m_Address(address), m_Port(port), m_Service(new boost::asio::io_service),
+TCPSocket::TCPSocket(std::string address, s32 port)
+		: m_Address(address), m_Service(new boost::asio::io_service), m_Port(std::to_string(port)),
 		m_Socket(std::make_unique<tcp::socket>(*m_Service)) 
 { 
 }
@@ -31,8 +31,16 @@ bool TCPSocket::Connect()
 	try
 	{
 		tcp::resolver resolver(*m_Service);
-		tcp::resolver::query query(m_Address, m_Port);
-		tcp::resolver::iterator iter = resolver.resolve(query);
+        auto host = gethostbyname(m_Address.data());
+        printf("errno: %d\n", h_errno);
+        printf("HOST:%d\n",host);
+        std::cout << "Trying to resolve " << m_Address << ":" << m_Port << "\n";
+		tcp::resolver::query query(m_Address, m_Port, boost::asio::ip::resolver_query_base::numeric_service);
+        printf("Calling connect...\n");
+        printf("Calling connect...\n");
+        printf("Calling connect...\n");
+        printf("Calling connect...\n");
+		tcp::resolver::iterator iter = resolver.resolve(m_Address, m_Port);
 
 		// Allocate the io_service separately since it's a dependency
 		// shared_ptr so that we don't accidentally deallocate io_service
@@ -42,8 +50,7 @@ bool TCPSocket::Connect()
 	}
 	catch (boost::system::system_error & e)
 	{
-		std::cout << "Exception: " << e.what() << "\n";
-		return false;
+        return false;
 	}
 	return true;
 }
@@ -85,8 +92,7 @@ std::size_t TCPSocket::Send(boost::asio::mutable_buffer& buffer)
 	}
 	catch (boost::system::system_error & e)
 	{
-		std::cout << e.what() << "\n";
-		return 0;
+		return -1;
 	}
 	return 0;
 }

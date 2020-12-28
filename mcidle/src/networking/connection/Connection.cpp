@@ -10,7 +10,6 @@ Connection::Connection(std::shared_ptr<TCPSocket> socket,
         std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
     : m_Socket(socket)
-    , m_ReadSize(readSize)
     , m_Aes(nullptr)
     , m_ReadBuf(readSize)
     , m_LastRecSize(0)
@@ -18,6 +17,7 @@ Connection::Connection(std::shared_ptr<TCPSocket> socket,
     , m_Compression(-1)
     , m_State(state)
 {
+    // Allocate the read buffer
     m_ReadBuf.Resize(readSize);
 }
 

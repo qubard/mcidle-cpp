@@ -12,7 +12,7 @@ namespace mcidle {
 class MCIdle 
 {
 public:
-    MCIdle(bool, std::string, std::shared_ptr<Protocol>, std::shared_ptr<Protocol>, util::Yggdrasil);
+    MCIdle(bool, std::string, s32, std::shared_ptr<Protocol>, std::shared_ptr<Protocol>, util::Yggdrasil);
 
     std::shared_ptr<game::GameState> GameState();
     
@@ -31,7 +31,8 @@ private:
 
     std::shared_ptr<SConnection> m_ServerConn;
     std::string m_ServerIP;
-    bool m_Online;
+    s32 m_Port;
+    bool m_Online; // online mode
 };
 
 } // ns mcidle

@@ -37,6 +37,7 @@ public:
     Packet &Reserve(std::size_t);
 
     // Exposes a pointer to the serialized buffer
+    // TODO: rename this to outbound/serialized buffer or something
     std::shared_ptr<ByteBuffer> Buffer();
     std::shared_ptr<ByteBuffer> FieldBuffer();
 

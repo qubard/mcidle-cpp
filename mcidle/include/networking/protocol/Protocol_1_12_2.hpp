@@ -95,6 +95,24 @@ static ProtocolMap clientboundMap_1_12_2 = {
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::DestroyEntities>(); },
 
       },
+        {
+        0x4C,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityTeleport>(); },
+
+      },
+        {
+        0x3E,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityVelocity>(); },
+        },
+      {
+        0x26,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityRelMove>(); },
+
+      },
+      {
+        0x27,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityLookRelMove>(); },
+      },
       {
           0x1E,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::GameState>(); },
@@ -151,6 +169,7 @@ class Protocol_1_12_2_SB : public Protocol
 public:
     Protocol_1_12_2_SB(s32);
 
+    s32 PacketId(packet::clientbound::EntityLookRelMove &) override;
     s32 PacketId(packet::clientbound::UpdateHealth &) override;
     s32 PacketId(packet::clientbound::JoinGame &) override;
     s32 PacketId(packet::clientbound::SpawnPosition &) override;
@@ -163,6 +182,7 @@ public:
     s32 PacketId(packet::clientbound::SetSlot &) override;
     s32 PacketId(packet::clientbound::SpawnMob &) override;
     s32 PacketId(packet::clientbound::DestroyEntities &) override;
+    s32 PacketId(packet::clientbound::EntityVelocity &) override;
 };
 
 }

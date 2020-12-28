@@ -4,12 +4,12 @@
 
 namespace mcidle {
 
-SConnection::SConnection(std::unique_ptr<TCPSocket> socket, 
+SConnection::SConnection(std::string serverIP, s32 port, std::unique_ptr<TCPSocket> socket, 
         std::shared_ptr<mcidle::Protocol> protocol,
         std::shared_ptr<mcidle::game::GameState> state,
        std::size_t readSize)
     : Connection(std::move(socket), protocol, state, readSize),
-    m_ServerIP("localhost"), m_OnlineMode(false)
+    m_ServerIP(serverIP), m_Port(port), m_OnlineMode(false)
 {
 }
 
@@ -25,18 +25,21 @@ void SConnection::SetOnlineMode(bool onlineMode)
 
 bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 {
-    SendPacket(mcidle::packet::serverbound::Handshake(340, m_ServerIP, 25565, mcidle::state::LOGIN));
+    // TODO: stop hardcoding the port and protocol number
+    SendPacket(mcidle::packet::serverbound::Handshake(m_Protocol->VersionNumber(), m_ServerIP, m_Port, mcidle::state::LOGIN));
 
     // Set our next state to LOGIN
     m_Protocol->SetState(mcidle::state::LOGIN);
 
     SendPacket(mcidle::packet::serverbound::LoginStart("leddit"));
 
+    // In online mode encryption is enabled
     if (m_OnlineMode)
     {
         auto pkt = ReadPacket();
 
-        if (pkt == nullptr) return false;
+        // We got disconnected before getting an EncryptionRequest from the server
+        assert(pkt != nullptr);
 
         auto response = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest*>(pkt.get());
 
@@ -53,7 +56,6 @@ bool SConnection::Setup(mcidle::util::Yggdrasil & yg)
 
         SendPacket(mcidle::packet::serverbound::EncryptionResponse(aes->EncSecret(), aes->EncToken()));
         SetAes(aes);
-        printf("Finished encryption.\n");
     }
 
     // Enable encryption and read a packet

@@ -27,6 +27,10 @@
 #include <networking/packet/clientbound/SpawnMob.hpp>
 #include <networking/packet/clientbound/SetSlot.hpp>
 #include <networking/packet/clientbound/DestroyEntities.hpp>
+#include <networking/packet/clientbound/EntityRelMove.hpp>
+#include <networking/packet/clientbound/EntityLookRelMove.hpp>
+#include <networking/packet/clientbound/EntityTeleport.hpp>
+#include <networking/packet/clientbound/EntityVelocity.hpp>
 
 #include <unordered_map>
 
@@ -80,6 +84,7 @@ public:
     virtual s32 PacketId(packet::serverbound::LoginStart &);
     virtual s32 PacketId(packet::serverbound::KeepAlive &);
 
+    virtual s32 PacketId(packet::clientbound::EntityLookRelMove &);
     virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
     virtual s32 PacketId(packet::clientbound::SetCompression &);
     virtual s32 PacketId(packet::clientbound::UpdateHealth &);
@@ -92,7 +97,7 @@ public:
     virtual s32 PacketId(packet::clientbound::SetSlot &);
     virtual s32 PacketId(packet::clientbound::SpawnMob &);
     virtual s32 PacketId(packet::clientbound::DestroyEntities &);
-
+    virtual s32 PacketId(packet::clientbound::EntityVelocity &);
 protected:
 	ProtocolMap m_InboundMap;
 	// Protocol number

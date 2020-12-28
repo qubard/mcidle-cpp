@@ -7,16 +7,16 @@ Proxy::Proxy(std::shared_ptr<Connection> source,
         std::shared_ptr<mcidle::game::GameState> state) : 
     m_Source(source), 
     m_State(state),
-    m_Sink(nullptr)
+    m_Dest(nullptr)
 {
 }
 
-// A proxy reads from `source` and writes to `sink`
+// A proxy reads from `source` and writes to `dest`
 // after it is setup.
 Proxy::Proxy(std::shared_ptr<Connection> source, 
-        std::shared_ptr<thread::Pipe> sink, 
+        std::shared_ptr<thread::Pipe> dest, 
         std::shared_ptr<mcidle::game::GameState> state)
-    : m_Source(source), m_State(state), m_Sink(sink)
+    : m_Source(source), m_State(state), m_Dest(dest)
 {
 }
 
@@ -35,12 +35,13 @@ void Proxy::Run()
             // Send the response directly to source
             if (response != nullptr)
             {
-                m_Source->SendPacketFwd(*response);
+                if (m_Source != nullptr)
+                     m_Source->SendPacketFwd(*response);
             }
             else 
             {
                 // Send the packet down the pipe to a connected sink
-                m_Sink->Push(packet);
+                m_Dest->Push(packet);
             }
 
             // Use the packet to mutate the game state attached to the proxy
@@ -52,6 +53,7 @@ void Proxy::Run()
         // This only occurs when the socket is closed
         else
         {
+            printf("Packet is null!\n");
             break;
         }
     }

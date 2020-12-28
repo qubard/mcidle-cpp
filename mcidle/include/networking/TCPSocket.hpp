@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 
 #include <common/Typedef.hpp>
+#include <netdb.h>
 
 namespace mcidle {
 
@@ -17,7 +18,7 @@ public:
 	TCPSocket(s32);
 	TCPSocket(TCPSocket&);
     // Connect ctor
-	TCPSocket(std::string, std::string);
+	TCPSocket(std::string, s32);
 
 	bool Connect();
 	bool Bind();

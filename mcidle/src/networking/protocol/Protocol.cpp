@@ -102,6 +102,16 @@ s32 Protocol::PacketId(packet::clientbound::SpawnMob &)
     throw std::runtime_error("Unimplemented clientbound::SpawnMob!");
 }
 
+s32 Protocol::PacketId(packet::clientbound::EntityLookRelMove &)
+{
+    throw std::runtime_error("Unimplemented clientbound::EntityLookRelMove!");
+}
+
+s32 Protocol::PacketId(packet::clientbound::EntityVelocity &)
+{
+    throw std::runtime_error("Unimplemented clientbound::EntityVelocity!");
+}
+
 s32 Protocol::PacketId(packet::clientbound::DestroyEntities &)
 {
     throw std::runtime_error("Unimplemented clientbound::DestroyEntities!");

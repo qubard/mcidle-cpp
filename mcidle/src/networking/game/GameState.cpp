@@ -40,6 +40,7 @@ s32 GameState::Dimension() const
     return m_Player.Dimension;
 }
 
+
 void GameState::SetPosition(double x, double y, double z, bool relX, bool relY, bool relZ)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
@@ -97,23 +98,98 @@ void GameState::LoadChunk(std::shared_ptr<Chunk> chunk)
     }
 }
 
+void GameState::Lock()
+{
+    m_Mutex.lock();
+}
+
+void GameState::Unlock()
+{
+    m_Mutex.unlock();
+}
+
+void GameState::UpdateEntityPosition(s32 id, double x, double y, double z, double vx, double vy, double vz)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    if (m_LoadedEntities.find(id) == m_LoadedEntities.end()) return;
+
+    m_LoadedEntities[id].X = x;
+    m_LoadedEntities[id].Y = y;
+    m_LoadedEntities[id].Z = z;
+
+    m_LoadedEntities[id].MotionX = vx;
+    m_LoadedEntities[id].MotionY = vy;
+    m_LoadedEntities[id].MotionZ = vz;
+}
+
+void GameState::UpdateEntityVelocity(s32 id, s16 vx, s16 vy, s16 vz)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    if (m_LoadedEntities.find(id) == m_LoadedEntities.end()) return;
+
+    m_LoadedEntities[id].MotionX = vx;
+    m_LoadedEntities[id].MotionY = vy;
+    m_LoadedEntities[id].MotionZ = vz;
+}
+
+void GameState::TickEntities()
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+
+    for (auto& p : m_LoadedEntities)
+    {
+        auto& ent = p.second;
+        double dx = (double)4096.0 * (double)(ent.MotionX/8000.0);
+        double dy = (double)4096.0 * (double)(ent.MotionY/8000.0);
+        double dz = (double)4096.0 * (double)(ent.MotionZ/8000.0);
+
+        ent.X += dx;
+        ent.Y += dy;
+        ent.Z += dz;
+
+        //printf("Updated entity position id %d: %.2f, %.2f, %.2f\n", p.first, dx, dy, dz);
+    }
+}
+
 void GameState::LoadEntity(EntityData entity)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
-    m_LoadedEntities.push_back(entity);
+    // server coordinates
+    double d = 4096.0;
+    entity.X *= d;
+    entity.Y *= d;
+    entity.Z *= d;
+    m_LoadedEntities[entity.Id.Value()] = entity;
 }
 
 void GameState::UnloadEntity(s32& id)
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
-    for (auto idx = 0; idx < m_LoadedEntities.size(); idx++)
+    m_LoadedEntities.erase(id);
+}
+
+void GameState::TranslateEntity(s32 id, s16 dx, s16 dy, s16 dz)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+
+    if (m_LoadedEntities.find(id) == m_LoadedEntities.end()) return;
+    // don't normalize since we can normalize later
+    /*double d = 4096.0;
+    double a = (double)((long)dx/d);
+    double b = (double)((long)dy/d);
+    double c = (double)((long)dz/d);*/
+
+    /*if (dx+dy+dz == 0)
     {
-        auto entity = m_LoadedEntities[idx];
-        if (entity.Id.Value() == id)
-        {
-            m_LoadedEntities.erase(m_LoadedEntities.begin() + idx);
-        }
-    }
+        m_LoadedEntities[id].MotionX = 0;
+        m_LoadedEntities[id].MotionY = 0;
+        m_LoadedEntities[id].MotionZ = 0;
+    }*/
+
+    m_LoadedEntities[id].ServerX += static_cast<s64>(dx);
+    m_LoadedEntities[id].ServerY += static_cast<s64>(dy);
+    m_LoadedEntities[id].ServerZ += static_cast<s64>(dz);
+    //printf("Translated %d by %.2f, %.2f, %.2f aka %d, %d, %d\n", id, a, b, c, dx, dy, dz);
 }
 
 s32 GameState::Threshold() const
@@ -275,22 +351,33 @@ std::unordered_map<s16, Slot> GameState::PlayerInventory()
     return m_PlayerInventory;
 }
 
-std::vector<EntityData> GameState::LoadedEntities()
+std::unordered_map<s32, EntityData> GameState::LoadedEntities()
 {
     boost::lock_guard<boost::mutex> guard(m_Mutex);
     return m_LoadedEntities;
 }
 
-void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
+void GameState::SetLightData(s32 x, s32 y, s32 z, u8 value)
 {
-    boost::lock_guard<boost::mutex> guard(m_Mutex);
+    // Lookup the chunk
+    auto chunk = GetChunk(x, y, z);
 
+    if (chunk == nullptr) return;
+
+    s32 chunkY = y / game::SECTION_SIZE; // Chunk Y from world Y
+
+    // Convert to relative block num coordinates
+    auto blockNum = game::ChunkPosToBlockNum(x & 0xF, y & 0xF, z & 0xF);
+    if (chunk->Skylight != nullptr)
+        (*chunk->Skylight)[chunkY][blockNum] = value;
+}
+
+std::shared_ptr<Chunk> GameState::GetChunk(s32 x, s32 y, s32 z)
+{
     // Convert x, z to chunk space
     s32 chunkX, chunkZ;
     chunkX = x / game::SECTION_SIZE;
     chunkZ = z / game::SECTION_SIZE;
-
-    printf("%d %d %d %d\n", x, z, x % game::SECTION_SIZE, z % game::SECTION_SIZE);
 
     if (x < 0 && x % game::SECTION_SIZE != 0)
         chunkX--;
@@ -301,10 +388,7 @@ void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
 
     // Ignore unloaded chunks
     if (m_LoadedChunks.find(pos) == m_LoadedChunks.end()) 
-    {
-        printf("Trying to place block at unloaded chunk %d %d\n", chunkX, chunkZ);
-        return;
-    }
+        return nullptr;
 
     // Lookup the chunk
     auto chunk = m_LoadedChunks[pos];
@@ -315,9 +399,33 @@ void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
     if ((*chunk->Sections).find(chunkY) == (*chunk->Sections).end())
         CreateNewSection(chunk, chunkY);
 
+    return chunk;
+}
+
+void GameState::SetChunkBlock(s32 x, s32 y, s32 z, s32 blockID)
+{
+    boost::lock_guard<boost::mutex> guard(m_Mutex);
+
+    // Lookup the chunk
+    auto chunk = GetChunk(x, y, z);
+
+    if (chunk == nullptr) return;
+
+    bool deleted = blockID == 0;
+
+    s32 chunkY = y / game::SECTION_SIZE; // Chunk Y from world Y
     // Convert to relative block num coordinates
     auto blockNum = game::ChunkPosToBlockNum(x & 0xF, y & 0xF, z & 0xF);
     (*chunk->Sections)[chunkY][blockNum] = blockID;
+
+    // If deleting the block, update the light info of the block below
+    /*if (deleted)
+    {
+        s8 mask = 1 << 4 - 1;
+        u8 light = LightAt(chunk->Skylight, x, y, z);
+        SetLightAt(chunk->Skylight, x, y, z, 0xFF);
+        SetLightAt(chunk->LightMap, x, y, z, 0xFF);
+    }*/
 }
 
 } // namespace game

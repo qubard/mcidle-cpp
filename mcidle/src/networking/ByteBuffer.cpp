@@ -153,6 +153,7 @@ const std::string ByteBuffer::Hex()
 {
 	if (m_Data.size() == 0) return "";
 	std::string hex;
+    std::cout << "hex bytes length: " << m_Data.size() << "\n";
 	boost::algorithm::hex(m_Data, std::back_inserter(hex));
 
 	std::string res;

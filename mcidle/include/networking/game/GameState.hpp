@@ -54,8 +54,15 @@ public:
     void SetLevelType(std::string);
     void SetDebugInfo(bool);
 
+    void TickEntities();
     void LoadEntity(EntityData);
     void UnloadEntity(s32&);
+    void TranslateEntity(s32, s16, s16, s16);
+    void UpdateEntityVelocity(s32, s16, s16, s16);
+    void UpdateEntityPosition(s32, double, double, double, double, double, double);
+
+    void Lock();
+    void Unlock();
     
     u8 Gamemode() const;
     s32 Dimension() const;
@@ -88,17 +95,20 @@ public:
     void UnloadChunk(s32, s32);
     // Set the block at x, y, z in world space to blockID
     void SetChunkBlock(s32, s32, s32, s32);
+    std::shared_ptr<Chunk> GetChunk(s32, s32, s32);
     void SetInventorySlot(s16, Slot);
     void ClearInventorySlot(s16);
 
     // Return copies since we don't want to expose a direct
     // reference to them (not thread safe)
     std::unordered_map<s16, Slot> PlayerInventory();
-    std::vector<EntityData> LoadedEntities();
+    std::unordered_map<s32, EntityData> LoadedEntities();
 
     game::ChunkMap& LoadedChunks();
 
 private:
+    void SetLightData(s32, s32, s32, u8);
+
     mutable boost::mutex m_Mutex;
 
     Player m_Player;
@@ -111,7 +121,8 @@ private:
     // Inventory maps from slot number to Slot type
     std::unordered_map<s16, Slot> m_PlayerInventory;
 
-    std::vector<EntityData> m_LoadedEntities;
+    // Loaded entities maps from entity id to the entity
+    std::unordered_map<s32, EntityData> m_LoadedEntities;
 
     ChunkMap m_LoadedChunks;
 };

@@ -9,7 +9,7 @@ SpawnMob::SpawnMob()
 }
 
 SpawnMob::SpawnMob(VarInt EntityID, UUID EntityUUID, VarInt Type, double X, double Y, double Z, s8 Yaw, s8 Pitch, s8 HeadPitch, s16 MotionX, s16 MotionY, s16 MotionZ, Metadata Meta)
-    : m_EntityID(EntityID), m_EntityUUID(EntityUUID), m_Type(Type), m_X(X), m_Y(Y), m_Z(Z), m_Yaw(Yaw), m_Pitch(Pitch), m_HeadPitch(HeadPitch), m_MotionX(MotionX), m_MotionY(MotionY), m_MotionZ(MotionZ), m_Meta(Meta)
+    : m_EntityID(EntityID), m_EntityUUID(EntityUUID), m_Type(Type), m_X(X / (double)4096.0), m_Y(Y / (double)4096.0), m_Z(Z / (double)4096.0), m_Yaw(Yaw), m_Pitch(Pitch), m_HeadPitch(HeadPitch), m_MotionX(MotionX), m_MotionY(MotionY), m_MotionZ(MotionZ), m_Meta(Meta)
 {
 }
 

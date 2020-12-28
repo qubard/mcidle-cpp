@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE VarIntTest
 #include <boost/test/included/unit_test.hpp>
 
-#include "..\mcidle\include\networking\types\VarLong.hpp"
-#include "..\mcidle\include\networking\ByteBuffer.hpp"
+#include "../mcidle/include/networking/types/VarLong.hpp"
+#include "../mcidle/include/networking/ByteBuffer.hpp"
 
 BOOST_AUTO_TEST_CASE(encode_decode_test)
 {
@@ -36,5 +36,4 @@ BOOST_AUTO_TEST_CASE(encode_decode_test)
 	u16 sh;
 	buf >> sh;
 	BOOST_CHECK_EQUAL(sh, (u16)(2 << 16 - 1));
-
 }

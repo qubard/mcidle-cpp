@@ -1,0 +1,4 @@
+SetSlot
+u8 WindowID 
+s16 SlotNum
+Slot Slot

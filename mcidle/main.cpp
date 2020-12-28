@@ -56,34 +56,32 @@ std::unordered_map<std::string, std::vector<s32>> chunks;
 int main(int argc, char* argv[]) 
 {
     auto protocol = std::make_shared<mcidle::Protocol_1_12_2_CB>(340);
-    std::string serverName = "localhost";
-    bool ONLINE_MODE = false;
+    std::string serverAddr = "connect.2b2t.org.";
+    bool ONLINE_MODE = true;
 
     mcidle::util::Yggdrasil yg;
 
-	std::string accessTkn = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYjRkNjNhOGMwMjQ4NGMxODJkZWE5MzRkNmQ2ZjM1OSIsInlnZ3QiOiIwNWFkOWEwYTE5ZjU0ZTJjYmFhYzQ0MWZjYmY3MDE2YSIsInNwciI6ImNjNzgwODNkN2E3ZTQwY2E5YWJiN2VkZmQyZTAxMzgzIiwiaXNzIjoiWWdnZHJhc2lsLUF1dGgiLCJleHAiOjE1OTEyNTkzMTQsImlhdCI6MTU5MTA4NjUxNH0.pUndDszGrD3iTL73Yx6NkqFCqzZZebGOR4Psjm8FbGg";
+	std::string accessTkn = "";
 
     if (ONLINE_MODE)
     {
         try {
-            if (yg.Authenticate("qubard@gmail.com", ""))
+            if (yg.Authenticate("", ""))
             {
-                std::cout << yg.AccessToken() << "\n";
-                std::cout << yg.ClientToken() << "\n";
+                std::cout << "AccessToken:" << yg.AccessToken() << "\n";
+                std::cout << "ClientToken:" << yg.ClientToken() << "\n";
             }
         }
         catch (mcidle::util::YggdrasilException e) {
             printf("Fail to auth\n");
             return -1;
         }
-        //yg.SetAccessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYjRkNjNhOGMwMjQ4NGMxODJkZWE5MzRkNmQ2ZjM1OSIsInlnZ3QiOiI5NmQ1MjE5NGExNjc0ZTY3ODQwMWQyZGM1MWFjYzZiNCIsInNwciI6ImNjNzgwODNkN2E3ZTQwY2E5YWJiN2VkZmQyZTAxMzgzIiwiaXNzIjoiWWdnZHJhc2lsLUF1dGgiLCJleHAiOjE1OTU2OTUzMTAsImlhdCI6MTU5NTUyMjUxMH0.BV5X5SNCzmxRWWufeDlrRGfvma7kQTUj94EJdjA2R70");
-        //yg.SetProfileId("cc78083d7a7e40ca9abb7edfd2e01383");
 
         std::cout << yg.AccessToken() << "\n";
         std::cout << "profile id:" << yg.ProfileId() << "\n";
     }
 
-    mcidle::MCIdle mc(false, "localhost", protocol, nullptr, yg);
+    mcidle::MCIdle mc(ONLINE_MODE, serverAddr, 25565, protocol, nullptr, yg);
 
     std::cout << "Started in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE") << " mode!\n";
 

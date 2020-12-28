@@ -19,9 +19,9 @@ SpawnMob::SpawnMob(EntityData& entity)
     //m_EntityUUID = entity.UUID;
     m_Type = entity.Type;
 
-    m_X = entity.X;
-    m_Y = entity.Y;
-    m_Z = entity.Z;
+    m_X = (double)entity.ServerX / (double)4096.0;
+    m_Y = (double)entity.ServerY / (double)4096.0;
+    m_Z = (double)entity.ServerZ / (double)4096.0;
 
     m_Yaw = entity.Yaw;
     m_Pitch = entity.Pitch;
@@ -34,7 +34,6 @@ SpawnMob::SpawnMob(EntityData& entity)
 
 void SpawnMob::Mutate(mcidle::game::GameState &state)
 {
-    printf("Mob with entity id %d spawned at coords: %.2f, %2.f, %.2f\n", m_EntityId.Value(), m_X, m_Y, m_Z);
     auto entity = EntityData{};
 
     entity.Id = m_EntityId;
@@ -44,6 +43,10 @@ void SpawnMob::Mutate(mcidle::game::GameState &state)
     entity.X = m_X;
     entity.Y = m_Y;
     entity.Z = m_Z;
+
+    entity.ServerX = floor(m_X * 4096.0);
+    entity.ServerY = floor(m_Y * 4096.0);
+    entity.ServerZ = floor(m_Z * 4096.0);
 
     entity.Yaw = m_Yaw;
     entity.HeadPitch = m_HeadPitch;

@@ -1,0 +1,8 @@
+EntityLookRelMove
+VarInt EntityID
+s16 DeltaX
+s16 DeltaY
+s16 DeltaZ
+u8 Yaw
+u8 Pitch
+bool OnGround
