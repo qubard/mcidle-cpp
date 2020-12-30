@@ -16,6 +16,8 @@ public:
     // after it is setup.
     Proxy(std::shared_ptr<Connection>, std::shared_ptr<thread::Pipe>, std::shared_ptr<mcidle::game::GameState>);
 
+    void SetSourcePipe(std::shared_ptr<thread::Pipe>);
+
     // Run the proxy and pipe from source to sink
     // and mutate local game state if needed
     void Run();

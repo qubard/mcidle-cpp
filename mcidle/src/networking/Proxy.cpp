@@ -11,9 +11,10 @@ Proxy::Proxy(std::shared_ptr<Connection> source,
 {
 }
 
-// A proxy reads from `source` and writes to `dest`
-// after it is setup.
-Proxy::Proxy(std::shared_ptr<Connection> source, 
+// A proxy reads from a source connection and writes to a destination
+// pipe after it is setup. It is also responsible for closing
+// the source pipe if it disconnects
+Proxy::Proxy(std::shared_ptr<Connection> source,
         std::shared_ptr<thread::Pipe> dest, 
         std::shared_ptr<mcidle::game::GameState> state)
     : m_Source(source), m_State(state), m_Dest(dest)

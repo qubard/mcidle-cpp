@@ -19,6 +19,7 @@ public:
     // Equivalent to enabling encryption
     Connection &SetAes(std::unique_ptr<AesCtx> &);
     Connection &SetCompression(s32);
+    ~Connection() { printf("destroyed conn %d %d\n", m_ReadBuf.Size(), m_LastRecSize); }
     s32 Compression();
     mcidle::Protocol &Protocol();
 
@@ -50,7 +51,7 @@ private:
 
     // The read buffer for incoming packet data
     ByteBuffer m_ReadBuf;
-	std::size_t m_LastRecSize;
+	s32 m_LastRecSize;
 
     std::shared_ptr<TCPSocket> m_Socket;
     std::unique_ptr<AesCtx> m_Aes;

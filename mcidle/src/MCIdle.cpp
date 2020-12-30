@@ -43,9 +43,14 @@ bool MCIdle::Start()
         return false;
     }
 
+    // max number of packets in the backlog
+    // we need this because when the client dcs 
+    // and we stop the proxy thread the queue is very large
+    u32 maxPipeSize = 30;
+    
     // Create a pipe for writing to the client sink
-    m_Client = std::make_shared<thread::Pipe>(20);
-    m_Server = std::make_shared<thread::Pipe>(20);
+    m_Client = std::make_shared<thread::Pipe>(20, maxPipeSize);
+    m_Server = std::make_shared<thread::Pipe>(20, maxPipeSize);
 
     // Start the pipe in another thread
     boost::thread th(boost::ref(*m_Client));
@@ -63,7 +68,7 @@ bool MCIdle::Start()
 
     printf("Starting listen thread..\n");
     boost::thread([&]() {
-		for (;;) {
+		for(;;) {
             auto state = m_State;
 			auto conn = std::make_shared<mcidle::TCPSocket>(1337);
             printf("Waiting for client..\n");
@@ -191,21 +196,22 @@ bool MCIdle::Start()
 
             mc_conn->SendPacket(keepAlive);
 
+            m_Client->Open();
+            m_Server->Open();
             // Set the pipe's sink to point at the new client
-            m_Client->SetSink(mc_conn);
+            m_Client->SetSink(mc_conn, m_Server);
 
-            m_Server->SetSink(m_ServerConn);
+            m_Server->SetSink(m_ServerConn, m_Client);
             // If we hang here then the player joins properly with chunks received
             // The problem is the socket closes before we can do that
             Proxy proxy(mc_conn, m_Server, m_State);
 
-            printf("Starting proxy..\n");
             proxy.Run();
 
             printf("Reset sinks..\n");
 
-            m_Server->SetSink(nullptr);
-            m_Client->SetSink(nullptr);
+            m_Client->SetSink(nullptr, nullptr);
+            m_Server->SetSink(nullptr, nullptr);
         }
         printf("finished\n");
 	});

@@ -32,7 +32,7 @@ inline bool Connection::PrepareRead()
 	m_ReadBuf.SeekRead(0);
 
 	auto asioBuf = boost::asio::buffer(m_ReadBuf.Front(), m_ReadBuf.Size());
-	std::size_t recLen = m_Socket->Recv(asioBuf);
+	s32 recLen = m_Socket->Recv(asioBuf);
 
 	// Encryption enabled
 	if (recLen > 0 && m_Aes != nullptr)
@@ -96,6 +96,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
     // This (sometimes) occurs
     if ((s64)m_LastRecSize < 0)
     {
+        printf("BB\n");
         return nullptr;
     }
 
@@ -108,6 +109,7 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	// Hopefully this never happens, but it could in theory
 	catch (std::runtime_error e)
 	{
+        printf("CC\n");
 		return nullptr;
 	}
 
@@ -140,8 +142,9 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 		auto asioBuf = boost::asio::buffer(extraBuf.Front(), extraBuf.Size());
 
         // No bytes
-        if (m_Socket->Read(asioBuf) <= 0)
+        if (m_Socket->Read(asioBuf) <= 0) {
             return nullptr;
+        }
 
         if (m_Aes != nullptr)
         {

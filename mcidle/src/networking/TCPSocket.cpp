@@ -9,7 +9,7 @@ namespace mcidle {
 TCPSocket::TCPSocket(s32 bindPort) : m_Service(new boost::asio::io_service), 
     m_Socket(std::make_unique<tcp::socket>(*m_Service)) {
     m_Acceptor = std::make_unique<tcp::acceptor>(*m_Service, 
-                 tcp::endpoint(tcp::v4(), bindPort));
+                 tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), bindPort));
 }
 
 TCPSocket::TCPSocket(TCPSocket& socket)
@@ -24,6 +24,13 @@ TCPSocket::TCPSocket(std::string address, s32 port)
 		: m_Address(address), m_Service(new boost::asio::io_service), m_Port(std::to_string(port)),
 		m_Socket(std::make_unique<tcp::socket>(*m_Service)) 
 { 
+}
+
+TCPSocket::~TCPSocket()
+{
+    printf("before destroy TCP socket\n");
+    m_Socket->close();
+    printf("Destroyed TCP socket\n");
 }
 
 bool TCPSocket::Connect()

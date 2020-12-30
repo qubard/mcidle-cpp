@@ -13,14 +13,3 @@ RUN sh /cmake-3.18.0-rc3-Linux-x86_64.sh --prefix=/opt/cmake --skip-license
 RUN ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
 RUN cmake --version
 
-RUN mkdir -p /mcidle-cpp/mcidle
-
-COPY json /mcidle-cpp/json
-COPY zlib /mcidle-cpp/zlib
-COPY mcidle /mcidle-cpp/mcidle
-COPY CMakeLists.txt /mcidle-cpp/
-
-WORKDIR /mcidle-cpp
-
-# Generate makefiles and build
-RUN cmake . && make
