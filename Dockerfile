@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-ENTRYPOINT /bin/bash
+ENTRYPOINT /mcidle-cpp/bin/mcidle
 
 RUN apt-get update && apt-get install -y build-essential libssl-dev libcurl4-openssl-dev zlib1g-dev xz-utils clang curl
 
@@ -16,6 +16,7 @@ RUN tar xfz boost_1_72_0.tar.gz     && rm boost_1_72_0.tar.gz     && cd boost_1_
 
 RUN mkdir -p /mcidle-cpp/mcidle
 
+COPY tests /mcidle-cpp/tests
 COPY json /mcidle-cpp/json
 COPY zlib /mcidle-cpp/zlib
 COPY mcidle /mcidle-cpp/mcidle

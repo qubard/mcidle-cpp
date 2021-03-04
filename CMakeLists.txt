@@ -9,13 +9,14 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_DETAILED_FAILURE_MSG ON)
 set(BOOST_DEBUG OFF)
 
-set(CMAKE_CXX_STANDARD 17) # Use C++17
 # Use clang
-set(CMAKE_CXX_COMPILER /usr/bin/c++ CACHE STRING "C++ compiler" FORCE)
+set(CMAKE_CXX_COMPILER /usr/bin/clang++ CACHE STRING "C++ compiler" FORCE)
 add_compile_options(-Ofast)
-add_compile_options(-g)
-add_compile_options(-gfull) # generate full debug information
 add_compile_options(-Wall)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 
@@ -56,8 +57,9 @@ else()
 endif()
 
 add_executable(mcidle "mcidle/main.cpp")
-target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib)
-target_link_libraries(mcidle ${Boost_LIBRARIES} zlib mcidlelib ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} nlohmann_json::nlohmann_json)
+target_compile_features(mcidle PRIVATE cxx_std_17)
+target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib ${Boost_LIBRARIES})
+target_link_libraries(mcidle mcidlelib ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES})
 target_include_directories(mcidle PUBLIC ${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIRS})
 
 message(STATUS ${OPENSSL_LIBRARIES})
