@@ -148,11 +148,11 @@ void DeserializeTagCompoundInner(ByteBuffer& buf, TagCompound& value)
 // Deserialize a tag compound with the name
 void DeserializeTagCompound(ByteBuffer& buf, TagCompound& value)
 {
-    NBTString name;
+    /*NBTString name;
     buf >> name;
     value.SetName(name.Value());
     DeserializeTagCompoundInner(buf, value);
-    printf("done %d\n", value.Size());
+    printf("done %d\n", value.Size());*/
 }
 
 void SerializeTagCompoundInner(ByteBuffer& buf, TagCompound& value)
@@ -178,7 +178,7 @@ void SerializeTagCompound(ByteBuffer& buf, TagCompound& value)
 // Deserialize a root tag compound type
 ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
 {
-    TagType type;
+    /*TagType type;
     buf >> type;
 
     if (type == TAG_END) 
@@ -191,7 +191,7 @@ ByteBuffer& operator>>(ByteBuffer& buf, TagCompound& value)
         return buf;
 
     DeserializeTagCompound(buf, value);
-
+    */
 	return buf;
 }
 

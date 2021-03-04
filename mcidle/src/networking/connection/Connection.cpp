@@ -93,12 +93,8 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 			return nullptr;
 	}
 
-    // This (sometimes) occurs
     if ((s64)m_LastRecSize < 0)
-    {
-        printf("BB\n");
         return nullptr;
-    }
 
 	VarInt packetLen;
 	try
@@ -109,7 +105,6 @@ std::shared_ptr<ByteBuffer> Connection::ReadBuffer()
 	// Hopefully this never happens, but it could in theory
 	catch (std::runtime_error e)
 	{
-        printf("CC\n");
 		return nullptr;
 	}
 

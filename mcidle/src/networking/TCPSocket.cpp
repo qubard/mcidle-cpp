@@ -26,13 +26,6 @@ TCPSocket::TCPSocket(std::string address, s32 port)
 { 
 }
 
-TCPSocket::~TCPSocket()
-{
-    printf("before destroy TCP socket\n");
-    m_Socket->close();
-    printf("Destroyed TCP socket\n");
-}
-
 bool TCPSocket::Connect()
 {
 	try

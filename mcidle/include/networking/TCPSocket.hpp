@@ -19,7 +19,6 @@ public:
 	TCPSocket(TCPSocket&);
     // Connect ctor
 	TCPSocket(std::string, s32);
-    ~TCPSocket();
 
 	bool Connect();
 	bool Bind();

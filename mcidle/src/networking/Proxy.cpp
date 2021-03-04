@@ -30,6 +30,7 @@ void Proxy::Run()
         // Check that the packet is valid
         if (packet != nullptr)
         {
+            std::cout << "Received packet id:" << packet->Id() << "\n";
             // Try to generate a protocol agnostic response for the packet
             auto response = packet->Response(m_Source->Protocol(), m_Source->Compression());
 

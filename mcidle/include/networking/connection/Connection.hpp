@@ -19,7 +19,6 @@ public:
     // Equivalent to enabling encryption
     Connection &SetAes(std::unique_ptr<AesCtx> &);
     Connection &SetCompression(s32);
-    ~Connection() { printf("destroyed conn %d %d\n", m_ReadBuf.Size(), m_LastRecSize); }
     s32 Compression();
     mcidle::Protocol &Protocol();
 

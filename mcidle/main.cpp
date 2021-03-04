@@ -50,8 +50,16 @@
 #include <networking/Proxy.hpp>
 
 #include <common/Rsa.hpp>
+#include <cstdlib>
 
 std::unordered_map<std::string, std::vector<s32>> chunks;
+
+const std::string loadVariable(const char* name)
+{
+    if(auto env = std::getenv(name))
+        return std::string(env);
+    return "";
+}
 
 int main(int argc, char* argv[]) 
 {
@@ -63,13 +71,19 @@ int main(int argc, char* argv[])
 
 	std::string accessTkn = "";
 
+    auto USER = loadVariable("MCIDLE_USER");
+    auto PASS = loadVariable("MCIDLE_PASS");
+
     if (ONLINE_MODE)
     {
         try {
-            if (yg.Authenticate("", ""))
+            if (yg.Authenticate(USER, PASS))
             {
                 std::cout << "AccessToken:" << yg.AccessToken() << "\n";
                 std::cout << "ClientToken:" << yg.ClientToken() << "\n";
+            } else {
+                printf("Fail to auth\n");
+                return -1;
             }
         }
         catch (mcidle::util::YggdrasilException e) {

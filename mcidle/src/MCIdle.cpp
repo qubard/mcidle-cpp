@@ -34,7 +34,7 @@ bool MCIdle::Start()
         return false;
     }
 
-    m_ServerConn = std::make_shared<SConnection>(m_ServerIP, m_Port, std::move(socket), m_Protocol_CB, m_State, 4096);
+    m_ServerConn = std::make_shared<SConnection>(m_ServerIP, m_Port, std::move(socket), m_Protocol_CB, m_State, 8129);
     m_ServerConn->SetOnlineMode(m_Online);
 
     if (!m_ServerConn->Setup(m_Yggdrasil))
