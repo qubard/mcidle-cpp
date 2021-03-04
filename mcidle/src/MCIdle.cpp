@@ -13,7 +13,7 @@
 namespace mcidle
 {
 
-MCIdle::MCIdle(bool online, std::string serverIP, s32 port, std::shared_ptr<Protocol> protocolCB, std::shared_ptr<Protocol> protocolSB, util::Yggdrasil yggdrasil) : m_Online(online), m_ServerIP(serverIP), m_Port(port), m_Protocol_CB(protocolCB), m_Protocol_SB(protocolSB), m_State(std::make_shared<game::GameState>()), m_Yggdrasil(yggdrasil)
+MCIdle::MCIdle(bool online, std::string serverIP, std::string port, std::shared_ptr<Protocol> protocolCB, std::shared_ptr<Protocol> protocolSB, util::Yggdrasil yggdrasil) : m_Online(online), m_ServerIP(serverIP), m_Port(port), m_Protocol_CB(protocolCB), m_Protocol_SB(protocolSB), m_State(std::make_shared<game::GameState>()), m_Yggdrasil(yggdrasil)
 {
 }
 

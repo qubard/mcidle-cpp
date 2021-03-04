@@ -61,6 +61,12 @@ const std::string loadVariable(const char* name)
     return "";
 }
 
+bool IsNumber(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(), 
+        s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+}
+
 int main(int argc, char* argv[]) 
 {
     auto protocol = std::make_shared<mcidle::Protocol_1_12_2_CB>(340);
@@ -71,8 +77,17 @@ int main(int argc, char* argv[])
 
 	std::string accessTkn = "";
 
-    auto USER = loadVariable("MCIDLE_USER");
-    auto PASS = loadVariable("MCIDLE_PASS");
+    auto USER = loadVariable("MC_USER");
+    auto PASS = loadVariable("MC_PASS");
+    auto IP = loadVariable("MC_IP");
+    auto PORT = loadVariable("MC_PORT");
+
+    if (!IsNumber(PORT))
+    {
+        PORT = "25565";
+    }
+
+    std::cout << USER << ":" << PASS << ":" << IP << ":" << PORT << "\n";
 
     if (ONLINE_MODE)
     {
@@ -95,7 +110,7 @@ int main(int argc, char* argv[])
         std::cout << "profile id:" << yg.ProfileId() << "\n";
     }
 
-    mcidle::MCIdle mc(ONLINE_MODE, serverAddr, 25565, protocol, nullptr, yg);
+    mcidle::MCIdle mc(ONLINE_MODE, IP, PORT, protocol, nullptr, yg);
 
     std::cout << "Started in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE") << " mode!\n";
 

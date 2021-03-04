@@ -9,17 +9,16 @@ namespace mcidle {
 class SConnection : public Connection
 {
 public:
-    SConnection(std::string, s32, std::unique_ptr<TCPSocket>, 
+    SConnection(std::string, std::string, std::unique_ptr<TCPSocket>, 
             std::shared_ptr<mcidle::Protocol>, 
             std::shared_ptr<mcidle::game::GameState>,
             std::size_t);
 
-    void SetServerIP(std::string);
     void SetOnlineMode(bool);
     bool Setup(mcidle::util::Yggdrasil&) override;
 private:
     std::string m_ServerIP;
-    s32 m_Port;
+    std::string m_Port;
     bool m_OnlineMode;
 };
 

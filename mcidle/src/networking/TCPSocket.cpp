@@ -20,8 +20,8 @@ TCPSocket::TCPSocket(TCPSocket& socket)
 	m_Port = socket.m_Port;
 }
 
-TCPSocket::TCPSocket(std::string address, s32 port)
-		: m_Address(address), m_Service(new boost::asio::io_service), m_Port(std::to_string(port)),
+TCPSocket::TCPSocket(std::string address, std::string port)
+		: m_Address(address), m_Service(new boost::asio::io_service), m_Port(port),
 		m_Socket(std::make_unique<tcp::socket>(*m_Service)) 
 { 
 }
@@ -36,9 +36,6 @@ bool TCPSocket::Connect()
         printf("HOST:%d\n",host);
         std::cout << "Trying to resolve " << m_Address << ":" << m_Port << "\n";
 		tcp::resolver::query query(m_Address, m_Port, boost::asio::ip::resolver_query_base::numeric_service);
-        printf("Calling connect...\n");
-        printf("Calling connect...\n");
-        printf("Calling connect...\n");
         printf("Calling connect...\n");
 		tcp::resolver::iterator iter = resolver.resolve(m_Address, m_Port);
 
