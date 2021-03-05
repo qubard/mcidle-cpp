@@ -1,6 +1,6 @@
-FROM ubuntu:18.04 as builder
+FROM debian:stable-slim as builder
 
-RUN apt-get update && apt-get install -y python build-essential zlib1g-dev xz-utils clang curl wget
+RUN apt-get update && apt-get install -y python build-essential zlib1g-dev xz-utils clang
 
 # Install latest cmake
 ADD https://github.com/Kitware/CMake/releases/download/v3.18.0-rc3/cmake-3.18.0-rc3-Linux-x86_64.sh /cmake-3.18.0-rc3-Linux-x86_64.sh 
@@ -15,6 +15,20 @@ RUN tar xfz boost_1_72_0.tar.gz     && rm boost_1_72_0.tar.gz     && cd boost_1_
 
 RUN mkdir -p /mcidle-cpp/mcidle
 
+WORKDIR /mcidle-cpp
+
+# Build libssl1.1.1b statically
+ADD https://www.openssl.org/source/old/1.1.1/openssl-1.1.1b.tar.gz openssl-1.1.1b.tar.gz
+RUN tar -xvf openssl-1.1.1b.tar.gz && cd openssl-1.1.1b && ./config -static --prefix=/usr/local/ssl \
+&& make && make install && cd ..
+
+# Build libcurl7.61.0 statically
+ADD https://curl.se/download/curl-7.61.0.tar.gz curl-7.61.0.tar.gz 
+RUN tar -xvf curl-7.61.0.tar.gz && cd curl-7.61.0 && ./configure \
+--disable-shared --enable-static --prefix=/usr/curl --disable-sspi --disable-ftp --disable-file --disable-dict \ 
+--disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher \
+--disable-smb --with-ssl && make && make install && cd ..
+
 COPY get-ip.py /mcidle-cpp-/get-ip.py
 COPY tests /mcidle-cpp/tests
 COPY json /mcidle-cpp/json
@@ -22,24 +36,18 @@ COPY zlib /mcidle-cpp/zlib
 COPY mcidle /mcidle-cpp/mcidle
 COPY CMakeLists.txt /mcidle-cpp/
 
-WORKDIR /mcidle-cpp
-
-# Build libssl1.1.1j statically
-ADD https://ftp.openssl.org/source/openssl-1.1.1j.tar.gz openssl-1.1.1j.tar.gz
-RUN tar -xvf openssl-1.1.1j.tar.gz && cd openssl-1.1.1j && ./config -static && make && make install && cd .. 
-
-# Build libcurl7.47.0 statically
-RUN openssl version
-ADD https://curl.se/download/curl-7.47.0.tar.gz curl-7.47.0.tar.gz
-RUN tar -xvf curl-7.47.0.tar.gz && cd curl-7.47.0 && ./configure --disable-shared --enable-static --prefix=/tmp/curl --disable-sspi --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb && make && make install && cd ..
-
 # Generate makefiles and build
-RUN cmake . && make
+#RUN ldd curl-7.70.0/lib/.libs/libcurl.a
+RUN cmake -D OPENSSL_ROOT_DIR=/usr/local/ssl . && make
 
-FROM ubuntu:18.04
+# Check how many dynamically linked libs there are
+RUN (ldd /mcidle-cpp/bin/mcidle) || true
 
-WORKDIR /
+FROM busybox:glibc
 
+COPY --from=builder /lib/x86_64-linux-gnu/libdl.so.2 /lib/libdl.so.2
 COPY --from=builder /mcidle-cpp/bin/mcidle /mcidle
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /lib/libstdc++.so.6
+COPY --from=builder /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib/libgcc_s.so.1
 
 CMD ["/mcidle"]
