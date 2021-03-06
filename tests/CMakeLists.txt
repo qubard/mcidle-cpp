@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ".")
 
+find_package(Boost 1.72.0 COMPONENTS filesystem system unit_test_framework REQUIRED)
 find_package(Boost COMPONENTS filesystem system unit_test_framework REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
