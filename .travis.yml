@@ -5,7 +5,7 @@ dist: bionic
 
 before_install:
     - sudo apt-get update
-    - sudo apt-get install -y python libcurl4-openssl-dev build-essential zlib1g-dev xz-utils clang 
+    - sudo apt-get install -y python build-essential zlib1g-dev xz-utils clang 
     - sudo chmod +x ./install-deps.sh && sudo ./install-deps.sh
 
 compiler:
