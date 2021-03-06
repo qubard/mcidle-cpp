@@ -58,6 +58,8 @@ else()
 endif()
 
 add_executable(mcidle "mcidle/main.cpp")
+
+target_compile_features(mcidlelib PRIVATE cxx_std_17)
 target_compile_features(mcidle PRIVATE cxx_std_17)
 
 target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
