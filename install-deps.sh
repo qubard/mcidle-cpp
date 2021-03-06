@@ -8,9 +8,9 @@ cmake --version
 
 # install boost 1.72.0
 wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz 
-tar xfz boost_1_72_0.tar.gz     && rm boost_1_72_0.tar.gz     && cd boost_1_72_0     && ./bootstrap.sh     && ./b2 --without-python --prefix=/usr -j 4 link=static runtime-link=static install     && cd .. && rm -rf boost_1_72_0/ && ldconfig
+tar xfz boost_1_72_0.tar.gz     && rm boost_1_72_0.tar.gz     && cd boost_1_72_0     && ./bootstrap.sh     && ./b2 --without-python --prefix=/usr -j 4 link=static runtime-link=static install 1> /dev/null && cd .. && rm -rf boost_1_72_0/ && ldconfig
 
 # install openssl1.1.1b
 wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1b.tar.gz
-tar -xvf openssl-1.1.1b.tar.gz && cd openssl-1.1.1b && ./config -static --prefix=/usr/local/ssl && make && make install && cd ..
+tar -xvf openssl-1.1.1b.tar.gz && cd openssl-1.1.1b && ./config -static --prefix=/usr/local/ssl && make && make install 1> /dev/null && cd ..
 
