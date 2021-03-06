@@ -7,7 +7,7 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install -y python libcurl4-openssl-dev build-essential zlib1g-dev xz-utils clang cmake
     - wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz 
-    - tar xfz boost_1_72_0.tar.gz     && rm boost_1_72_0.tar.gz     && cd boost_1_72_0     && sudo ./bootstrap.sh     && sudo ./b2 --without-python --prefix=/usr -j 4 link=static runtime-link=static install     && cd .. && rm -rf boost_1_72_0/ && sudo ldconfig
+    - sudo tar xfz boost_1_72_0.tar.gz     && sudo rm boost_1_72_0.tar.gz     && cd boost_1_72_0     && sudo ./bootstrap.sh     && sudo ./b2 --without-python --prefix=/usr -j 4 link=static runtime-link=static install     && cd .. && sudo rm -rf boost_1_72_0/ && sudo ldconfig
 
 compiler:
   - clang
