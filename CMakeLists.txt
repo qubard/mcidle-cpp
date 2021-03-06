@@ -72,4 +72,4 @@ message(STATUS ${OPENSSL_LIBRARIES})
 message(STATUS ${OPENSSL_INCLUDE_DIR})
 
 # Build unit tests
-add_subdirectory(tests)
+#add_subdirectory(tests)
