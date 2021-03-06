@@ -65,7 +65,7 @@ target_compile_features(mcidlelib PRIVATE cxx_std_17)
 target_compile_features(mcidle PRIVATE cxx_std_17)
 
 target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-target_link_libraries(mcidle mcidlelib ${CURL_LIBRARIES} -lm -ldl)
+target_link_libraries(mcidle mcidlelib ${CURL_LIBRARIES} -lm -ldl -lpthread)
 target_include_directories(mcidle PUBLIC ${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIRS})
 
 message(STATUS ${OPENSSL_LIBRARIES})
