@@ -4,8 +4,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ".")
 
 find_package(Boost 1.72.0 COMPONENTS filesystem system unit_test_framework REQUIRED)
 
-enable_testing()
-
 include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
 
 add_executable(mcidle-varint-test ${PROJECT_SOURCE_DIR}/tests/VarIntTest.cpp)
