@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE VarIntTest
+#define BOOST_TEST_MODULE VarLongTest
 #include <boost/test/included/unit_test.hpp>
 
 #include "../mcidle/include/networking/types/VarLong.hpp"
@@ -25,15 +25,12 @@ BOOST_AUTO_TEST_CASE(encode_decode_test)
 	BOOST_CHECK_EQUAL(lng.Value(), slng);
 
 	buf << mcidle::VarLong(9223372036854775807);
-	buf << mcidle::VarLong(-9223372036854775808);
+	buf << mcidle::VarLong(-972036854775808);
 
-	mcidle::VarLong a, b;
+	mcidle::VarLong a;
+	mcidle::VarLong b;
 	buf >> a;
-	buf << (u16)(2 << 16 - 1);
 	buf >> b;
 	BOOST_CHECK_EQUAL(a.Value(), 9223372036854775807);
-	BOOST_CHECK_EQUAL(b.Value(), -9223372036854775808);
-	u16 sh;
-	buf >> sh;
-	BOOST_CHECK_EQUAL(sh, (u16)(2 << 16 - 1));
+	BOOST_CHECK_EQUAL(b.Value(), -972036854775808);
 }

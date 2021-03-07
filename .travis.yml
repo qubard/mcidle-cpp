@@ -1,0 +1,13 @@
+language: cpp
+arch: amd64
+os: linux 
+dist: bionic
+
+services:
+    - docker
+
+# Build steps
+script: 
+    - cd ${TRAVIS_BUILD_DIR}
+    - sudo docker build -t ci -f DockerfileCI .
+

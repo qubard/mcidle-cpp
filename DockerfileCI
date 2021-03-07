@@ -1,0 +1,14 @@
+FROM cub949/mcidle-builder:latest as builder
+
+WORKDIR /mcidle-cpp/
+
+COPY tests /mcidle-cpp/tests
+COPY json /mcidle-cpp/json
+COPY zlib /mcidle-cpp/zlib
+COPY mcidle /mcidle-cpp/mcidle
+COPY CMakeLists.txt /mcidle-cpp/
+
+# Generate makefiles and build
+RUN cmake -D OPENSSL_ROOT_DIR=/usr/local/ssl . && make
+
+RUN ctest
