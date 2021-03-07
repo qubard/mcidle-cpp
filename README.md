@@ -29,4 +29,6 @@ To kill the process, run `docker ps`, find the container ID and then run `docker
 
 # Resolving IP addresses
 
-Sometimes the domain you use to connect to a Minecraft server is hides the actual IP address behind an SRV record that needs to get resolved, so run `python get-ip.py domain.com` where `domain.com` is the domain you want to find the IP for to resolve its ip address.
+Sometimes the domain you use to connect to a Minecraft server is hides the actual IP address behind an SRV record that needs to get resolved, using [Python](https://python.org) run `python get-ip.py domain.com` where `domain.com` is the domain you want to find the IP for to resolve its ip address.
+
+e.g for 2b2t.org the resolved ip address is `connect.2b2t.org`
