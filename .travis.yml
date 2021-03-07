@@ -16,7 +16,7 @@ script:
   - cd ${TRAVIS_BUILD_DIR}
   - cmake . 
   - make
-  - cd tests/ && ctest && cd ..
+  - ctest
 
 
 after_success:
