@@ -3,21 +3,21 @@ arch: amd64
 os: linux 
 dist: bionic
 
+services:
+    - docker
+
 before_install:
-    - sudo apt-get update
-    - sudo apt-get install -y python build-essential zlib1g-dev xz-utils clang
-    - sudo chmod +x ./install-deps.sh && sudo ./install-deps.sh
+    - sudo docker pull cub949/mcidle-builder
+
+cache:
+  ccache: true
 
 compiler:
   - clang
 
 # Build steps
 script: 
-  - cd ${TRAVIS_BUILD_DIR}
-  - cmake . 
-  - make
-  - ctest tests/
-
+    - sudo docker build -t ci -f DockerfileCI .
 
 after_success:
 - ls

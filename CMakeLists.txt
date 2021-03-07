@@ -22,7 +22,7 @@ set(CURL_STATICLIB ON)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(OPENSSL_USE_STATIC_LIBS TRUE)
+#set(OPENSSL_USE_STATIC_LIBS TRUE)
 
 # Build zlib
 add_subdirectory(zlib)
@@ -38,10 +38,6 @@ find_package(Boost 1.72.0 REQUIRED COMPONENTS system thread chrono)
 find_package(OpenSSL REQUIRED)
 
 find_package(CURL REQUIRED)
-
-# Look for the static version of libcurl
-#find_library(CURL_STATIC_LIB NAMES libcurl.a PATHS curl-7.61.0/lib/.libs REQUIRED)
-#set(CURL_INCLUDE_DIRS curl-7.61.0/include)
 
 add_library(mcidlelib STATIC ${source_files})
 
@@ -64,7 +60,7 @@ add_executable(mcidle "mcidle/main.cpp")
 target_compile_features(mcidlelib PRIVATE cxx_std_17)
 target_compile_features(mcidle PRIVATE cxx_std_17)
 
-target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} -lm -ldl -lpthread)
+target_link_libraries(mcidlelib nlohmann_json::nlohmann_json zlib ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} -lm -ldl -lpthread)
 target_link_libraries(mcidle mcidlelib ${CURL_LIBRARIES} -lm -ldl -lpthread)
 target_include_directories(mcidle PUBLIC ${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIRS})
 
@@ -72,4 +68,4 @@ message(STATUS ${OPENSSL_LIBRARIES})
 message(STATUS ${OPENSSL_INCLUDE_DIR})
 
 # Build unit tests
-add_subdirectory(tests)
+#add_subdirectory(tests)
