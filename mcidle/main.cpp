@@ -70,7 +70,6 @@ bool IsNumber(const std::string& s)
 int main(int argc, char* argv[]) 
 {
     auto protocol = std::make_shared<mcidle::Protocol_1_12_2_CB>(340);
-    std::string serverAddr = "connect.2b2t.org.";
     bool ONLINE_MODE = true;
 
     mcidle::util::Yggdrasil yg;
