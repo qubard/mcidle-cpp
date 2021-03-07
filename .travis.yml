@@ -6,9 +6,6 @@ dist: bionic
 services:
     - docker
 
-before_install:
-    - sudo docker pull cub949/mcidle-builder:latest
-
 # Build steps
 script: 
     - cd ${TRAVIS_BUILD_DIR}

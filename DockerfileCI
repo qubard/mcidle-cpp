@@ -1,4 +1,4 @@
-FROM mcidle-builder:latest as builder
+FROM cub949/mcidle-builder:latest as builder
 
 WORKDIR /mcidle-cpp/
 
