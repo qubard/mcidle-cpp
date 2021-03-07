@@ -9,12 +9,6 @@ services:
 before_install:
     - sudo docker pull cub949/mcidle-builder
 
-cache:
-  ccache: true
-
-compiler:
-  - clang
-
 # Build steps
 script: 
     - sudo docker build -t ci -f DockerfileCI .
