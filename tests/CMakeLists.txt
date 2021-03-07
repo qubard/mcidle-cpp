@@ -6,16 +6,10 @@ find_package(Boost 1.72.0 COMPONENTS filesystem system unit_test_framework REQUI
 
 include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
 
-add_executable(mcidle-varint-test ${PROJECT_SOURCE_DIR}/tests/VarIntTest.cpp)
-target_link_libraries(mcidle-varint-test ${Boost_LIBRARIES} zlib mcidlelib ${CURL_LIBRARIES})
+file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/tests/*.cpp)
 
-add_executable(mcidle-type-test ${PROJECT_SOURCE_DIR}/tests/TypeTest.cpp)
-target_link_libraries(mcidle-type-test ${Boost_LIBRARIES} zlib mcidlelib ${CURL_LIBRARIES})
-
-add_executable(mcidle-varlong-test ${PROJECT_SOURCE_DIR}/tests/VarLongTest.cpp)
-target_link_libraries(mcidle-varlong-test ${Boost_LIBRARIES} zlib mcidlelib ${CURL_LIBRARIES})
+add_executable(mcidle-tests ${TEST_SRC_FILES})
+target_link_libraries(mcidle-tests ${Boost_LIBRARIES} zlib mcidlelib ${CURL_LIBRARIES})
 
 enable_testing()
-add_test(VarIntTest mcidle-varint-test)
-add_test(TypeTest mcidle-type-test)
-add_test(VarLongTest mcidle-varlong-test)
+add_test(UnitTests mcidle-tests)
