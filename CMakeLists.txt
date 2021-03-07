@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(mcidle)
 
-#set(CMAKE_EXE_LINKER_FLAGS " -static")
-#set(LLVM_STATIC_LINK_CXX_STDLIB ON)
-
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -22,7 +19,7 @@ set(CURL_STATICLIB ON)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-#set(OPENSSL_USE_STATIC_LIBS TRUE)
+set(OPENSSL_USE_STATIC_LIBS TRUE)
 
 # Build zlib
 add_subdirectory(zlib)
@@ -67,5 +64,6 @@ target_include_directories(mcidle PUBLIC ${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE
 message(STATUS ${OPENSSL_LIBRARIES})
 message(STATUS ${OPENSSL_INCLUDE_DIR})
 
+enable_testing()
 # Build unit tests
-#add_subdirectory(tests)
+add_subdirectory(tests)
