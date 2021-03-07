@@ -70,7 +70,7 @@ bool IsNumber(const std::string& s)
 int main(int argc, char* argv[]) 
 {
     auto protocol = std::make_shared<mcidle::Protocol_1_12_2_CB>(340);
-    bool ONLINE_MODE = true;
+    bool ONLINE_MODE = loadVariable("MC_ONLINE") != "";
 
     mcidle::util::Yggdrasil yg;
 
