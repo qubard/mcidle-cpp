@@ -3,20 +3,25 @@
 
 This is a port of `mcidle-python` to C++.
 
-# Running using docker
+# Configuration
 
-Make sure to set the environment variables `MC_USER` and `MC_PASS` for your username and password. `MC_IP`
-is the IP address of the server you're trying to connect to. `MC_PORT` is optional if the server's default port is not
-25565.
+Before running, edit the `conf` file with your credentials.
+
+```
+MC_USER=test
+MC_PASS=testpw
+MC_IP=connect.2b2t.org
+MC_PORT=25565
+```
+
+# Running with Docker
+
+Download [Docker Desktop](https://www.docker.com/products/docker-desktop), launch it and then run the following in your terminal of choice in the project directory
 
 ```
 # Build the image and tag it
 docker build -t mcidle-docker -f Dockerfile . 
-# Run the image and map port 1337 outside the container to 1337 inside the container
-docker run -it -p 1337:1337 \ 
-    -e MC_USER=username \
-    -e MC_PASS=pass \
-    -e MC_IP=ip \
-    -e MC_PORT=25565 \ 
-    mcidle-docker
+docker run -it --env-file conf -p 1337:1337 mcidle-docker
 ```
+
+then you can connect on `localhost:1337` to connect to mcidle.
