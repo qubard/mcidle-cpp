@@ -19,9 +19,9 @@ MC_PORT=25565
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop), launch it and then run the following in your terminal of choice in the project directory
 
 ```
-# Build the image and tag it
-docker build -t mcidle-docker -f Dockerfile . 
-docker run -it --env-file conf -p 1337:1337 mcidle-docker
+chmod +x run.sh && ./run.sh
 ```
 
 then you can connect on `localhost:1337` to connect to mcidle.
+
+To kill the process, run `docker ps`, find the container ID and then run `docker kill <containerID>`.
