@@ -19,7 +19,7 @@ MC_PORT=25565
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop), launch it and then run the following in your terminal of choice in the project directory
 
 ```
-chmod +x run.sh && ./run.sh
+chmod +x run-and-build.sh && ./run-and-build.sh
 ```
 
 then you can connect on `localhost:1337` to connect to mcidle.
