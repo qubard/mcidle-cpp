@@ -93,7 +93,6 @@ bool MCIdle::Start()
                 std::string CToken = "AAAA";
                 mc_conn->SendPacket(mcidle::packet::clientbound::EncryptionRequest("", pubKey, CToken));
 
-
                 // prob getting deallocated as a temporary
                 auto pkt = mc_conn->ReadPacket();
                 auto encryptionResponse = reinterpret_cast<mcidle::packet::serverbound::EncryptionResponse*>(pkt.get());
