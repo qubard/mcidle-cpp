@@ -4,26 +4,26 @@
 
 namespace mcidle {
 namespace packet {
-namespace clientbound {
+    namespace clientbound {
 
-class ChatMessage : public Packet
-{
-public:
-    ChatMessage();
-    ChatMessage(std::string, s8);
+        class ChatMessage : public Packet
+        {
+        public:
+            ChatMessage();
+            ChatMessage(std::string, s8);
 
-    virtual std::shared_ptr<Packet> Response(Protocol &, s32) override;
+            virtual std::shared_ptr<Packet> Response(Protocol &, s32) override;
 
-    std::string JsonData() const;
+            std::string JsonData() const;
 
-    Packet &Serialize() override;
-    void Deserialize(ByteBuffer &) override;
+            Packet &Serialize() override;
+            void Deserialize(ByteBuffer &) override;
 
-private:
-    std::string m_JsonData;
-	s8 m_Position;
-};
+        private:
+            std::string m_JsonData;
+            s8 m_Position;
+        };
 
-} // ns clientbound
-} // ns packet
-} // ns mcidle
+    }  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle

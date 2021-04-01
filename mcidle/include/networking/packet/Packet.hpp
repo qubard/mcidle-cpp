@@ -17,7 +17,7 @@ public:
     Packet &SetId(s32);
     Packet &SetRawBuffer(std::shared_ptr<ByteBuffer>);
     Packet &SetFieldBuffer(std::shared_ptr<ByteBuffer>);
-    Packet &SetGameState(std::shared_ptr<mcidle::game::GameState>&);
+    Packet &SetGameState(std::shared_ptr<mcidle::game::GameState> &);
 
     std::shared_ptr<ByteBuffer> RawBuffer();
 
@@ -45,19 +45,21 @@ public:
 
     // Write the packet and compress if necessary
     void Write(s32);
+
 protected:
-	s32 m_Protocol;
-	// The packet's VarInt encoded id
+    s32 m_Protocol;
+    // The packet's VarInt encoded id
     s32 m_Id;
     // The field or data buffer for serialization
-	std::shared_ptr<ByteBuffer> m_FieldBuf;
+    std::shared_ptr<ByteBuffer> m_FieldBuf;
     // Packet uses game state to serialize/deserialize with context
     std::shared_ptr<mcidle::game::GameState> m_State;
+
 private:
-	// The final serialized outbound packet buffer
-	std::shared_ptr<ByteBuffer> m_PacketBuf;
-	// The raw inbound packet buffer
-	std::shared_ptr<ByteBuffer> m_RawRecBuf;
+    // The final serialized outbound packet buffer
+    std::shared_ptr<ByteBuffer> m_PacketBuf;
+    // The raw inbound packet buffer
+    std::shared_ptr<ByteBuffer> m_RawRecBuf;
 };
 
 }  // namespace mcidle

@@ -2,17 +2,16 @@
 
 #include <networking/game/GameState.hpp>
 #include <networking/packet/Packet.hpp>
-#include <networking/types/Metadata.hpp>
 
 namespace mcidle {
 namespace packet {
     namespace clientbound {
 
-        class SetSlot : public Packet
+        class PlayerPosition : public Packet
         {
         public:
-            SetSlot();
-            SetSlot(u8, s16, mcidle::Slot);
+            PlayerPosition();
+            PlayerPosition(double, double, double, bool);
 
             void Mutate(mcidle::game::GameState &) override;
 
@@ -20,9 +19,10 @@ namespace packet {
             void Deserialize(ByteBuffer &) override;
 
         private:
-            u8 m_WindowID;
-            s16 m_SlotNum;
-            Slot m_Slot;
+            double m_X;
+            double m_FeetY;
+            double m_Z;
+            bool m_OnGround;
         };
 
     }  // namespace clientbound

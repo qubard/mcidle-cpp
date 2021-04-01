@@ -4,27 +4,27 @@
 
 namespace mcidle {
 namespace packet {
-namespace clientbound {
+    namespace clientbound {
 
-class EncryptionRequest : public Packet 
-{
-public:
-    EncryptionRequest();
-    EncryptionRequest(std::string, std::string, std::string);
+        class EncryptionRequest : public Packet
+        {
+        public:
+            EncryptionRequest();
+            EncryptionRequest(std::string, std::string, std::string);
 
-    std::string PubKey() const;
-    std::string Token() const;
-    std::string ServerId() const;
+            std::string PubKey() const;
+            std::string Token() const;
+            std::string ServerId() const;
 
-    Packet &Serialize() override;
-    void Deserialize(ByteBuffer &) override;
+            Packet &Serialize() override;
+            void Deserialize(ByteBuffer &) override;
 
-private:
-	std::string m_ServerId;
-	std::string m_PubKey;
-	std::string m_Token;
-};
+        private:
+            std::string m_ServerId;
+            std::string m_PubKey;
+            std::string m_Token;
+        };
 
-} // namespace clientbound
-} // namespace packet
-} // namespace mcidle
+    }  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle

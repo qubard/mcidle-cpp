@@ -1,9 +1,9 @@
-#pragma once 
+#pragma once
 
 #include <networking/ByteBuffer.hpp>
-#include <networking/types/nbt/TagCompound.hpp>
 #include <networking/types/Position.hpp>
 #include <networking/types/VarInt.hpp>
+#include <networking/types/nbt/TagCompound.hpp>
 
 namespace mcidle {
 
@@ -12,14 +12,15 @@ template<class ...Ts>
 using TupleStruct = boost::tuple<Ts...>;
 
 template <class ...Ts, uint32_t N>
-inline void WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup) 
+inline void WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup)
 {
 
 }
 
 template <size_t k = 0, class ...Ts, uint32_t N>
-inline typename std::enable_if<k < boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
-    WriteStruct(ByteBuffer& buf, TupleStruct<Ts...> & tup) 
+inline typename std::enable_if<k <
+boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
+    WriteStruct(ByteBuffer& buf, TupleStruct<Ts...> & tup)
 {
     auto& val = boost::get<k>(tup);
     buf << val;
@@ -27,25 +28,26 @@ inline typename std::enable_if<k < boost::tuples::length<TupleStruct<Ts...>>::va
 }
 
 template <size_t k, class ...Ts, uint32_t N>
-inline typename std::enable_if<k == boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
-    WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup) 
+inline typename std::enable_if<k ==
+boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
+    WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup)
 {
     return buf;
 }
 */
 
 struct Slot {
-    bool Present; // not in <= 1.13
-    VarInt ItemIDInt; // if Present
-    s16 ItemIDShort; // Sometimes ItemID is a short
-    s16 ItemDamage; // not in >= 1.13
-    u8 ItemCount; // if Present
-    nbt::TagCompound NBT; // if Present
+    bool Present;          // not in <= 1.13
+    VarInt ItemIDInt;      // if Present
+    s16 ItemIDShort;       // Sometimes ItemID is a short
+    s16 ItemDamage;        // not in >= 1.13
+    u8 ItemCount;          // if Present
+    nbt::TagCompound NBT;  // if Present
 };
 
 struct OptChat {
     bool Present;
-    std::string Chat; // if Present
+    std::string Chat;  // if Present
 };
 
 struct Rotation {
@@ -66,7 +68,7 @@ struct UUID {
 
 struct OptUUID {
     bool Present;
-    mcidle::UUID UUID; // if Present
+    mcidle::UUID UUID;  // if Present
 };
 
 struct OptBlockID {
@@ -101,40 +103,40 @@ struct EntityData {
 
 struct OptVarInt {
     bool Present;
-    VarInt Value; // if Present
+    VarInt Value;  // if Present
 };
 
 struct Particle {
 };
 
-ByteBuffer& operator<<(ByteBuffer&, Particle&);
-ByteBuffer& operator>>(ByteBuffer&, Particle&);
+ByteBuffer &operator<<(ByteBuffer &, Particle &);
+ByteBuffer &operator>>(ByteBuffer &, Particle &);
 
 namespace metavalue {
 
-enum Type {
-    Byte,
-    VarInt,
-    Float,
-    String,
-    Chat,
-    OptChat,
-    Slot,
-    Boolean,
-    Rotation,
-    Position,
-    OptPosition,
-    Direction,
-    OptUUID,
-    OptBlockID,
-    NBT,
-    Particle,
-    VillagerData,
-    OptVarInt,
-    Pose
-};
+    enum Type {
+        Byte,
+        VarInt,
+        Float,
+        String,
+        Chat,
+        OptChat,
+        Slot,
+        Boolean,
+        Rotation,
+        Position,
+        OptPosition,
+        Direction,
+        OptUUID,
+        OptBlockID,
+        NBT,
+        Particle,
+        VillagerData,
+        OptVarInt,
+        Pose
+    };
 
-} // ns metavalue
+}  // namespace metavalue
 
 struct MetaValue {
     u8 Byte;
@@ -164,13 +166,13 @@ struct Metadata {
     MetaValue Value;
 };
 
-ByteBuffer& operator<<(ByteBuffer&, Slot&);
-ByteBuffer& operator>>(ByteBuffer&, Slot&);
+ByteBuffer &operator<<(ByteBuffer &, Slot &);
+ByteBuffer &operator>>(ByteBuffer &, Slot &);
 
-void WriteMetaValue(ByteBuffer&, MetaValue&, u8);
-void ReadMetaValue(ByteBuffer&, MetaValue&, u8);
+void WriteMetaValue(ByteBuffer &, MetaValue &, u8);
+void ReadMetaValue(ByteBuffer &, MetaValue &, u8);
 
-ByteBuffer& operator<<(ByteBuffer&, Metadata&);
-ByteBuffer& operator>>(ByteBuffer&, Metadata&);
+ByteBuffer &operator<<(ByteBuffer &, Metadata &);
+ByteBuffer &operator>>(ByteBuffer &, Metadata &);
 
-} // ns mcidle
+}  // namespace mcidle

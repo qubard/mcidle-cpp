@@ -2,22 +2,21 @@
 
 namespace mcidle {
 namespace packet {
-namespace clientbound {
+    namespace clientbound {
 
-Packet& LoginSuccess::Serialize()
-{
-	*m_FieldBuf << m_UUID;
-	*m_FieldBuf << m_Username;
-	return *this;
-}
+        Packet &LoginSuccess::Serialize()
+        {
+            *m_FieldBuf << m_UUID;
+            *m_FieldBuf << m_Username;
+            return *this;
+        }
 
-void LoginSuccess::Deserialize(ByteBuffer& buf)
-{
-	buf >> m_UUID;
-	buf >> m_Username;
-}
+        void LoginSuccess::Deserialize(ByteBuffer &buf)
+        {
+            buf >> m_UUID;
+            buf >> m_Username;
+        }
 
-} // ns clientbound
-} // ns packet
-} // ns mcidle
-
+    }  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle

@@ -9,7 +9,10 @@ template <typename T>
 T &SerializeWrite(T &packet, Protocol &protocol, s32 compression)
 {
     auto id = protocol.PacketId(packet);
-    packet.SetId(id).SetProtocol(protocol.VersionNumber()).Serialize().Write(compression);
+    packet.SetId(id)
+        .SetProtocol(protocol.VersionNumber())
+        .Serialize()
+        .Write(compression);
     return packet;
 }
 

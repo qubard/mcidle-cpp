@@ -3,35 +3,37 @@
 
 namespace mcidle {
 namespace packet {
-namespace serverbound {
+    namespace serverbound {
 
-TeleportConfirm::TeleportConfirm() : Packet()
-{
-}
+        TeleportConfirm::TeleportConfirm()
+            : Packet()
+        {
+        }
 
-TeleportConfirm::TeleportConfirm(s32 id) : Packet(), m_Id(id)
-{
-}
+        TeleportConfirm::TeleportConfirm(s32 id)
+            : Packet()
+            , m_Id(id)
+        {
+        }
 
-Packet& TeleportConfirm::Serialize()
-{
-	*m_FieldBuf << VarInt(m_Id);
-	return *this;
-}
+        Packet &TeleportConfirm::Serialize()
+        {
+            *m_FieldBuf << VarInt(m_Id);
+            return *this;
+        }
 
-void TeleportConfirm::Deserialize(ByteBuffer& buf)
-{
-    VarInt tmp;
-	buf >> tmp;
-    m_Id = tmp.Value();
-}
+        void TeleportConfirm::Deserialize(ByteBuffer &buf)
+        {
+            VarInt tmp;
+            buf >> tmp;
+            m_Id = tmp.Value();
+        }
 
-s32 TeleportConfirm::Id() const
-{
-    return m_Id;
-}
+        s32 TeleportConfirm::Id() const
+        {
+            return m_Id;
+        }
 
-} // ns serverbound
-} // ns packet
-} // ns mcidle
-
+    }  // namespace serverbound
+}  // namespace packet
+}  // namespace mcidle

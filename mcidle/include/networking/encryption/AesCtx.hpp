@@ -23,13 +23,14 @@ public:
 
     std::unique_ptr<ByteBuffer> Encrypt(ByteBuffer &, s32);
     std::unique_ptr<ByteBuffer> Decrypt(ByteBuffer &, s32);
+
 private:
-	u32 m_BlockSize;
-	EVP_CIPHER_CTX* m_EncryptCtx;
-	EVP_CIPHER_CTX* m_DecryptCtx;
-	std::string m_EncSecret;
-	std::string m_EncToken;
-	std::string m_Secret;
+    u32 m_BlockSize;
+    EVP_CIPHER_CTX *m_EncryptCtx;
+    EVP_CIPHER_CTX *m_DecryptCtx;
+    std::string m_EncSecret;
+    std::string m_EncToken;
+    std::string m_Secret;
 };
 
-}
+}  // namespace mcidle

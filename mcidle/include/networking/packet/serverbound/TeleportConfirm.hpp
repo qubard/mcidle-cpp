@@ -5,23 +5,23 @@
 
 namespace mcidle {
 namespace packet {
-namespace serverbound {
+    namespace serverbound {
 
-class TeleportConfirm : public Packet
-{
-public:
-    TeleportConfirm();
-    TeleportConfirm(s32);
+        class TeleportConfirm : public Packet
+        {
+        public:
+            TeleportConfirm();
+            TeleportConfirm(s32);
 
-    Packet &Serialize() override;
-    void Deserialize(ByteBuffer &) override;
+            Packet &Serialize() override;
+            void Deserialize(ByteBuffer &) override;
 
-    s32 Id() const;
+            s32 Id() const;
 
-private:
-	s64 m_Id;
-};
+        private:
+            s64 m_Id;
+        };
 
-} // ns serverbound
-} // ns packet
-} // ns mcidle
+    }  // namespace serverbound
+}  // namespace packet
+}  // namespace mcidle

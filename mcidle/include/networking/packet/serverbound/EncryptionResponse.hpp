@@ -4,25 +4,33 @@
 
 namespace mcidle {
 namespace packet {
-namespace serverbound {
+    namespace serverbound {
 
-class EncryptionResponse : public Packet
-{
-public:
-	EncryptionResponse() : Packet() {}
-	EncryptionResponse(std::string& secret, std::string& token) :
-		Packet(), m_Secret(std::move(secret)), m_Token(std::move(token)) {}
+        class EncryptionResponse : public Packet
+        {
+        public:
+            EncryptionResponse()
+                : Packet()
+            {
+            }
+            EncryptionResponse(std::string &secret, std::string &token)
+                : Packet()
+                , m_Secret(std::move(secret))
+                , m_Token(std::move(token))
+            {
+            }
 
-	std::string& Secret();
-	std::string& Token();
+            std::string &Secret();
+            std::string &Token();
 
-	Packet& Serialize() override;
-	void Deserialize(ByteBuffer&) override;
-private:
-	std::string m_Secret;
-	std::string m_Token;
-};
+            Packet &Serialize() override;
+            void Deserialize(ByteBuffer &) override;
 
-} // namespace serverbound
-} // namespace packet
-} // namespace mcidle
+        private:
+            std::string m_Secret;
+            std::string m_Token;
+        };
+
+    }  // namespace serverbound
+}  // namespace packet
+}  // namespace mcidle

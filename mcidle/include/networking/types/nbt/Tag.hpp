@@ -6,22 +6,24 @@
 namespace mcidle {
 namespace nbt {
 
-class Tag {
-public:
-    void SetName(std::string& name)
+    class Tag
     {
-        m_Name = std::move(name);
-    }
+    public:
+        void SetName(std::string &name)
+        {
+            m_Name = std::move(name);
+        }
 
-    virtual void Serialize(ByteBuffer&);
+        virtual void Serialize(ByteBuffer &);
 
-    std::string& Name()
-    {
-        return m_Name;
-    }
-protected:
-    std::string m_Name;
-};
+        std::string &Name()
+        {
+            return m_Name;
+        }
 
-} // ns mcidle 
-} // ns nbt
+    protected:
+        std::string m_Name;
+    };
+
+}  // namespace nbt
+}  // namespace mcidle

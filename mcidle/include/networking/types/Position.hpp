@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <networking/ByteBuffer.hpp>
 
@@ -10,7 +10,7 @@ struct Position {
     s64 Z;
 };
 
-ByteBuffer& operator>>(ByteBuffer&, Position&);
-ByteBuffer& operator<<(ByteBuffer&, Position&);
+ByteBuffer &operator>>(ByteBuffer &, Position &);
+ByteBuffer &operator<<(ByteBuffer &, Position &);
 
-} // ns mcidle
+}  // namespace mcidle
