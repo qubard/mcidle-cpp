@@ -5,282 +5,298 @@
 
 namespace mcidle {
 
-ByteBuffer::ByteBuffer() : m_BigEndian(true), m_ReadOffset(0), m_WriteOffset(0)
+ByteBuffer::ByteBuffer()
+    : m_BigEndian(true)
+    , m_ReadOffset(0)
+    , m_WriteOffset(0)
 {
 }
 
-ByteBuffer::ByteBuffer(std::vector<u8>& data) : m_BigEndian(true), m_ReadOffset(0),
-m_WriteOffset(0)
+ByteBuffer::ByteBuffer(std::vector<u8> &data)
+    : m_BigEndian(true)
+    , m_ReadOffset(0)
+    , m_WriteOffset(0)
 {
-	m_Data = std::move(data);
+    m_Data = std::move(data);
 }
 
-ByteBuffer::ByteBuffer(ByteBuffer&& buf) : m_BigEndian(buf.m_BigEndian), 
-m_ReadOffset(buf.m_ReadOffset), m_Data(std::move(buf.m_Data)), m_WriteOffset(buf.m_WriteOffset)
+ByteBuffer::ByteBuffer(ByteBuffer &&buf)
+    : m_BigEndian(buf.m_BigEndian)
+    , m_ReadOffset(buf.m_ReadOffset)
+    , m_Data(std::move(buf.m_Data))
+    , m_WriteOffset(buf.m_WriteOffset)
 {
 }
 
-ByteBuffer::ByteBuffer(std::size_t capacity, bool bigEndian=true): m_BigEndian(bigEndian), 
-m_ReadOffset(0), m_WriteOffset(0)
+ByteBuffer::ByteBuffer(std::size_t capacity, bool bigEndian = true)
+    : m_BigEndian(bigEndian)
+    , m_ReadOffset(0)
+    , m_WriteOffset(0)
 {
-	// Reserve `capacity` bytes
-	m_Data.reserve(capacity);
+    // Reserve `capacity` bytes
+    m_Data.reserve(capacity);
 }
 
-ByteBuffer::ByteBuffer(std::size_t capacity) : m_BigEndian(true), m_ReadOffset(0), m_WriteOffset(0)
+ByteBuffer::ByteBuffer(std::size_t capacity)
+    : m_BigEndian(true)
+    , m_ReadOffset(0)
+    , m_WriteOffset(0)
 {
-	m_Data.reserve(capacity);
+    m_Data.reserve(capacity);
 }
 
 bool ByteBuffer::Avail() const
 {
-	return m_ReadOffset < m_Data.size();
+    return m_ReadOffset < m_Data.size();
 }
 
 void ByteBuffer::SeekRead(std::size_t offset)
 {
-	m_ReadOffset = offset;
+    m_ReadOffset = offset;
 }
 
 void ByteBuffer::SeekWrite(std::size_t offset)
 {
-	m_WriteOffset = offset;
+    m_WriteOffset = offset;
 }
 
 // Copy bytes from `buf` into the current buffer
-ByteBuffer& ByteBuffer::operator<<(ByteBuffer& buf)
+ByteBuffer &ByteBuffer::operator<<(ByteBuffer &buf)
 {
-	Write(buf.Front(), buf.Size());
-	return *this;
+    Write(buf.Front(), buf.Size());
+    return *this;
 }
 
-std::size_t ByteBuffer::Remaining() const 
+std::size_t ByteBuffer::Remaining() const
 {
     return m_Data.size() - m_ReadOffset;
 }
 
-ByteBuffer& ByteBuffer::operator<<(std::string& str)
+ByteBuffer &ByteBuffer::operator<<(std::string &str)
 {
     // Write the string length as a VarInt
     Write(VarInt(str.size()));
     if (str.size() > 0)
     {
         // Write the actual bytes in the string
-        Write((u8*)&str[0], str.size());
+        Write((u8 *)&str[0], str.size());
     }
     return *this;
 }
 
 std::size_t ByteBuffer::ReadOffset() const
 {
-	return m_ReadOffset;
+    return m_ReadOffset;
 }
 
-ByteBuffer& ByteBuffer::operator<<(const char* buf)
+ByteBuffer &ByteBuffer::operator<<(const char *buf)
 {
-	// Convert `buf` to a string first
-	std::string str(buf, strlen(buf));
-	*this << str;
-	return *this;
+    // Convert `buf` to a string first
+    std::string str(buf, strlen(buf));
+    *this << str;
+    return *this;
 }
 
-ByteBuffer& ByteBuffer::operator<<(std::string&& str)
+ByteBuffer &ByteBuffer::operator<<(std::string &&str)
 {
-	// Can't take the address of an rvalue so we 
-	// convert to an lvalue first with constness
-	*this << str;
-	return *this;
+    // Can't take the address of an rvalue so we
+    // convert to an lvalue first with constness
+    *this << str;
+    return *this;
 }
 
 void ByteBuffer::Reserve(std::size_t capacity)
 {
-	m_Data.reserve(capacity);
+    m_Data.reserve(capacity);
 }
 
-u8& ByteBuffer::Peek()
+u8 &ByteBuffer::Peek()
 {
-	if (m_ReadOffset >= m_Data.capacity())
-	{
-		throw std::runtime_error("Read offset exceeds capacity");
-	}
-	return m_Data[m_ReadOffset];
+    if (m_ReadOffset >= m_Data.capacity())
+    {
+        throw std::runtime_error("Read offset exceeds capacity");
+    }
+    return m_Data[m_ReadOffset];
 }
 
-u8* ByteBuffer::Front() 
+u8 *ByteBuffer::Front()
 {
-	return m_Data.data();
+    return m_Data.data();
 }
 
-u8* ByteBuffer::Back() 
+u8 *ByteBuffer::Back()
 {
-	return m_Data.data() + m_Data.size();
+    return m_Data.data() + m_Data.size();
 }
 
-ByteBuffer& ByteBuffer::operator>>(std::string& str)
+ByteBuffer &ByteBuffer::operator>>(std::string &str)
 {
-	VarInt len = Read<VarInt>();
-	std::string tmp;
-	tmp.resize(len.Value());
-	Read((u8*)tmp.c_str(), len.Value());
-	str = std::move(tmp);
-	return *this;
+    VarInt len = Read<VarInt>();
+    std::string tmp;
+    tmp.resize(len.Value());
+    Read((u8 *)tmp.c_str(), len.Value());
+    str = std::move(tmp);
+    return *this;
 }
 
 std::size_t ByteBuffer::Size() const
 {
-	return m_Data.size();
+    return m_Data.size();
 }
 
 std::size_t ByteBuffer::WriteSize() const
 {
-	return m_WriteOffset;
+    return m_WriteOffset;
 }
 
 void ByteBuffer::Clear()
 {
-	m_Data.clear();
-	m_WriteOffset = 0;
-	m_ReadOffset = 0;
+    m_Data.clear();
+    m_WriteOffset = 0;
+    m_ReadOffset = 0;
 }
 
 ByteBuffer &ByteBuffer::Resize(u64 size)
 {
-	m_Data.resize(size);
-	return *this;
+    m_Data.resize(size);
+    return *this;
 }
 
 const std::string ByteBuffer::Hex()
 {
-	if (m_Data.size() == 0) return "";
-	std::string hex;
+    if (m_Data.size() == 0)
+        return "";
+    std::string hex;
     std::cout << "hex bytes length: " << m_Data.size() << "\n";
-	boost::algorithm::hex(m_Data, std::back_inserter(hex));
+    boost::algorithm::hex(m_Data, std::back_inserter(hex));
 
-	std::string res;
-	for (size_t i = 0; i < hex.length(); i += 2) {
-		res += hex.substr(i, 2);
-		if (i + 2 < hex.length()) res += ' ';
-	}
-	return res;
+    std::string res;
+    for (size_t i = 0; i < hex.length(); i += 2)
+    {
+        res += hex.substr(i, 2);
+        if (i + 2 < hex.length())
+            res += ' ';
+    }
+    return res;
 }
 
-u8& ByteBuffer::operator[](std::size_t idx)
+u8 &ByteBuffer::operator[](std::size_t idx)
 {
-	return m_Data[idx];
+    return m_Data[idx];
 }
 
-ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other)
+ByteBuffer &ByteBuffer::operator=(ByteBuffer &&other)
 {
-	if (this != &other)
-	{
-		m_Data = std::move(other.m_Data);
-		m_ReadOffset = other.m_ReadOffset;
-		m_BigEndian = other.m_BigEndian;
-	}
-	return *this;
+    if (this != &other)
+    {
+        m_Data = std::move(other.m_Data);
+        m_ReadOffset = other.m_ReadOffset;
+        m_BigEndian = other.m_BigEndian;
+    }
+    return *this;
 }
 
-ByteBuffer& ByteBuffer::operator=(ByteBuffer& other)
+ByteBuffer &ByteBuffer::operator=(ByteBuffer &other)
 {
-	m_Data = other.m_Data;
-	m_ReadOffset = other.m_ReadOffset;
-	m_BigEndian = other.m_BigEndian;
-	return *this;
+    m_Data = other.m_Data;
+    m_ReadOffset = other.m_ReadOffset;
+    m_BigEndian = other.m_BigEndian;
+    return *this;
 }
 
 // Write `len` bytes from `src`
-void ByteBuffer::Write(const u8* src, std::size_t size)
+void ByteBuffer::Write(const u8 *src, std::size_t size)
 {
-	if (m_WriteOffset + size > m_Data.size())
-		m_Data.resize(m_WriteOffset + size);
-	memcpy(&m_Data[m_WriteOffset], src, size);
-	m_WriteOffset += size;
+    if (m_WriteOffset + size > m_Data.size())
+        m_Data.resize(m_WriteOffset + size);
+    memcpy(&m_Data[m_WriteOffset], src, size);
+    m_WriteOffset += size;
 }
 
-void ByteBuffer::Read(u8* dst, std::size_t size)
+void ByteBuffer::Read(u8 *dst, std::size_t size)
 {
-	if (m_ReadOffset + size > m_Data.size())
-	{
-		throw std::runtime_error("Invalid read! Not enough bytes");
-	}
-	memcpy(dst, m_Data.data() + m_ReadOffset, size);
-	m_ReadOffset += size;
+    if (m_ReadOffset + size > m_Data.size())
+    {
+        throw std::runtime_error("Invalid read! Not enough bytes");
+    }
+    memcpy(dst, m_Data.data() + m_ReadOffset, size);
+    m_ReadOffset += size;
 }
 
-void ByteBuffer::Read(ByteBuffer& buf, std::size_t size)
+void ByteBuffer::Read(ByteBuffer &buf, std::size_t size)
 {
-	if (buf.m_WriteOffset + size > buf.Size())
-		buf.Resize(buf.m_WriteOffset + size);
-	Read(&buf.m_Data[buf.m_WriteOffset], size);
-	buf.m_WriteOffset += size;
+    if (buf.m_WriteOffset + size > buf.Size())
+        buf.Resize(buf.m_WriteOffset + size);
+    Read(&buf.m_Data[buf.m_WriteOffset], size);
+    buf.m_WriteOffset += size;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, VarInt& value)
+ByteBuffer &operator>>(ByteBuffer &buf, VarInt &value)
 {
-	s32 numRead = 0;
-	s32 result = 0;
-	u8 read;
-	do 
-	{
-		try 
-		{
-			read = buf.Read<u8>();
-		}
-		catch (std::runtime_error e)
-		{
-			throw std::runtime_error("VarInt too small");
-		}
+    s32 numRead = 0;
+    s32 result = 0;
+    u8 read;
+    do
+    {
+        try
+        {
+            read = buf.Read<u8>();
+        }
+        catch (std::runtime_error e)
+        {
+            throw std::runtime_error("VarInt too small");
+        }
 
-		u8 value = read & 0b01111111;
-		result |= value << (7 * numRead);
+        u8 value = read & 0b01111111;
+        result |= value << (7 * numRead);
 
-		numRead++;
-		if (numRead > 5) 
-		{
-			throw std::runtime_error("VarInt is too long");
-		}
-	} while ((read & 0b10000000) != 0);
-	
-	value.SetValue(result);
+        numRead++;
+        if (numRead > 5)
+        {
+            throw std::runtime_error("VarInt is too long");
+        }
+    } while ((read & 0b10000000) != 0);
 
-	return buf;
+    value.SetValue(result);
+
+    return buf;
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, VarInt&& value)
+ByteBuffer &operator<<(ByteBuffer &buf, VarInt &&value)
 {
-	return buf << value;
+    return buf << value;
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, const VarInt& value)
+ByteBuffer &operator<<(ByteBuffer &buf, const VarInt &value)
 {
-	u32 tmp = value.Value();
-	do
-	{
-		u8 temp = tmp & 0b01111111;
-		tmp >>= 7;
-		// Last bit denotes if there are more bytes
-		if (tmp != 0)
-		{
-			temp |= 0b10000000;
-		}
-		buf.Write(temp);
-	} while (tmp != 0);
+    u32 tmp = value.Value();
+    do
+    {
+        u8 temp = tmp & 0b01111111;
+        tmp >>= 7;
+        // Last bit denotes if there are more bytes
+        if (tmp != 0)
+        {
+            temp |= 0b10000000;
+        }
+        buf.Write(temp);
+    } while (tmp != 0);
 
-	return buf;
+    return buf;
 }
 
-template<>
+template <>
 VarInt ByteBuffer::Read()
 {
-	VarInt res;
-	*this >> res;
-	return res;
+    VarInt res;
+    *this >> res;
+    return res;
 }
 
-template<>
+template <>
 void ByteBuffer::Write(const VarInt val)
 {
-	*this << val;
+    *this << val;
 }
 
 }  // namespace mcidle

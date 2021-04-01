@@ -2,9 +2,9 @@
 
 #include <mutex>
 
-#include <networking/thread/Pipe.hpp>
 #include <networking/connection/Connection.hpp>
 #include <networking/game/GameState.hpp>
+#include <networking/thread/Pipe.hpp>
 
 namespace mcidle {
 
@@ -21,6 +21,7 @@ public:
     // Run the proxy and pipe from source to sink
     // and mutate local game state if needed
     void Run();
+
 private:
     std::shared_ptr<mcidle::game::GameState> m_State;
 

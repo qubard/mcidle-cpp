@@ -3,21 +3,21 @@
 
 namespace mcidle {
 
-Proxy::Proxy(std::shared_ptr<Connection> source, 
-        std::shared_ptr<mcidle::game::GameState> state) : 
-    m_Source(source), 
-    m_State(state),
-    m_Dest(nullptr)
+Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<mcidle::game::GameState> state)
+    : m_Source(source)
+    , m_State(state)
+    , m_Dest(nullptr)
 {
 }
 
 // A proxy reads from a source connection and writes to a destination
 // pipe after it is setup. It is also responsible for closing
 // the source pipe if it disconnects
-Proxy::Proxy(std::shared_ptr<Connection> source,
-        std::shared_ptr<thread::Pipe> dest, 
-        std::shared_ptr<mcidle::game::GameState> state)
-    : m_Source(source), m_State(state), m_Dest(dest)
+Proxy::Proxy(std::shared_ptr<Connection> source, std::shared_ptr<thread::Pipe> dest,
+             std::shared_ptr<mcidle::game::GameState> state)
+    : m_Source(source)
+    , m_State(state)
+    , m_Dest(dest)
 {
 }
 
@@ -38,9 +38,9 @@ void Proxy::Run()
             if (response != nullptr)
             {
                 if (m_Source != nullptr)
-                     m_Source->SendPacketFwd(*response);
+                    m_Source->SendPacketFwd(*response);
             }
-            else 
+            else
             {
                 // Send the packet down the pipe to a connected sink
                 m_Dest->Push(packet);
@@ -51,7 +51,7 @@ void Proxy::Run()
             {
                 packet->Mutate(*m_State);
             }
-        } 
+        }
         // This only occurs when the socket is closed
         else
         {

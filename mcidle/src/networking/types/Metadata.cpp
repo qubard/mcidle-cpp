@@ -2,12 +2,12 @@
 
 namespace mcidle {
 
-void WriteMetaValue(ByteBuffer& buf, MetaValue& value, u8 type)
+void WriteMetaValue(ByteBuffer &buf, MetaValue &value, u8 type)
 {
     if (type == metavalue::Type::Byte)
     {
         buf << value.Byte;
-    } 
+    }
     else if (type == metavalue::Type::VarInt)
     {
         buf << value.VarInt;
@@ -82,14 +82,14 @@ void WriteMetaValue(ByteBuffer& buf, MetaValue& value, u8 type)
     }
 }
 
-void ReadMetaValue(ByteBuffer& buf, MetaValue& value, u8 type)
+void ReadMetaValue(ByteBuffer &buf, MetaValue &value, u8 type)
 {
     printf("Deserializing meta value type : %d\n", type);
     if (type == metavalue::Type::Byte)
     {
         buf >> value.Byte;
         printf("byte: %d\n", value.Byte);
-    } 
+    }
     else if (type == metavalue::Type::VarInt)
     {
         buf >> value.VarInt;
@@ -168,7 +168,7 @@ void ReadMetaValue(ByteBuffer& buf, MetaValue& value, u8 type)
     }
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, Metadata& metadata)
+ByteBuffer &operator<<(ByteBuffer &buf, Metadata &metadata)
 {
     printf("Serializing metadata..\n");
     buf << metadata.Index;
@@ -181,11 +181,11 @@ ByteBuffer& operator<<(ByteBuffer& buf, Metadata& metadata)
     return buf;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, Metadata& metadata)
+ByteBuffer &operator>>(ByteBuffer &buf, Metadata &metadata)
 {
     printf("*********Begun reading meta value\n");
     // This is an array, but it has no length
-    // so we read until the packet is consumed 
+    // so we read until the packet is consumed
     while (buf.Avail())
     {
         buf >> metadata.Index;
@@ -197,7 +197,8 @@ ByteBuffer& operator>>(ByteBuffer& buf, Metadata& metadata)
             ReadMetaValue(buf, metadata.Value, type);
             printf("Finished reading meta value\n");
         }
-        else {
+        else
+        {
             printf("Meta index is 0xFF\n");
         }
         printf("Remaining : %d out of %d, avail :%d\n", buf.ReadOffset(), buf.Size(), buf.Avail());
@@ -205,7 +206,7 @@ ByteBuffer& operator>>(ByteBuffer& buf, Metadata& metadata)
     return buf;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, Slot& slot)
+ByteBuffer &operator>>(ByteBuffer &buf, Slot &slot)
 {
     // This changes for game versions
     buf >> slot.ItemIDShort;
@@ -222,15 +223,16 @@ ByteBuffer& operator>>(ByteBuffer& buf, Slot& slot)
         {
             printf("Ok slot is present..\n");
             printf("Empty :%d !!!!\n", slot.NBT.Size());
-        } 
-        else {
+        }
+        else
+        {
             printf("Not slot present!\n");
         }
     }
     return buf;
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, Slot& slot)
+ByteBuffer &operator<<(ByteBuffer &buf, Slot &slot)
 {
     buf << slot.ItemIDShort;
 
@@ -248,31 +250,31 @@ ByteBuffer& operator<<(ByteBuffer& buf, Slot& slot)
 // Particle is going to have a dummy implementation
 // because it's pointless to decode/serialize
 // and is a fairly complex structure
-ByteBuffer& operator<<(ByteBuffer& buf, Particle&)
+ByteBuffer &operator<<(ByteBuffer &buf, Particle &)
 {
     buf << VarInt(0);
     buf << VarInt(0);
     return buf;
 }
 
-ByteBuffer& operator<<(ByteBuffer& buf, UUID& uuid)
+ByteBuffer &operator<<(ByteBuffer &buf, UUID &uuid)
 {
     buf << uuid.First;
-    buf << uuid.Second; 
+    buf << uuid.Second;
     return buf;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, UUID& uuid)
+ByteBuffer &operator>>(ByteBuffer &buf, UUID &uuid)
 {
     buf >> uuid.First;
     buf >> uuid.Second;
     return buf;
 }
 
-ByteBuffer& operator>>(ByteBuffer& buf, Particle&)
+ByteBuffer &operator>>(ByteBuffer &buf, Particle &)
 {
     // Don't need to deserialize
     return buf;
 }
 
-} // ns mcidle
+}  // namespace mcidle

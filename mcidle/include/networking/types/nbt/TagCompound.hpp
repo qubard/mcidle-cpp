@@ -10,29 +10,31 @@
 namespace mcidle {
 namespace nbt {
 
-// A list of tags (the only root tag type)
-class TagCompound : public Tag {
-public:
-    TagCompound();
+    // A list of tags (the only root tag type)
+    class TagCompound : public Tag
+    {
+    public:
+        TagCompound();
 
-    void Push(std::shared_ptr<Tag> tag);
+        void Push(std::shared_ptr<Tag> tag);
 
-    void Serialize(ByteBuffer& buf);
+        void Serialize(ByteBuffer &buf);
 
-    std::vector<std::shared_ptr<Tag>>& Tags();
-    bool Empty() const;
-    std::size_t Size() const ;
-private:
-    std::vector<std::shared_ptr<Tag>> m_Tags;
-};
+        std::vector<std::shared_ptr<Tag>> &Tags();
+        bool Empty() const;
+        std::size_t Size() const;
 
-ByteBuffer& operator>>(ByteBuffer&, TagCompound&);
-ByteBuffer& operator<<(ByteBuffer&, TagCompound&);
+    private:
+        std::vector<std::shared_ptr<Tag>> m_Tags;
+    };
 
-void SerializeTagCompound(ByteBuffer&, TagCompound&);
-void SerializeTagCompoundInner(ByteBuffer&, TagCompound&);
-void DeserializeTagCompound(ByteBuffer&, TagCompound&);
-void DeserializeTagCompoundInner(ByteBuffer&, TagCompound&);
+    ByteBuffer &operator>>(ByteBuffer &, TagCompound &);
+    ByteBuffer &operator<<(ByteBuffer &, TagCompound &);
 
-} // ns nbt
-} // ns mcidle
+    void SerializeTagCompound(ByteBuffer &, TagCompound &);
+    void SerializeTagCompoundInner(ByteBuffer &, TagCompound &);
+    void DeserializeTagCompound(ByteBuffer &, TagCompound &);
+    void DeserializeTagCompoundInner(ByteBuffer &, TagCompound &);
+
+}  // namespace nbt
+}  // namespace mcidle

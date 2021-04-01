@@ -4,18 +4,16 @@
 #include <networking/packet/Packet.hpp>
 #include <networking/protocol/Protocol.hpp>
 
-namespace mcidle
-{
+namespace mcidle {
 
 // 1.12.2 map from id to packet
 static ProtocolMap clientboundMap_1_12_2 = {
     {state::LOGIN,
-     {
-     {
+     {{
           0x01,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EncryptionRequest>(); },
       },
-       {  
+      {
           0x00,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
       },
@@ -36,12 +34,12 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x1F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::KeepAlive>(); },
       },
-    {
+      {
           0x2F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::PlayerPositionLook>(); },
       },
 
-    {
+      {
           0x1A,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Disconnect>(); },
       },
@@ -49,23 +47,23 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x41,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UpdateHealth>(); },
       },
-    {
+      {
           0x46,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnPosition>(); },
       },
-    {
+      {
           0x1D,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::UnloadChunk>(); },
       },
-        {
+      {
           0x10,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::MultiBlockChange>(); },
       },
-        {
+      {
           0x0B,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::BlockChange>(); },
       },
-        {
+      {
           0x1C,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Explosion>(); },
       },
@@ -77,7 +75,7 @@ static ProtocolMap clientboundMap_1_12_2 = {
           0x35,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::Respawn>(); },
       },
-        {
+      {
           0x23,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::JoinGame>(); },
       },
@@ -86,67 +84,70 @@ static ProtocolMap clientboundMap_1_12_2 = {
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::SpawnMob>(); },
       },
       {
-        0x0F,
+          0x0F,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::ChatMessage>(); },
 
       },
       {
-        0x32,
+          0x32,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::DestroyEntities>(); },
 
       },
-        {
-        0x4C,
+      {
+          0x4C,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityTeleport>(); },
 
       },
-        {
-        0x3E,
-          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityVelocity>(); },
-        },
       {
-        0x26,
+          0x3E,
+          []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityVelocity>(); },
+      },
+      {
+          0x26,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityRelMove>(); },
 
       },
       {
-        0x27,
+          0x27,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::EntityLookRelMove>(); },
       },
       {
           0x1E,
           []() -> std::unique_ptr<Packet> { return std::make_unique<packet::clientbound::GameState>(); },
-}}}};
+      }}}};
 
-static ProtocolMap serverboundMap_1_12_2 =
-{
-	{
-		state::HANDSHAKE,
-		{
-			{
-				0x00, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::Handshake>(); },
-			},
-		},
-	},
-	{
-		state::LOGIN,
-		{
-			{
-				0x00, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::LoginStart>(); },
-			},
-			{
-				0x01, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::EncryptionResponse>(); },
-			},
-		},
-	},
+static ProtocolMap serverboundMap_1_12_2 = {
     {
-		state::PLAY,
-		{
-			{
-				0x00, []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::TeleportConfirm>(); },
-			},
-		},
-	},
+        state::HANDSHAKE,
+        {
+            {
+                0x00,
+                []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::Handshake>(); },
+            },
+        },
+    },
+    {
+        state::LOGIN,
+        {
+            {
+                0x00,
+                []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::LoginStart>(); },
+            },
+            {
+                0x01,
+                []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::EncryptionResponse>(); },
+            },
+        },
+    },
+    {
+        state::PLAY,
+        {
+            {
+                0x00,
+                []() -> std::unique_ptr<Packet> { return std::make_unique<packet::serverbound::TeleportConfirm>(); },
+            },
+        },
+    },
 
 };
 
@@ -161,7 +162,6 @@ public:
     s32 PacketId(packet::serverbound::LoginStart &) override;
     s32 PacketId(packet::serverbound::EncryptionResponse &) override;
 };
-
 
 // Incoming serverbound packets, outbound client packets
 class Protocol_1_12_2_SB : public Protocol
@@ -185,4 +185,4 @@ public:
     s32 PacketId(packet::clientbound::EntityVelocity &) override;
 };
 
-}
+}  // namespace mcidle

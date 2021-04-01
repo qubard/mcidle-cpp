@@ -3,10 +3,10 @@
 namespace mcidle {
 namespace nbt {
 
-void Tag::Serialize(ByteBuffer& buf)
-{
-    throw std::runtime_error("Unimplemented Tag::Serialize!");
-}
+    void Tag::Serialize(ByteBuffer &buf)
+    {
+        throw std::runtime_error("Unimplemented Tag::Serialize!");
+    }
 
-} // ns mcidle 
-} // ns nbt
+}  // namespace nbt
+}  // namespace mcidle

@@ -37,32 +37,32 @@ s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SetCompression &)
     return 0x03;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::JoinGame &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::JoinGame &)
 {
     return 0x23;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::LoginSuccess &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::LoginSuccess &)
 {
     return 0x02;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SpawnPosition &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::SpawnPosition &)
 {
     return 0x46;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::PlayerPositionLook &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::PlayerPositionLook &)
 {
     return 0x2F;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::KeepAlive &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::KeepAlive &)
 {
     return 0x1F;
 }
 
-s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::ChunkData &) 
+s32 Protocol_1_12_2_SB::PacketId(packet::clientbound::ChunkData &)
 {
     return 0x20;
 }

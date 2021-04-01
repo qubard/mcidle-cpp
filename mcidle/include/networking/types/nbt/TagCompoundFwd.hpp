@@ -3,7 +3,7 @@
 namespace mcidle {
 namespace nbt {
 
-class TagCompound;
+    class TagCompound;
 
-} // ns nbt
-} // ns mcidle
+}  // namespace nbt
+}  // namespace mcidle

@@ -3,7 +3,7 @@
 namespace mcidle {
 namespace nbt {
 
-class TagList;
+    class TagList;
 
-} // ns nbt
-} // ns mcidle
+}  // namespace nbt
+}  // namespace mcidle

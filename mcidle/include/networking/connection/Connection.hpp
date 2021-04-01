@@ -14,7 +14,8 @@ namespace mcidle {
 class Connection
 {
 public:
-    Connection(std::shared_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::shared_ptr<mcidle::game::GameState>, std::size_t);
+    Connection(std::shared_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::shared_ptr<mcidle::game::GameState>,
+               std::size_t);
 
     // Equivalent to enabling encryption
     Connection &SetAes(std::unique_ptr<AesCtx> &);
@@ -28,7 +29,7 @@ public:
     // Send an already written packet without FullWrite
     std::size_t SendPacketFwd(Packet &packet);
     // Send a byte buffer
-    std::size_t SendBuffer(std::shared_ptr<ByteBuffer>&);
+    std::size_t SendBuffer(std::shared_ptr<ByteBuffer> &);
 
     template <typename T>
     std::size_t SendPacket(T &&packet)
@@ -41,19 +42,21 @@ public:
     // This is a raw packet, still needs to be decompressed
     std::shared_ptr<Packet> ReadPacket();
     std::shared_ptr<mcidle::Protocol> m_Protocol;
+
 private:
-	std::shared_ptr<ByteBuffer> ReadBuffer();
-	// Prepare `m_ReadBuf` for an actual read (read 4k bytes)
-	inline bool PrepareRead();
+    std::shared_ptr<ByteBuffer> ReadBuffer();
+    // Prepare `m_ReadBuf` for an actual read (read 4k bytes)
+    inline bool PrepareRead();
 
     s32 m_Compression;
 
     // The read buffer for incoming packet data
     ByteBuffer m_ReadBuf;
-	s32 m_LastRecSize;
+    s32 m_LastRecSize;
 
     std::shared_ptr<TCPSocket> m_Socket;
     std::unique_ptr<AesCtx> m_Aes;
+
 protected:
     std::shared_ptr<mcidle::game::GameState> m_State;
 };

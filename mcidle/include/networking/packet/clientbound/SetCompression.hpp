@@ -5,25 +5,25 @@
 
 namespace mcidle {
 namespace packet {
-namespace clientbound {
+    namespace clientbound {
 
-class SetCompression : public Packet
-{
-public:
-    SetCompression();
-    SetCompression(s32);
+        class SetCompression : public Packet
+        {
+        public:
+            SetCompression();
+            SetCompression(s32);
 
-    void Mutate(game::GameState &) override;
+            void Mutate(game::GameState &) override;
 
-    s32 Threshold() const;
+            s32 Threshold() const;
 
-    Packet &Serialize() override;
-    void Deserialize(ByteBuffer &) override;
+            Packet &Serialize() override;
+            void Deserialize(ByteBuffer &) override;
 
-private:
-	VarInt m_Compression;
-};
+        private:
+            VarInt m_Compression;
+        };
 
-} // ns clientbound
-} // ns packet
-} // ns mcidle
+    }  // namespace clientbound
+}  // namespace packet
+}  // namespace mcidle
