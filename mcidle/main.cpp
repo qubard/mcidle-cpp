@@ -1,56 +1,42 @@
 ﻿#include <iostream>
-#include <string>
+#include <curl/curl.h>
+#include <openssl/aes.h>
+#include <openssl/rsa.h>
+#include <openssl/x509.h>
+#include <zlib.h>
 
+#include <MCIdle.hpp>
+#include <bitset>
 #include <boost/algorithm/hex.hpp>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/tuple/tuple.hpp>
-
-#include <bitset>
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <common/Rsa.hpp>
+#include <cstdlib>
 #include <memory>
-#include <vector>
-
+#include <networking/ByteBuffer.hpp>
+#include <networking/Proxy.hpp>
 #include <networking/TCPSocket.hpp>
 #include <networking/connection/Connection.hpp>
 #include <networking/connection/SConnection.hpp>
-
-#include <networking/ByteBuffer.hpp>
-#include <networking/types/VarInt.hpp>
-
-#include <networking/packet/serverbound/Handshake.hpp>
-#include <networking/packet/serverbound/LoginStart.hpp>
-
 #include <networking/encryption/AesCtx.hpp>
-#include <networking/packet/serverbound/EncryptionResponse.hpp>
-#include <networking/protocol/Protocol_1_12_2.hpp>
-
-#include <util/Yggdrasil.hpp>
-
-#include <zlib.h>
-
-#include <openssl/aes.h>
-#include <openssl/rsa.h>
-#include <openssl/x509.h>
-
-#include <curl/curl.h>
-
 #include <networking/packet/clientbound/KeepAlive.hpp>
+#include <networking/packet/serverbound/EncryptionResponse.hpp>
+#include <networking/packet/serverbound/Handshake.hpp>
 #include <networking/packet/serverbound/KeepAlive.hpp>
-
-#include <MCIdle.hpp>
-
-#include <boost/thread.hpp>
-
-#include <networking/Proxy.hpp>
-
-#include <common/Rsa.hpp>
-#include <cstdlib>
+#include <networking/packet/serverbound/LoginStart.hpp>
+#include <networking/protocol/Protocol_1_12_2.hpp>
+#include <networking/types/VarInt.hpp>
+#include <string>
+#include <util/Yggdrasil.hpp>
+#include <vector>
 
 std::unordered_map<std::string, std::vector<s32>> chunks;
 
@@ -63,7 +49,9 @@ const std::string loadVariable(const char *name)
 
 bool IsNumber(const std::string &s)
 {
-    return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+    return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) {
+                             return !std::isdigit(c);
+                         }) == s.end();
 }
 
 int main(int argc, char *argv[])
@@ -114,7 +102,8 @@ int main(int argc, char *argv[])
 
     mcidle::MCIdle mc(ONLINE_MODE, IP, PORT, protocol, nullptr, yg);
 
-    std::cout << "Started in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE") << " mode!\n";
+    std::cout << "Started in " << (ONLINE_MODE ? "ONLINE" : "OFFLINE")
+              << " mode!\n";
 
     // Bug: if a packet isn't sent and a readpacket call fails everything fails
     if (!mc.Start())

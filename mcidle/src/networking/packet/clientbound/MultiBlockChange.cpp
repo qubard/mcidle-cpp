@@ -52,8 +52,10 @@ namespace packet {
         {
             for (Record &r : m_Records)
             {
-                state.SetChunkBlock((r.PosXZ & 0xF) * game::SECTION_SIZE, r.BlockY,
-                                    ((r.PosXZ >> 4) & 0xF) * game::SECTION_SIZE, r.BlockID.Value());
+                state.SetChunkBlock((r.PosXZ & 0xF) * game::SECTION_SIZE,
+                                    r.BlockY,
+                                    ((r.PosXZ >> 4) & 0xF) * game::SECTION_SIZE,
+                                    r.BlockID.Value());
             }
         }
 

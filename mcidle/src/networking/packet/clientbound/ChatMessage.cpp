@@ -15,7 +15,8 @@ namespace packet {
         {
         }
 
-        std::shared_ptr<Packet> ChatMessage::Response(Protocol &protocol, s32 compression)
+        std::shared_ptr<Packet> ChatMessage::Response(Protocol &protocol,
+                                                      s32 compression)
         {
             // Generate a serverbound keep alive using our id
             std::cout << m_JsonData << "\n";

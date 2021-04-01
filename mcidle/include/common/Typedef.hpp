@@ -4,9 +4,8 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
-
 #include <unordered_map>
+#include <vector>
 
 typedef int8_t s8;
 typedef int16_t s16;
@@ -56,7 +55,7 @@ namespace game {
 
     inline s32 ChunkPosToBlockNumLight(s32 x, s32 y, s32 z)
     {
-        //return y * (8 * 16) + (z * 8) + x;
+        // return y * (8 * 16) + (z * 8) + x;
         return ((y * 16) + z) * 8 + static_cast<s32>(x / 2);
     }
 
@@ -65,7 +64,9 @@ namespace game {
         return (((y * SECTION_HEIGHT) + z) * SECTION_WIDTH) + x;
     }
 
-    inline u8 LightAt(std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> &lightMap, s32 x, s32 y, s32 z)
+    inline u8 LightAt(
+        std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> &lightMap,
+        s32 x, s32 y, s32 z)
     {
         auto pos = ChunkPosToBlockNumLight(x & 0xF, y & 0xF, z & 0xF);
         s32 chunkY = y / SECTION_SIZE;
@@ -75,19 +76,22 @@ namespace game {
         return x % 2 == 1 ? (val >> 4) & mask : val & mask;
     }
 
-    inline void SetLightAt(std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> &lightMap, s32 x, s32 y, s32 z,
-                           s8 val)
+    inline void SetLightAt(
+        std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> &lightMap,
+        s32 x, s32 y, s32 z, s8 val)
     {
         auto pos = ChunkPosToBlockNumLight(x & 0xF, y & 0xF, z & 0xF);
         s32 chunkY = y / SECTION_SIZE;
 
         if (x % 2 == 1)
         {
-            (*lightMap)[chunkY][pos] = (u8)((val << 4)) | ((*lightMap)[chunkY][pos] & 0xF);
+            (*lightMap)[chunkY][pos] =
+                (u8)((val << 4)) | ((*lightMap)[chunkY][pos] & 0xF);
         }
         else
         {
-            (*lightMap)[chunkY][pos] = val | (u8)((*lightMap)[chunkY][pos] & 0xF0);
+            (*lightMap)[chunkY][pos] =
+                val | (u8)((*lightMap)[chunkY][pos] & 0xF0);
         }
     }
 

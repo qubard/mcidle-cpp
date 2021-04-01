@@ -31,7 +31,8 @@ namespace nbt {
 
     u32 TagList::Size() const
     {
-        return m_Bytes.size() + m_Strings.size() + m_Longs.size() + m_Ints.size() + m_Tags.size();
+        return m_Bytes.size() + m_Strings.size() + m_Longs.size() +
+               m_Ints.size() + m_Tags.size();
     }
 
     void TagList::Serialize(ByteBuffer &buf)
@@ -44,7 +45,8 @@ namespace nbt {
 
         s32 size = Size();
         buf << size;
-        printf("Sending size.. %d %d %d %d\n", m_Bytes.size(), m_Strings.size(), m_Ints.size(), m_Tags.size());
+        printf("Sending size.. %d %d %d %d\n", m_Bytes.size(), m_Strings.size(),
+               m_Ints.size(), m_Tags.size());
 
         if (m_ListType == TAG_BYTE)
         {
@@ -82,7 +84,8 @@ namespace nbt {
         }
         else
         {
-            throw std::runtime_error("Unimplemented list type during serialization");
+            throw std::runtime_error(
+                "Unimplemented list type during serialization");
         }
     }
 

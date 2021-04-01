@@ -59,7 +59,8 @@ namespace game {
         void UnloadEntity(s32 &);
         void TranslateEntity(s32, s16, s16, s16);
         void UpdateEntityVelocity(s32, s16, s16, s16);
-        void UpdateEntityPosition(s32, double, double, double, double, double, double);
+        void UpdateEntityPosition(s32, double, double, double, double, double,
+                                  double);
 
         void Lock();
         void Unlock();

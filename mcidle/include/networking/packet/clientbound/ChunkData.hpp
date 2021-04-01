@@ -2,7 +2,6 @@
 
 #include <networking/packet/Packet.hpp>
 #include <networking/types/VarInt.hpp>
-
 #include <unordered_map>
 
 namespace mcidle {
@@ -35,8 +34,10 @@ namespace packet {
             // In world coordinates section height * 16 is y-pos
             std::shared_ptr<std::unordered_map<s32, game::Section>> m_Sections;
             // Half a byte of lighting information per block
-            std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> m_LightMap;
-            std::shared_ptr<std::unordered_map<s32, std::vector<u8>>> m_Skylight;
+            std::shared_ptr<std::unordered_map<s32, std::vector<u8>>>
+                m_LightMap;
+            std::shared_ptr<std::unordered_map<s32, std::vector<u8>>>
+                m_Skylight;
 
             std::shared_ptr<std::vector<u8>> m_Biomes;
 

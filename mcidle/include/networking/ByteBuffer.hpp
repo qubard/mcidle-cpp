@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <boost/algorithm/hex.hpp>
 #include <common/Typedef.hpp>
-
 #include <networking/types/VarInt.hpp>
+#include <string>
+#include <vector>
 
 namespace mcidle {
 

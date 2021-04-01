@@ -14,7 +14,8 @@ namespace packet {
                 : Packet()
             {
             }
-            Handshake(s32 protocol, std::string address, u16 port, s32 nextState)
+            Handshake(s32 protocol, std::string address, u16 port,
+                      s32 nextState)
                 : Packet()
                 , m_ProtocolVersion(VarInt(protocol))
                 , m_ServerAddress(address)

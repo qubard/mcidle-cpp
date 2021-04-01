@@ -1,10 +1,9 @@
 #pragma once
 
+#include <common/Json.hpp>
 #include <map>
 #include <memory>
 #include <string>
-
-#include <common/Json.hpp>
 
 // Source: mclib
 
@@ -29,10 +28,16 @@ namespace util {
         HTTPClient(HTTPClient &&other) = default;
         HTTPClient &operator=(HTTPClient &&rhs) = default;
 
-        virtual HTTPResponse Get(const std::string &url, Headers headers = {}) = 0;
-        virtual HTTPResponse Post(const std::string &url, const std::string &data, Headers headers = {}) = 0;
-        virtual HTTPResponse PostJSON(const std::string &url, const std::string &data, Headers headers = {}) = 0;
-        virtual HTTPResponse PostJSON(const std::string &url, const json &json, Headers headers = {}) = 0;
+        virtual HTTPResponse Get(const std::string &url,
+                                 Headers headers = {}) = 0;
+        virtual HTTPResponse Post(const std::string &url,
+                                  const std::string &data,
+                                  Headers headers = {}) = 0;
+        virtual HTTPResponse PostJSON(const std::string &url,
+                                      const std::string &data,
+                                      Headers headers = {}) = 0;
+        virtual HTTPResponse PostJSON(const std::string &url, const json &json,
+                                      Headers headers = {}) = 0;
     };
 
     class CurlHTTPClient : public HTTPClient
@@ -51,9 +56,12 @@ namespace util {
         CurlHTTPClient &operator=(CurlHTTPClient &&rhs);
 
         HTTPResponse Get(const std::string &url, Headers headers = {});
-        HTTPResponse Post(const std::string &url, const std::string &data, Headers headers = {});
-        HTTPResponse PostJSON(const std::string &url, const std::string &data, Headers headers = {});
-        HTTPResponse PostJSON(const std::string &url, const json &json, Headers headers = {});
+        HTTPResponse Post(const std::string &url, const std::string &data,
+                          Headers headers = {});
+        HTTPResponse PostJSON(const std::string &url, const std::string &data,
+                              Headers headers = {});
+        HTTPResponse PostJSON(const std::string &url, const json &json,
+                              Headers headers = {});
     };
 
 }  // namespace util

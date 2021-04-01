@@ -1,11 +1,11 @@
 #pragma once
 
+#include <netdb.h>
+
 #include <boost/asio.hpp>
+#include <common/Typedef.hpp>
 #include <memory>
 #include <string>
-
-#include <netdb.h>
-#include <common/Typedef.hpp>
 
 namespace mcidle {
 

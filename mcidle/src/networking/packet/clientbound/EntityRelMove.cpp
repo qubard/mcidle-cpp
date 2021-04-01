@@ -8,7 +8,8 @@ namespace packet {
         {
         }
 
-        EntityRelMove::EntityRelMove(VarInt EntityID, s16 DeltaX, s16 DeltaY, s16 DeltaZ, bool OnGround)
+        EntityRelMove::EntityRelMove(VarInt EntityID, s16 DeltaX, s16 DeltaY,
+                                     s16 DeltaZ, bool OnGround)
             : m_EntityID(EntityID)
             , m_DeltaX(DeltaX)
             , m_DeltaY(DeltaY)
@@ -19,7 +20,8 @@ namespace packet {
 
         void EntityRelMove::Mutate(mcidle::game::GameState &state)
         {
-            state.TranslateEntity(m_EntityID.Value(), m_DeltaX, m_DeltaY, m_DeltaZ);
+            state.TranslateEntity(m_EntityID.Value(), m_DeltaX, m_DeltaY,
+                                  m_DeltaZ);
         }
 
         Packet &EntityRelMove::Serialize()

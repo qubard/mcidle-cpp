@@ -6,13 +6,17 @@ namespace packet {
 
         ChunkData::ChunkData()
         {
-            m_Sections = std::make_shared<std::unordered_map<s32, game::Section>>();
-            m_LightMap = std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
-            m_Skylight = std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
+            m_Sections =
+                std::make_shared<std::unordered_map<s32, game::Section>>();
+            m_LightMap =
+                std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
+            m_Skylight =
+                std::make_shared<std::unordered_map<s32, std::vector<u8>>>();
             m_Biomes = std::make_shared<std::vector<u8>>();
         }
 
-        ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp, s32 primaryBitMask)
+        ChunkData::ChunkData(s32 chunkX, s32 chunkZ, bool groundUp,
+                             s32 primaryBitMask)
             : Packet()
             , m_ChunkX(chunkX)
             , m_ChunkZ(chunkZ)
@@ -69,7 +73,8 @@ namespace packet {
             printf("Loaded chunk %d %d into state!\n", m_ChunkX, m_ChunkZ);
         }
 
-        std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol, s32 compression)
+        std::shared_ptr<Packet> ChunkData::Response(Protocol &protocol,
+                                                    s32 compression)
         {
             // Generate a serverbound keep alive using our id
             return nullptr;
@@ -85,7 +90,8 @@ namespace packet {
             return m_ChunkZ;
         }
 
-        inline void ChunkData::WriteSection(ByteBuffer &buf, s32 section, u8 bitsPerBlock)
+        inline void ChunkData::WriteSection(ByteBuffer &buf, s32 section,
+                                            u8 bitsPerBlock)
         {
             buf << bitsPerBlock;
 
@@ -100,7 +106,8 @@ namespace packet {
             buf << VarInt(0);
 
             u32 valueMask = (1 << bitsPerBlock) - 1;
-            for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT; blockNumber++)
+            for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT;
+                 blockNumber++)
             {
                 s32 startLong = (blockNumber * bitsPerBlock) / 64;
 
@@ -140,7 +147,8 @@ namespace packet {
             // Write skylight if in overworld
             if (m_Dimension == game::dimension::OVERWORLD)
             {
-                buf.Write((*m_Skylight)[section].data(), (*m_Skylight)[section].size());
+                buf.Write((*m_Skylight)[section].data(),
+                          (*m_Skylight)[section].size());
             }
         }
 
@@ -183,7 +191,8 @@ namespace packet {
             return *this;
         }
 
-        inline void ChunkData::ReadSection(ByteBuffer &buf, int ChunkX, int ChunkZ, int section)
+        inline void ChunkData::ReadSection(ByteBuffer &buf, int ChunkX,
+                                           int ChunkZ, int section)
         {
             u8 bits_per_block;
             buf >> bits_per_block;
@@ -231,7 +240,8 @@ namespace packet {
             // Initialize the section
             (*m_Sections)[section] = game::Section(game::BLOCK_COUNT);
 
-            for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT; blockNumber++)
+            for (s32 blockNumber = 0; blockNumber < game::BLOCK_COUNT;
+                 blockNumber++)
             {
                 s32 startLong = (blockNumber * bits_per_block) / 64;
                 s32 startOffset = (blockNumber * bits_per_block) % 64;
@@ -246,12 +256,15 @@ namespace packet {
                 else
                 {
                     s32 end_offset = 64 - startOffset;
-                    val = (u32)((data[startLong] >> startOffset) | (data[endLong] << end_offset));
+                    val = (u32)((data[startLong] >> startOffset) |
+                                (data[endLong] << end_offset));
                 }
                 val &= mask;
 
                 // Take into account direct format which has no palette
-                u64 paletteId = bits_per_block >= 13 ? val : val < palette.size() ? palette[val].Value() : 0;
+                u64 paletteId = bits_per_block >= 13   ? val
+                                : val < palette.size() ? palette[val].Value()
+                                                       : 0;
 
                 // Store the block
                 (*m_Sections)[section][blockNumber] = paletteId;
@@ -261,7 +274,8 @@ namespace packet {
             (*m_LightMap)[section].resize(game::BLOCK_COUNT >> 1);
 
             // Read half a byte per block of block light
-            buf.Read((*m_LightMap)[section].data(), (*m_LightMap)[section].size());
+            buf.Read((*m_LightMap)[section].data(),
+                     (*m_LightMap)[section].size());
 
             s32 dim = m_State->Dimension();
 
@@ -276,7 +290,8 @@ namespace packet {
                 // Half a byte of skylight data per block
                 (*m_Skylight)[section].resize(game::BLOCK_COUNT >> 1);
 
-                buf.Read((*m_Skylight)[section].data(), (*m_Skylight)[section].size());
+                buf.Read((*m_Skylight)[section].data(),
+                         (*m_Skylight)[section].size());
             }
         }
 

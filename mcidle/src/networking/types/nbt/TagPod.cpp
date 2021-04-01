@@ -2,6 +2,5 @@
 
 namespace mcidle {
 namespace nbt {
-
 }
 }  // namespace mcidle

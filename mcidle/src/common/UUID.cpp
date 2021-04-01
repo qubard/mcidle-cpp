@@ -1,8 +1,7 @@
-#include <common/UUID.hpp>
-#include <networking/ByteBuffer.hpp>
-
 #include <cassert>
+#include <common/UUID.hpp>
 #include <iomanip>
+#include <networking/ByteBuffer.hpp>
 #include <sstream>
 
 namespace mcidle {
@@ -17,7 +16,8 @@ namespace lib {
         std::size_t pos = 0;
 
         for (u32 i = 0; i < 4; ++i)
-            out << std::hex << std::setfill('0') << std::setw(2) << ((int)buffer[pos + i] & 0xFF);
+            out << std::hex << std::setfill('0') << std::setw(2)
+                << ((int)buffer[pos + i] & 0xFF);
         if (dashes)
             out << '-';
         pos += 4;
@@ -25,14 +25,16 @@ namespace lib {
         for (u32 j = 0; j < 3; ++j)
         {
             for (u32 i = 0; i < 2; ++i)
-                out << std::hex << std::setfill('0') << std::setw(2) << ((int)buffer[pos + i] & 0xFF);
+                out << std::hex << std::setfill('0') << std::setw(2)
+                    << ((int)buffer[pos + i] & 0xFF);
             if (dashes)
                 out << '-';
             pos += 2;
         }
 
         for (u32 i = 0; i < 6; ++i)
-            out << std::hex << std::setfill('0') << std::setw(2) << ((int)buffer[pos + i] & 0xFF);
+            out << std::hex << std::setfill('0') << std::setw(2)
+                << ((int)buffer[pos + i] & 0xFF);
 
         return out.str();
     }
@@ -50,7 +52,7 @@ namespace lib {
         else
             assert(str.length() == 32);
 
-        //0ba955da-bce3-3796-b74a-9faae6cc08a2
+        // 0ba955da-bce3-3796-b74a-9faae6cc08a2
 
         std::wstring upperStr, lowerStr;
 

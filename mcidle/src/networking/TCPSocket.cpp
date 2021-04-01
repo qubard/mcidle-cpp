@@ -11,7 +11,9 @@ TCPSocket::TCPSocket(s32 bindPort)
     , m_Socket(std::make_unique<tcp::socket>(*m_Service))
 {
     m_Acceptor = std::make_unique<tcp::acceptor>(
-        *m_Service, tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), bindPort));
+        *m_Service,
+        tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"),
+                      bindPort));
 }
 
 TCPSocket::TCPSocket(TCPSocket &socket)
@@ -39,7 +41,9 @@ bool TCPSocket::Connect()
         printf("errno: %d\n", h_errno);
         printf("HOST:%d\n", host);
         std::cout << "Trying to resolve " << m_Address << ":" << m_Port << "\n";
-        tcp::resolver::query query(m_Address, m_Port, boost::asio::ip::resolver_query_base::numeric_service);
+        tcp::resolver::query query(
+            m_Address, m_Port,
+            boost::asio::ip::resolver_query_base::numeric_service);
         printf("Calling connect...\n");
         tcp::resolver::iterator iter = resolver.resolve(m_Address, m_Port);
 
@@ -61,11 +65,11 @@ bool TCPSocket::Bind()
     try
     {
         // Why use async_accept when we have to run io_service in a separate thread
-        // for it to be "asynchronous" anyway (io_service runs in the current thread)
-        // Both solutions end up doing the same thing and behaving exactly the same
-        // except one relies on io_service which is probably better for multiple
-        // accept routines running
-        //m_Acceptor->async_accept(*m_Socket, boost::bind(&TCPSocket::OnAccept,
+        // for it to be "asynchronous" anyway (io_service runs in the current
+        // thread) Both solutions end up doing the same thing and behaving exactly
+        // the same except one relies on io_service which is probably better for
+        // multiple accept routines running
+        // m_Acceptor->async_accept(*m_Socket, boost::bind(&TCPSocket::OnAccept,
         // this, boost::asio::placeholders::error));
         // m_Service->run();
         m_Acceptor->accept(*m_Socket);

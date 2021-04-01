@@ -1,8 +1,7 @@
+#include <iostream>
 #include <networking/packet/clientbound/BlockChange.hpp>
 #include <networking/types/Position.hpp>
 #include <networking/types/VarInt.hpp>
-
-#include <iostream>
 
 namespace mcidle {
 namespace packet {
@@ -43,7 +42,8 @@ namespace packet {
 
             m_BlockID = tmp.Value();
 
-            printf("Block change at %d, %d, %d to %d\n", m_X, m_Y, m_Z, m_BlockID);
+            printf("Block change at %d, %d, %d to %d\n", m_X, m_Y, m_Z,
+                   m_BlockID);
         }
 
         void BlockChange::Mutate(mcidle::game::GameState &state)

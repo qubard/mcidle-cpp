@@ -40,7 +40,8 @@ namespace game {
         return m_Player.Dimension;
     }
 
-    void GameState::SetPosition(double x, double y, double z, bool relX, bool relY, bool relZ)
+    void GameState::SetPosition(double x, double y, double z, bool relX,
+                                bool relY, bool relZ)
     {
         boost::lock_guard<boost::mutex> guard(m_Mutex);
         m_Player.X = (relX ? m_Player.X : 0) + x;
@@ -107,7 +108,8 @@ namespace game {
         m_Mutex.unlock();
     }
 
-    void GameState::UpdateEntityPosition(s32 id, double x, double y, double z, double vx, double vy, double vz)
+    void GameState::UpdateEntityPosition(s32 id, double x, double y, double z,
+                                         double vx, double vy, double vz)
     {
         boost::lock_guard<boost::mutex> guard(m_Mutex);
         if (m_LoadedEntities.find(id) == m_LoadedEntities.end())
@@ -148,7 +150,8 @@ namespace game {
             ent.Y += dy;
             ent.Z += dz;
 
-            //printf("Updated entity position id %d: %.2f, %.2f, %.2f\n", p.first, dx, dy, dz);
+            // printf("Updated entity position id %d: %.2f, %.2f, %.2f\n", p.first, dx,
+            // dy, dz);
         }
     }
 
@@ -177,21 +180,22 @@ namespace game {
             return;
         // don't normalize since we can normalize later
         /*double d = 4096.0;
-    double a = (double)((long)dx/d);
-    double b = (double)((long)dy/d);
-    double c = (double)((long)dz/d);*/
+double a = (double)((long)dx/d);
+double b = (double)((long)dy/d);
+double c = (double)((long)dz/d);*/
 
         /*if (dx+dy+dz == 0)
-    {
-        m_LoadedEntities[id].MotionX = 0;
-        m_LoadedEntities[id].MotionY = 0;
-        m_LoadedEntities[id].MotionZ = 0;
-    }*/
+{
+  m_LoadedEntities[id].MotionX = 0;
+  m_LoadedEntities[id].MotionY = 0;
+  m_LoadedEntities[id].MotionZ = 0;
+}*/
 
         m_LoadedEntities[id].ServerX += static_cast<s64>(dx);
         m_LoadedEntities[id].ServerY += static_cast<s64>(dy);
         m_LoadedEntities[id].ServerZ += static_cast<s64>(dz);
-        //printf("Translated %d by %.2f, %.2f, %.2f aka %d, %d, %d\n", id, a, b, c, dx, dy, dz);
+        // printf("Translated %d by %.2f, %.2f, %.2f aka %d, %d, %d\n", id, a, b, c,
+        // dx, dy, dz);
     }
 
     s32 GameState::Threshold() const
@@ -424,12 +428,12 @@ namespace game {
 
         // If deleting the block, update the light info of the block below
         /*if (deleted)
-    {
-        s8 mask = 1 << 4 - 1;
-        u8 light = LightAt(chunk->Skylight, x, y, z);
-        SetLightAt(chunk->Skylight, x, y, z, 0xFF);
-        SetLightAt(chunk->LightMap, x, y, z, 0xFF);
-    }*/
+{
+  s8 mask = 1 << 4 - 1;
+  u8 light = LightAt(chunk->Skylight, x, y, z);
+  SetLightAt(chunk->Skylight, x, y, z, 0xFF);
+  SetLightAt(chunk->LightMap, x, y, z, 0xFF);
+}*/
     }
 
 }  // namespace game

@@ -3,16 +3,16 @@
 #include <common/Typedef.hpp>
 #include <networking/connection/SConnection.hpp>
 #include <networking/protocol/Protocol.hpp>
-#include <util/Yggdrasil.hpp>
-
 #include <networking/thread/Pipe.hpp>
+#include <util/Yggdrasil.hpp>
 
 namespace mcidle {
 
 class MCIdle
 {
 public:
-    MCIdle(bool, std::string, std::string, std::shared_ptr<Protocol>, std::shared_ptr<Protocol>, util::Yggdrasil);
+    MCIdle(bool, std::string, std::string, std::shared_ptr<Protocol>,
+           std::shared_ptr<Protocol>, util::Yggdrasil);
 
     std::shared_ptr<game::GameState> GameState();
 

@@ -1,11 +1,12 @@
-#include <networking/connection/SConnection.hpp>
-
 #include <iostream>
+#include <networking/connection/SConnection.hpp>
 
 namespace mcidle {
 
-SConnection::SConnection(std::string serverIP, std::string port, std::unique_ptr<TCPSocket> socket,
-                         std::shared_ptr<mcidle::Protocol> protocol, std::shared_ptr<mcidle::game::GameState> state,
+SConnection::SConnection(std::string serverIP, std::string port,
+                         std::unique_ptr<TCPSocket> socket,
+                         std::shared_ptr<mcidle::Protocol> protocol,
+                         std::shared_ptr<mcidle::game::GameState> state,
                          std::size_t readSize)
     : Connection(std::move(socket), protocol, state, readSize)
     , m_ServerIP(serverIP)
@@ -22,8 +23,9 @@ void SConnection::SetOnlineMode(bool onlineMode)
 bool SConnection::Setup(mcidle::util::Yggdrasil &yg)
 {
     // TODO: stop hardcoding the port and protocol number
-    SendPacket(mcidle::packet::serverbound::Handshake(m_Protocol->VersionNumber(), m_ServerIP, std::stoi(m_Port),
-                                                      mcidle::state::LOGIN));
+    SendPacket(mcidle::packet::serverbound::Handshake(
+        m_Protocol->VersionNumber(), m_ServerIP, std::stoi(m_Port),
+        mcidle::state::LOGIN));
 
     // Set our next state to LOGIN
     m_Protocol->SetState(mcidle::state::LOGIN);
@@ -38,7 +40,9 @@ bool SConnection::Setup(mcidle::util::Yggdrasil &yg)
         // We got disconnected before getting an EncryptionRequest from the server
         assert(pkt != nullptr);
 
-        auto response = reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest *>(pkt.get());
+        auto response =
+            reinterpret_cast<mcidle::packet::clientbound::EncryptionRequest *>(
+                pkt.get());
 
         auto aes = std::make_unique<mcidle::AesCtx>();
         auto token = response->Token();
@@ -51,12 +55,15 @@ bool SConnection::Setup(mcidle::util::Yggdrasil &yg)
         if (!yg.JoinServer(serverId, aes->Secret(), pubKey))
             return false;
 
-        SendPacket(mcidle::packet::serverbound::EncryptionResponse(aes->EncSecret(), aes->EncToken()));
+        SendPacket(mcidle::packet::serverbound::EncryptionResponse(
+            aes->EncSecret(), aes->EncToken()));
         SetAes(aes);
     }
 
     // Enable encryption and read a packet
-    auto compressionpkt = reinterpret_cast<mcidle::packet::clientbound::SetCompression *>(ReadPacket().get());
+    auto compressionpkt =
+        reinterpret_cast<mcidle::packet::clientbound::SetCompression *>(
+            ReadPacket().get());
     m_State->SetThreshold(compressionpkt->Threshold());
     SetCompression(compressionpkt->Threshold());
     m_Protocol->SetState(mcidle::state::PLAY);

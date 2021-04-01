@@ -9,7 +9,8 @@ namespace packet {
         {
         }
 
-        Respawn::Respawn(int dimension, u8 difficulty, u8 gamemode, std::string level)
+        Respawn::Respawn(int dimension, u8 difficulty, u8 gamemode,
+                         std::string level)
             : m_Dimension(dimension)
             , m_Difficulty(difficulty)
             , m_Gamemode(gamemode)
@@ -21,7 +22,8 @@ namespace packet {
         {
             state.SetDimension(m_Dimension);
             state.SetGamemode(m_Gamemode);
-            printf("Respawn received, dim: %d gamemode: %d\n", m_Dimension, m_Gamemode);
+            printf("Respawn received, dim: %d gamemode: %d\n", m_Dimension,
+                   m_Gamemode);
         }
 
         Packet &Respawn::Serialize()

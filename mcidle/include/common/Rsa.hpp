@@ -3,6 +3,7 @@
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
+
 #include <iostream>
 #include <string>
 
@@ -58,7 +59,8 @@ public:
             return false;
 
         int outLen =
-            RSA_private_decrypt(cipher.size(), (const u8 *)cipher.c_str(), (u8 *)out.c_str(), m_Rsa, RSA_PKCS1_PADDING);
+            RSA_private_decrypt(cipher.size(), (const u8 *)cipher.c_str(),
+                                (u8 *)out.c_str(), m_Rsa, RSA_PKCS1_PADDING);
         out.resize(outLen);
         return true;
     }

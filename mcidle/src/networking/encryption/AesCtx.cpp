@@ -43,10 +43,11 @@ bool AesCtx::Initialize(std::string &publicKey, std::string &verifyToken)
     encToken.resize(rsaSize);
 
     // Encrypt the shared secret with public key
-    RSA_public_encrypt(sharedSecret.size(), (u8 *)&sharedSecret[0], (u8 *)&encSecret[0], rsa, RSA_PKCS1_PADDING);
+    RSA_public_encrypt(sharedSecret.size(), (u8 *)&sharedSecret[0],
+                       (u8 *)&encSecret[0], rsa, RSA_PKCS1_PADDING);
     // Encrypt the verify token with public key
-    RSA_public_encrypt(verifyToken.size(), (const u8 *)verifyToken.c_str(), (u8 *)encToken.c_str(), rsa,
-                       RSA_PKCS1_PADDING);
+    RSA_public_encrypt(verifyToken.size(), (const u8 *)verifyToken.c_str(),
+                       (u8 *)encToken.c_str(), rsa, RSA_PKCS1_PADDING);
     RSA_free(rsa);
 
     if (!InitializeCtx(sharedSecret))
@@ -67,14 +68,16 @@ bool AesCtx::InitializeCtx(std::string &sharedSecret)
     if (!(m_EncryptCtx = EVP_CIPHER_CTX_new()))
         return false;
 
-    if (!(EVP_EncryptInit_ex(m_EncryptCtx, EVP_aes_128_cfb8(), nullptr, (const u8 *)sharedSecret.c_str(),
+    if (!(EVP_EncryptInit_ex(m_EncryptCtx, EVP_aes_128_cfb8(), nullptr,
+                             (const u8 *)sharedSecret.c_str(),
                              (const u8 *)sharedSecret.c_str())))
         return false;
 
     if (!(m_DecryptCtx = EVP_CIPHER_CTX_new()))
         return false;
 
-    if (!(EVP_DecryptInit_ex(m_DecryptCtx, EVP_aes_128_cfb8(), nullptr, (const u8 *)sharedSecret.c_str(),
+    if (!(EVP_DecryptInit_ex(m_DecryptCtx, EVP_aes_128_cfb8(), nullptr,
+                             (const u8 *)sharedSecret.c_str(),
                              (const u8 *)sharedSecret.c_str())))
         return false;
 

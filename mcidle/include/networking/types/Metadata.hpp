@@ -12,14 +12,15 @@ template<class ...Ts>
 using TupleStruct = boost::tuple<Ts...>;
 
 template <class ...Ts, uint32_t N>
-inline void WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup) 
+inline void WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup)
 {
 
 }
 
 template <size_t k = 0, class ...Ts, uint32_t N>
-inline typename std::enable_if<k < boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
-    WriteStruct(ByteBuffer& buf, TupleStruct<Ts...> & tup) 
+inline typename std::enable_if<k <
+boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
+    WriteStruct(ByteBuffer& buf, TupleStruct<Ts...> & tup)
 {
     auto& val = boost::get<k>(tup);
     buf << val;
@@ -27,8 +28,9 @@ inline typename std::enable_if<k < boost::tuples::length<TupleStruct<Ts...>>::va
 }
 
 template <size_t k, class ...Ts, uint32_t N>
-inline typename std::enable_if<k == boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
-    WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup) 
+inline typename std::enable_if<k ==
+boost::tuples::length<TupleStruct<Ts...>>::value, ByteBuffer&>::type
+    WriteStruct(ByteBuffer& buf, boost::tuple<Ts...>& tup)
 {
     return buf;
 }

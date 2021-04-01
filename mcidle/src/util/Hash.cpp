@@ -1,12 +1,12 @@
-#include <util/Hash.hpp>
-
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
+
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <util/Hash.hpp>
 #include <vector>
 
 // Source: mclib
@@ -33,7 +33,8 @@ namespace util {
         return output;
     }
 
-    std::array<unsigned char, SHA_DIGEST_LENGTH> Sha1TwosComplement(const unsigned char *digest)
+    std::array<unsigned char, SHA_DIGEST_LENGTH> Sha1TwosComplement(
+        const unsigned char *digest)
     {
         std::array<unsigned char, SHA_DIGEST_LENGTH> ret;
 
@@ -73,7 +74,8 @@ namespace util {
         }
 
         for (std::size_t i = 0; i < SHA_DIGEST_LENGTH; ++i)
-            ss << std::hex << std::setfill('0') << std::setw(2) << (int)(new_digest[i] & 0xFF);
+            ss << std::hex << std::setfill('0') << std::setw(2)
+               << (int)(new_digest[i] & 0xFF);
 
         std::string result = ss.str();
         std::size_t pos = 0;

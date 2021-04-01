@@ -1,11 +1,9 @@
 #pragma once
 
 #include <memory>
-
 #include <networking/TCPSocket.hpp>
 #include <networking/encryption/AesCtx.hpp>
 #include <networking/packet/Packet.hpp>
-
 #include <networking/packet/Serialize.hpp>
 #include <util/Yggdrasil.hpp>
 
@@ -14,8 +12,8 @@ namespace mcidle {
 class Connection
 {
 public:
-    Connection(std::shared_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>, std::shared_ptr<mcidle::game::GameState>,
-               std::size_t);
+    Connection(std::shared_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>,
+               std::shared_ptr<mcidle::game::GameState>, std::size_t);
 
     // Equivalent to enabling encryption
     Connection &SetAes(std::unique_ptr<AesCtx> &);

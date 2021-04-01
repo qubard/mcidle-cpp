@@ -15,10 +15,12 @@ namespace packet {
         {
         }
 
-        std::shared_ptr<Packet> KeepAlive::Response(Protocol &protocol, s32 compression)
+        std::shared_ptr<Packet> KeepAlive::Response(Protocol &protocol,
+                                                    s32 compression)
         {
             // Generate a serverbound keep alive using our id
-            return CreatePacket<packet::serverbound::KeepAlive>(protocol, compression, m_Id);
+            return CreatePacket<packet::serverbound::KeepAlive>(
+                protocol, compression, m_Id);
         }
 
         Packet &KeepAlive::Serialize()

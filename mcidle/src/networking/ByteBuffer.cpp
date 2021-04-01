@@ -1,7 +1,6 @@
+#include <iostream>
 #include <networking/ByteBuffer.hpp>
 #include <networking/types/VarInt.hpp>
-
-#include <iostream>
 
 namespace mcidle {
 

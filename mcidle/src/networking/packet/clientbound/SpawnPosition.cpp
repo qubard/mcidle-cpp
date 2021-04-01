@@ -1,6 +1,5 @@
 #include <networking/game/GameState.hpp>
 #include <networking/packet/clientbound/SpawnPosition.hpp>
-
 #include <networking/types/Position.hpp>
 
 namespace mcidle {

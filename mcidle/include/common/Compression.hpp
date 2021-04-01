@@ -20,7 +20,8 @@ inline std::shared_ptr<ByteBuffer> Decompress(std::shared_ptr<ByteBuffer> &buf)
         auto uncompressed = std::make_shared<ByteBuffer>();
         uncompressed->Resize(len);
 
-        s32 succ = uncompress((Bytef *)uncompressed->Front(), (uLongf *)&len, (const Bytef *)&buf->Peek(),
+        s32 succ = uncompress((Bytef *)uncompressed->Front(), (uLongf *)&len,
+                              (const Bytef *)&buf->Peek(),
                               (uLong)(buf->Size() - buf->ReadOffset()));
 
         // Invalid decompression

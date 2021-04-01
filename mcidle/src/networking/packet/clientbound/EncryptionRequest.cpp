@@ -9,7 +9,8 @@ namespace packet {
         {
         }
 
-        EncryptionRequest::EncryptionRequest(std::string id, std::string pubKey, std::string token)
+        EncryptionRequest::EncryptionRequest(std::string id, std::string pubKey,
+                                             std::string token)
             : Packet()
             , m_ServerId(id)
             , m_PubKey(pubKey)

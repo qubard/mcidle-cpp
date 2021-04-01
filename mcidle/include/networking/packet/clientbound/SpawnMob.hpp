@@ -12,7 +12,8 @@ namespace packet {
         {
         public:
             SpawnMob();
-            SpawnMob(VarInt, UUID, VarInt, double, double, double, s8, s8, s8, s16, s16, s16, Metadata);
+            SpawnMob(VarInt, UUID, VarInt, double, double, double, s8, s8, s8,
+                     s16, s16, s16, Metadata);
             SpawnMob(EntityData &);
 
             void Mutate(mcidle::game::GameState &) override;
@@ -34,7 +35,7 @@ namespace packet {
             s16 m_MotionX;
             s16 m_MotionY;
             s16 m_MotionZ;
-            //Metadata m_Meta;
+            // Metadata m_Meta;
             std::vector<s8> m_Meta;
         };
 

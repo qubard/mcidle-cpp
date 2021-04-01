@@ -1,10 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <networking/types/nbt/NBTString.hpp>
 #include <networking/types/nbt/Tag.hpp>
 #include <networking/types/nbt/TagType.hpp>
-
-#include <iostream>
 
 namespace mcidle {
 namespace nbt {
@@ -16,37 +15,48 @@ namespace nbt {
     class TagPod : public Tag
     {
     public:
-        template <class Q = T, typename std::enable_if<std::is_same<Q, s8>::value>::type * = nullptr>
+        template <class Q = T,
+                  typename std::enable_if<std::is_same<Q, s8>::value>::type * =
+                      nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_BYTE;
         }
 
-        template <class Q = T, typename std::enable_if<std::is_same<Q, s32>::value>::type * = nullptr>
+        template <class Q = T,
+                  typename std::enable_if<std::is_same<Q, s32>::value>::type * =
+                      nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_INT;
         }
 
-        template <class Q = T, typename std::enable_if<std::is_same<Q, s16>::value>::type * = nullptr>
+        template <class Q = T,
+                  typename std::enable_if<std::is_same<Q, s16>::value>::type * =
+                      nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_SHORT;
         }
 
-        template <class Q = T, typename std::enable_if<std::is_same<Q, NBTString>::value>::type * = nullptr>
+        template <class Q = T, typename std::enable_if<std::is_same<
+                                   Q, NBTString>::value>::type * = nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_STRING;
         }
 
-        template <class Q = T, typename std::enable_if<std::is_same<Q, double>::value>::type * = nullptr>
+        template <class Q = T,
+                  typename std::enable_if<std::is_same<Q, double>::value>::type
+                      * = nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_DOUBLE;
         }
 
-        template <class Q = T, typename std::enable_if<std::is_same<Q, float>::value>::type * = nullptr>
+        template <class Q = T,
+                  typename std::enable_if<std::is_same<Q, float>::value>::type
+                      * = nullptr>
         void WriteType(ByteBuffer &buf)
         {
             buf << TAG_FLOAT;
@@ -82,10 +92,10 @@ namespace nbt {
     using TagLong = TagPod<s64>;
     using TagFloat = TagPod<float>;
     using TagDouble = TagPod<double>;
-    //using TagByteArray = TagList<s8>;
+    // using TagByteArray = TagList<s8>;
     using TagString = TagPod<NBTString>;
-    //using TagIntArray = TagList<VarInt>;
-    //using TagLongArray = TagList<VarLong>;
+    // using TagIntArray = TagList<VarInt>;
+    // using TagLongArray = TagList<VarLong>;
 
     template <typename T>
     ByteBuffer &operator>>(ByteBuffer &buf, TagPod<T> &value)

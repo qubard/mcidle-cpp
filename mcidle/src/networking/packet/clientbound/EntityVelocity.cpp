@@ -8,7 +8,8 @@ namespace packet {
         {
         }
 
-        EntityVelocity::EntityVelocity(VarInt EntityID, s16 VelX, s16 VelY, s16 VelZ)
+        EntityVelocity::EntityVelocity(VarInt EntityID, s16 VelX, s16 VelY,
+                                       s16 VelZ)
             : m_EntityID(EntityID)
             , m_VelX(VelX)
             , m_VelY(VelY)
@@ -23,7 +24,8 @@ namespace packet {
             double vz = (double)m_VelZ;
 
             state.UpdateEntityVelocity(m_EntityID.Value(), vx, vy, vz);
-            printf("Received entity velocity for id %d: <%.2f, %.2f, %.2f>\n", m_EntityID.Value(), vx, vy, vz);
+            printf("Received entity velocity for id %d: <%.2f, %.2f, %.2f>\n",
+                   m_EntityID.Value(), vx, vy, vz);
         }
 
         Packet &EntityVelocity::Serialize()

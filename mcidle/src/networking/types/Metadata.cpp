@@ -201,7 +201,8 @@ ByteBuffer &operator>>(ByteBuffer &buf, Metadata &metadata)
         {
             printf("Meta index is 0xFF\n");
         }
-        printf("Remaining : %d out of %d, avail :%d\n", buf.ReadOffset(), buf.Size(), buf.Avail());
+        printf("Remaining : %d out of %d, avail :%d\n", buf.ReadOffset(),
+               buf.Size(), buf.Avail());
     }
     return buf;
 }
@@ -241,7 +242,7 @@ ByteBuffer &operator<<(ByteBuffer &buf, Slot &slot)
         buf << slot.ItemCount;
         buf << slot.ItemDamage;
         // don't write nbt for now
-        //buf << (u8)0;
+        // buf << (u8)0;
         buf << slot.NBT;
     }
     return buf;

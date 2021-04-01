@@ -9,7 +9,8 @@ namespace mcidle {
 class SConnection : public Connection
 {
 public:
-    SConnection(std::string, std::string, std::unique_ptr<TCPSocket>, std::shared_ptr<mcidle::Protocol>,
+    SConnection(std::string, std::string, std::unique_ptr<TCPSocket>,
+                std::shared_ptr<mcidle::Protocol>,
                 std::shared_ptr<mcidle::game::GameState>, std::size_t);
 
     void SetOnlineMode(bool);

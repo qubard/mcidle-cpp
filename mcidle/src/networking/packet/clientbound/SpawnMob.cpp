@@ -8,8 +8,10 @@ namespace packet {
         {
         }
 
-        SpawnMob::SpawnMob(VarInt EntityId, UUID EntityUUID, VarInt Type, double X, double Y, double Z, s8 Yaw,
-                           s8 Pitch, s8 HeadPitch, s16 MotionX, s16 MotionY, s16 MotionZ, Metadata Meta)
+        SpawnMob::SpawnMob(VarInt EntityId, UUID EntityUUID, VarInt Type,
+                           double X, double Y, double Z, s8 Yaw, s8 Pitch,
+                           s8 HeadPitch, s16 MotionX, s16 MotionY, s16 MotionZ,
+                           Metadata Meta)
             : m_EntityId(EntityId)
             , m_EntityUUID(EntityUUID)
             , m_Type(Type)
@@ -28,7 +30,7 @@ namespace packet {
         SpawnMob::SpawnMob(EntityData &entity)
         {
             m_EntityId = entity.Id;
-            //m_EntityUUID = entity.UUID;
+            // m_EntityUUID = entity.UUID;
             m_Type = entity.Type;
 
             m_X = (double)entity.ServerX / (double)4096.0;
@@ -49,7 +51,7 @@ namespace packet {
             auto entity = EntityData{};
 
             entity.Id = m_EntityId;
-            //entity.UUID = m_EntityUUID;
+            // entity.UUID = m_EntityUUID;
 
             entity.Type = m_Type;
             entity.X = m_X;
@@ -111,7 +113,7 @@ namespace packet {
                 s8 tmp;
                 buf >> tmp;
             }
-            //buf >> m_EntityUUID;
+            // buf >> m_EntityUUID;
             buf >> m_Type;
 
             buf >> m_X;

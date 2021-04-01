@@ -8,7 +8,9 @@ namespace packet {
         {
         }
 
-        EntityTeleport::EntityTeleport(VarInt EntityID, double X, double Y, double Z, u8 Yaw, u8 Pitch, bool OnGround)
+        EntityTeleport::EntityTeleport(VarInt EntityID, double X, double Y,
+                                       double Z, u8 Yaw, u8 Pitch,
+                                       bool OnGround)
             : m_EntityID(EntityID)
             , m_X(X)
             , m_Y(Y)
@@ -21,7 +23,8 @@ namespace packet {
 
         void EntityTeleport::Mutate(mcidle::game::GameState &state)
         {
-            state.UpdateEntityPosition(m_EntityID.Value(), m_X, m_Y, m_Z, 0.0, 0.0, 0.0);
+            state.UpdateEntityPosition(m_EntityID.Value(), m_X, m_Y, m_Z, 0.0,
+                                       0.0, 0.0);
         }
 
         Packet &EntityTeleport::Serialize()

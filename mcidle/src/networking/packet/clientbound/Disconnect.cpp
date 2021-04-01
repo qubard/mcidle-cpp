@@ -14,7 +14,8 @@ namespace packet {
         {
         }
 
-        std::shared_ptr<Packet> Disconnect::Response(Protocol &protocol, s32 compression)
+        std::shared_ptr<Packet> Disconnect::Response(Protocol &protocol,
+                                                     s32 compression)
         {
             // Generate a serverbound keep alive using our id
             std::cout << "Disconnected: " << m_Reason << "\n";

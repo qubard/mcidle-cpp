@@ -8,7 +8,8 @@ namespace packet {
         {
         }
 
-        PlayerPosition::PlayerPosition(double X, double FeetY, double Z, bool OnGround)
+        PlayerPosition::PlayerPosition(double X, double FeetY, double Z,
+                                       bool OnGround)
             : m_X(X)
             , m_FeetY(FeetY)
             , m_Z(Z)

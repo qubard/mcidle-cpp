@@ -74,9 +74,9 @@ namespace nbt {
             else if (type == TAG_BYTE_ARRAY)
             {
                 /*TagList lis;
-            lis.SetListType(TAG_BYTE);
-            buf >> lis;
-            value.Push(lis);*/
+  lis.SetListType(TAG_BYTE);
+  buf >> lis;
+  value.Push(lis);*/
             }
             else if (type == TAG_STRING)
             {
@@ -130,17 +130,17 @@ namespace nbt {
             {
                 throw std::runtime_error("unimplemented tag_int_array");
                 /*TagList lis;
-            lis.SetListType(TAG_INT);
-            buf >> lis;
-            value.Push(lis);*/
+  lis.SetListType(TAG_INT);
+  buf >> lis;
+  value.Push(lis);*/
             }
             else if (type == TAG_LONG_ARRAY)
             {
                 throw std::runtime_error("unimplemented tag_long_array");
                 /*TagList lis;
-            lis.SetListType(TAG_LONG);
-            buf >> lis;
-            value.Push(lis);*/
+  lis.SetListType(TAG_LONG);
+  buf >> lis;
+  value.Push(lis);*/
             }
             else if (type == TAG_END)
             {
@@ -159,10 +159,10 @@ namespace nbt {
     void DeserializeTagCompound(ByteBuffer &buf, TagCompound &value)
     {
         /*NBTString name;
-    buf >> name;
-    value.SetName(name.Value());
-    DeserializeTagCompoundInner(buf, value);
-    printf("done %d\n", value.Size());*/
+buf >> name;
+value.SetName(name.Value());
+DeserializeTagCompoundInner(buf, value);
+printf("done %d\n", value.Size());*/
     }
 
     void SerializeTagCompoundInner(ByteBuffer &buf, TagCompound &value)
@@ -189,19 +189,19 @@ namespace nbt {
     ByteBuffer &operator>>(ByteBuffer &buf, TagCompound &value)
     {
         /*TagType type;
-    buf >> type;
+buf >> type;
 
-    if (type == TAG_END) 
-    {
-        return buf;
-    }
+if (type == TAG_END)
+{
+  return buf;
+}
 
-    // For some reason this gets hit sometimes
-    if (type != TAG_COMPOUND) 
-        return buf;
+// For some reason this gets hit sometimes
+if (type != TAG_COMPOUND)
+  return buf;
 
-    DeserializeTagCompound(buf, value);
-    */
+DeserializeTagCompound(buf, value);
+*/
         return buf;
     }
 

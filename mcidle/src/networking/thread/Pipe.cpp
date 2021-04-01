@@ -1,9 +1,7 @@
-#include <networking/thread/Pipe.hpp>
-
 #include <boost/chrono.hpp>
 #include <boost/thread/thread.hpp>
-
 #include <iostream>
+#include <networking/thread/Pipe.hpp>
 
 namespace mcidle {
 namespace thread {
@@ -21,7 +19,8 @@ namespace thread {
     {
     }
 
-    void Pipe::SetSink(std::shared_ptr<Connection> sink, std::shared_ptr<Pipe> sinkPipe)
+    void Pipe::SetSink(std::shared_ptr<Connection> sink,
+                       std::shared_ptr<Pipe> sinkPipe)
     {
         boost::lock_guard<boost::recursive_mutex> guard(m_Mutex);
         m_Sink = sink;
@@ -68,7 +67,7 @@ namespace thread {
                 if (m_Sink != nullptr)
                 {
                     // Send each packet
-                    //printf("Sent packet %x..\n", pkt->Id());
+                    // printf("Sent packet %x..\n", pkt->Id());
                     auto buf = pkt->RawBuffer();
                     if (!m_Sink->SendBuffer(buf))
                     {
@@ -79,7 +78,8 @@ namespace thread {
                 }
             }
 
-            // We need this because if we try to acquire a lock too fast it's a heavy bottleneck
+            // We need this because if we try to acquire a lock too fast it's a heavy
+            // bottleneck
             boost::this_thread::sleep_for(PIPE_RATE);
         }
     }

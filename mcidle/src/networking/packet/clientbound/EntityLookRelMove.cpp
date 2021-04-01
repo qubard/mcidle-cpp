@@ -8,8 +8,9 @@ namespace packet {
         {
         }
 
-        EntityLookRelMove::EntityLookRelMove(VarInt EntityID, s16 DeltaX, s16 DeltaY, s16 DeltaZ, u8 Yaw, u8 Pitch,
-                                             bool OnGround)
+        EntityLookRelMove::EntityLookRelMove(VarInt EntityID, s16 DeltaX,
+                                             s16 DeltaY, s16 DeltaZ, u8 Yaw,
+                                             u8 Pitch, bool OnGround)
             : m_EntityID(EntityID)
             , m_DeltaX(DeltaX)
             , m_DeltaY(DeltaY)
@@ -22,8 +23,10 @@ namespace packet {
 
         void EntityLookRelMove::Mutate(mcidle::game::GameState &state)
         {
-            state.TranslateEntity(m_EntityID.Value(), m_DeltaX, m_DeltaY, m_DeltaZ);
-            printf("EntityLOOKRelMove for %d: %d %d %d\n", m_EntityID.Value(), m_DeltaX, m_DeltaY, m_DeltaZ);
+            state.TranslateEntity(m_EntityID.Value(), m_DeltaX, m_DeltaY,
+                                  m_DeltaZ);
+            printf("EntityLOOKRelMove for %d: %d %d %d\n", m_EntityID.Value(),
+                   m_DeltaX, m_DeltaY, m_DeltaZ);
         }
 
         Packet &EntityLookRelMove::Serialize()

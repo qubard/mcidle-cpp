@@ -27,7 +27,8 @@ ByteBuffer &operator>>(ByteBuffer &buf, Position &loc)
 
 ByteBuffer &operator<<(ByteBuffer &buf, Position &loc)
 {
-    s64 pos = ((loc.X & 0x3FFFFFF) << 38) | ((loc.Y & 0xFFF) << 26) | (loc.Z & 0x3FFFFFF);
+    s64 pos = ((loc.X & 0x3FFFFFF) << 38) | ((loc.Y & 0xFFF) << 26) |
+              (loc.Z & 0x3FFFFFF);
     buf << pos;
 
     return buf;

@@ -67,7 +67,8 @@ namespace util {
             return cur - 1;
         }
 
-        TokenList::size_type operator()(char delim, TokenList::size_type max = 0)
+        TokenList::size_type operator()(char delim,
+                                        TokenList::size_type max = 0)
         {
             return tokenize(delim, max);
         }

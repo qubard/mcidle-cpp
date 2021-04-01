@@ -1,16 +1,16 @@
-#include <util/HttpClient.hpp>
+#include <curl/curl.h>
 
 #include <common/Json.hpp>
-#include <util/Tokenizer.hpp>
-
-#include <curl/curl.h>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <util/HttpClient.hpp>
+#include <util/Tokenizer.hpp>
 
 // Source: mc
 
-std::size_t CurlWriteString(void *buffer, std::size_t size, std::size_t nmemb, void *result)
+std::size_t CurlWriteString(void *buffer, std::size_t size, std::size_t nmemb,
+                            void *result)
 {
     if (result)
     {
@@ -48,7 +48,8 @@ namespace util {
                 Tokenizer kv(line);
                 kv(':', 2);
 
-                if (kv.size() != 2 || kv[0].length() == 0 || kv[1].length() == 0)
+                if (kv.size() != 2 || kv[0].length() == 0 ||
+                    kv[1].length() == 0)
                     continue;
 
                 headers[kv[0]] = kv[1].substr(0, kv[1].length() - 1);
@@ -61,9 +62,11 @@ namespace util {
             std::size_t first = header.find(" ");
             std::size_t second = header.find(" ", first + 1);
 
-            if (first != std::string::npos && second != std::string::npos && second != first)
+            if (first != std::string::npos && second != std::string::npos &&
+                second != first)
             {
-                std::string statusStr = header.substr(first + 1, second - first);
+                std::string statusStr =
+                    header.substr(first + 1, second - first);
                 if (statusStr.length() == 0)
                     return 0;
                 return strtol(statusStr.c_str(), nullptr, 10);
@@ -72,7 +75,8 @@ namespace util {
             return 0;
         }
 
-        HTTPResponse DoRequest(const std::string &url, const std::string &postData, Headers headers)
+        HTTPResponse DoRequest(const std::string &url,
+                               const std::string &postData, Headers headers)
         {
             curl_slist *header_list = nullptr;
             CURLcode res;
@@ -82,7 +86,8 @@ namespace util {
                 for (auto kv : headers)
                 {
                     std::string header = kv.first + ": " + kv.second;
-                    header_list = curl_slist_append(header_list, header.c_str());
+                    header_list =
+                        curl_slist_append(header_list, header.c_str());
                 }
             }
 
@@ -150,18 +155,21 @@ namespace util {
             return DoRequest(url, "", headers);
         }
 
-        HTTPResponse Post(const std::string &url, const std::string &postData, Headers headers)
+        HTTPResponse Post(const std::string &url, const std::string &postData,
+                          Headers headers)
         {
             return DoRequest(url, postData, headers);
         }
 
-        HTTPResponse PostJSON(const std::string &url, const std::string &postData, Headers headers)
+        HTTPResponse PostJSON(const std::string &url,
+                              const std::string &postData, Headers headers)
         {
             headers["Content-Type"] = "application/json";
             return DoRequest(url, postData, headers);
         }
 
-        HTTPResponse PostJSON(const std::string &url, const json &json, Headers headers)
+        HTTPResponse PostJSON(const std::string &url, const json &json,
+                              Headers headers)
         {
             headers["Content-Type"] = "application/json";
 
@@ -199,17 +207,21 @@ namespace util {
         return m_Impl->Get(url, headers);
     }
 
-    HTTPResponse CurlHTTPClient::Post(const std::string &url, const std::string &data, Headers headers)
+    HTTPResponse CurlHTTPClient::Post(const std::string &url,
+                                      const std::string &data, Headers headers)
     {
         return m_Impl->Post(url, data, headers);
     }
 
-    HTTPResponse CurlHTTPClient::PostJSON(const std::string &url, const std::string &data, Headers headers)
+    HTTPResponse CurlHTTPClient::PostJSON(const std::string &url,
+                                          const std::string &data,
+                                          Headers headers)
     {
         return m_Impl->PostJSON(url, data, headers);
     }
 
-    HTTPResponse CurlHTTPClient::PostJSON(const std::string &url, const json &json, Headers headers)
+    HTTPResponse CurlHTTPClient::PostJSON(const std::string &url,
+                                          const json &json, Headers headers)
     {
         return m_Impl->PostJSON(url, json, headers);
     }

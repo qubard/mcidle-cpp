@@ -1,7 +1,6 @@
 #pragma once
 
 #include <common/Typedef.hpp>
-
 #include <iosfwd>
 #include <string>
 

@@ -8,8 +8,9 @@ namespace packet {
         {
         }
 
-        JoinGame::JoinGame(s32 entityId, u8 gamemode, s32 dimension, u8 difficulty, u8 maxPlayers,
-                           std::string levelType, bool debugInfo)
+        JoinGame::JoinGame(s32 entityId, u8 gamemode, s32 dimension,
+                           u8 difficulty, u8 maxPlayers, std::string levelType,
+                           bool debugInfo)
             : m_EntityId(entityId)
             , m_Gamemode(gamemode)
             , m_Dimension(dimension)
@@ -22,10 +23,14 @@ namespace packet {
 
         void JoinGame::Mutate(mcidle::game::GameState &state)
         {
-            printf("Join Game received entity: %d gamemode: %d dim: %d diff: %d maxplayers: %d\n", m_EntityId,
-                   m_Gamemode, m_Dimension, m_Difficulty, m_MaxPlayers);
+            printf("Join Game received entity: %d gamemode: %d dim: %d diff: "
+                   "%d maxplayers: "
+                   "%d\n",
+                   m_EntityId, m_Gamemode, m_Dimension, m_Difficulty,
+                   m_MaxPlayers);
             state.SetDimension(m_Dimension);
-            state.SetGamemode(m_Gamemode);  // bit 3 reserved for hardcore status
+            state.SetGamemode(
+                m_Gamemode);  // bit 3 reserved for hardcore status
             state.SetPlayerId(m_EntityId);
             state.SetDifficulty(m_Difficulty);
             state.SetMaxPlayers(m_MaxPlayers);

@@ -9,7 +9,8 @@ namespace packet {
         {
         }
 
-        PlayerPositionLook::PlayerPositionLook(double x, double y, double z, float yaw, float pitch, u8 flags,
+        PlayerPositionLook::PlayerPositionLook(double x, double y, double z,
+                                               float yaw, float pitch, u8 flags,
                                                s32 teleportId)
             : m_X(x)
             , m_Y(y)
@@ -23,8 +24,10 @@ namespace packet {
 
         void PlayerPositionLook::Mutate(mcidle::game::GameState &state)
         {
-            state.SetPosition(m_X, m_Y, m_Z, m_Flags & 0x01, m_Flags & 0x02, m_Flags & 0x04);
-            printf("<%.2f, %.2f, %.2f> %.2f, %.2f flags: %d\n", m_X, m_Y, m_Z, m_Yaw, m_Pitch, m_Flags);
+            state.SetPosition(m_X, m_Y, m_Z, m_Flags & 0x01, m_Flags & 0x02,
+                              m_Flags & 0x04);
+            printf("<%.2f, %.2f, %.2f> %.2f, %.2f flags: %d\n", m_X, m_Y, m_Z,
+                   m_Yaw, m_Pitch, m_Flags);
             state.SetYaw(m_Yaw, m_Flags & 0x10);
             state.SetPitch(m_Pitch, m_Flags & 0x08);
         }
