@@ -4,27 +4,30 @@
 #include <networking/packet/Packet.hpp>
 #include <networking/types/Metadata.hpp>
 
-namespace mcidle {
-namespace packet {
-    namespace clientbound {
+namespace mcidle
+{
+namespace packet
+{
+namespace clientbound
+{
 
-        class SetSlot : public Packet
-        {
-        public:
-            SetSlot();
-            SetSlot(u8, s16, mcidle::Slot);
+class SetSlot : public Packet
+{
+  public:
+	SetSlot();
+	SetSlot(u8, s16, mcidle::Slot);
 
-            void Mutate(mcidle::game::GameState &) override;
+	void Mutate(mcidle::game::GameState &) override;
 
-            Packet &Serialize() override;
-            void Deserialize(ByteBuffer &) override;
+	Packet & Serialize() override;
+	void Deserialize(ByteBuffer &) override;
 
-        private:
-            u8 m_WindowID;
-            s16 m_SlotNum;
-            Slot m_Slot;
-        };
+  private:
+	u8 m_WindowID;
+	s16 m_SlotNum;
+	Slot m_Slot;
+};
 
-    }  // namespace clientbound
+}  // namespace clientbound
 }  // namespace packet
 }  // namespace mcidle

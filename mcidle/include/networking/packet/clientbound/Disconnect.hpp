@@ -2,27 +2,30 @@
 
 #include <networking/packet/Packet.hpp>
 
-namespace mcidle {
-namespace packet {
-    namespace clientbound {
+namespace mcidle
+{
+namespace packet
+{
+namespace clientbound
+{
 
-        class Disconnect : public Packet
-        {
-        public:
-            Disconnect();
-            Disconnect(std::string);
+class Disconnect : public Packet
+{
+  public:
+	Disconnect();
+	Disconnect(std::string);
 
-            virtual std::shared_ptr<Packet> Response(Protocol &, s32) override;
+	virtual std::shared_ptr<Packet> Response(Protocol &, s32) override;
 
-            std::string Reason() const;
+	std::string Reason() const;
 
-            Packet &Serialize() override;
-            void Deserialize(ByteBuffer &) override;
+	Packet & Serialize() override;
+	void Deserialize(ByteBuffer &) override;
 
-        private:
-            std::string m_Reason;
-        };
+  private:
+	std::string m_Reason;
+};
 
-    }  // namespace clientbound
+}  // namespace clientbound
 }  // namespace packet
 }  // namespace mcidle

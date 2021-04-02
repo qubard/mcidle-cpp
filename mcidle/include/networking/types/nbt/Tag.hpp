@@ -3,27 +3,23 @@
 #include <networking/ByteBuffer.hpp>
 #include <string>
 
-namespace mcidle {
-namespace nbt {
+namespace mcidle
+{
+namespace nbt
+{
 
-    class Tag
-    {
-    public:
-        void SetName(std::string &name)
-        {
-            m_Name = std::move(name);
-        }
+class Tag
+{
+  public:
+	void SetName(std::string & name) { m_Name = std::move(name); }
 
-        virtual void Serialize(ByteBuffer &);
+	virtual void Serialize(ByteBuffer &);
 
-        std::string &Name()
-        {
-            return m_Name;
-        }
+	std::string & Name() { return m_Name; }
 
-    protected:
-        std::string m_Name;
-    };
+  protected:
+	std::string m_Name;
+};
 
 }  // namespace nbt
 }  // namespace mcidle

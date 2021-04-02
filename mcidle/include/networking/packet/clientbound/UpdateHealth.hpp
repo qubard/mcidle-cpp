@@ -4,27 +4,30 @@
 #include <networking/packet/Packet.hpp>
 #include <networking/types/VarInt.hpp>
 
-namespace mcidle {
-namespace packet {
-    namespace clientbound {
+namespace mcidle
+{
+namespace packet
+{
+namespace clientbound
+{
 
-        class UpdateHealth : public Packet
-        {
-        public:
-            UpdateHealth();
-            UpdateHealth(float, s32, float);
+class UpdateHealth : public Packet
+{
+  public:
+	UpdateHealth();
+	UpdateHealth(float, s32, float);
 
-            void Mutate(mcidle::game::GameState &) override;
+	void Mutate(mcidle::game::GameState &) override;
 
-            Packet &Serialize() override;
-            void Deserialize(ByteBuffer &) override;
+	Packet & Serialize() override;
+	void Deserialize(ByteBuffer &) override;
 
-        private:
-            float m_Health;
-            VarInt m_Food;
-            float m_Saturation;
-        };
+  private:
+	float m_Health;
+	VarInt m_Food;
+	float m_Saturation;
+};
 
-    }  // namespace clientbound
+}  // namespace clientbound
 }  // namespace packet
 }  // namespace mcidle

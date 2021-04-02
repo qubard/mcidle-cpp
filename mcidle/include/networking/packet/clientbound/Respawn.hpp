@@ -11,29 +11,32 @@ spectator. The hardcore flag is not included Level Type	String (16)	Same as
 Join Game
 */
 
-namespace mcidle {
+namespace mcidle
+{
 
-namespace packet {
-    namespace clientbound {
+namespace packet
+{
+namespace clientbound
+{
 
-        class Respawn : public Packet
-        {
-        public:
-            Respawn();
-            Respawn(int, u8, u8, std::string);
+class Respawn : public Packet
+{
+  public:
+	Respawn();
+	Respawn(int, u8, u8, std::string);
 
-            void Mutate(mcidle::game::GameState &) override;
+	void Mutate(mcidle::game::GameState &) override;
 
-            Packet &Serialize() override;
-            void Deserialize(ByteBuffer &) override;
+	Packet & Serialize() override;
+	void Deserialize(ByteBuffer &) override;
 
-        private:
-            s32 m_Dimension;
-            u8 m_Difficulty;
-            u8 m_Gamemode;
-            std::string m_Level;
-        };
+  private:
+	s32 m_Dimension;
+	u8 m_Difficulty;
+	u8 m_Gamemode;
+	std::string m_Level;
+};
 
-    }  // namespace clientbound
+}  // namespace clientbound
 }  // namespace packet
 }  // namespace mcidle

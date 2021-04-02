@@ -1,35 +1,38 @@
 Language: Cpp
+BasedOnStyle: LLVM
 
-AccessModifierOffset: -4
-AlignEscapedNewlinesLeft: true
-AllowShortFunctionsOnASingleLine: false
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLambdasOnASingleLine: Empty
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterDefinitionReturnType: false
-AlwaysBreakBeforeMultilineStrings: false
-BasedOnStyle: Google
-BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
-    AfterFunction: 'true'
-    AfterNamespace: 'false'
-    BeforeCatch: 'true'
-    BeforeElse: 'true'
-}
-BreakBeforeBraces: Custom
-BreakConstructorInitializersBeforeComma: true
-ColumnLimit: 80
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
-DerivePointerBinding: false
-FixNamespaceComments: true
-IndentCaseLabels: true
-IndentWidth: 4
-IndentWrappedFunctionNames: true
-IndentPPDirectives: AfterHash
-IncludeBlocks: Preserve
-NamespaceIndentation: Inner
-PointerBindsToType: false
+AlignAfterOpenBracket: AlwaysBreak
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+PointerAlignment: Middle
+SortIncludes: false
 SpacesBeforeTrailingComments: 2
-Standard: Auto
-ReflowComments: false
+UseTab: Always
+MaxEmptyLinesToKeep: 5
+
+TabWidth: 4
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+IndentWidth: 4
+IndentCaseLabels: true
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterExternBlock: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+
+# Always include globals first
+IncludeCategories:
+  - Regex: 'Globals.h'
+    Priority: -1

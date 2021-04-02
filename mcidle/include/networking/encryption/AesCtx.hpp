@@ -6,31 +6,32 @@
 
 #include <networking/ByteBuffer.hpp>
 
-namespace mcidle {
+namespace mcidle
+{
 
 class AesCtx
 {
-public:
-    AesCtx();
-    ~AesCtx();
+  public:
+	AesCtx();
+	~AesCtx();
 
-    bool Initialize(std::string &, std::string &);
-    bool InitializeCtx(std::string &);
+	bool Initialize(std::string &, std::string &);
+	bool InitializeCtx(std::string &);
 
-    std::string &Secret();
-    std::string &EncSecret();
-    std::string &EncToken();
+	std::string & Secret();
+	std::string & EncSecret();
+	std::string & EncToken();
 
-    std::unique_ptr<ByteBuffer> Encrypt(ByteBuffer &, s32);
-    std::unique_ptr<ByteBuffer> Decrypt(ByteBuffer &, s32);
+	std::unique_ptr<ByteBuffer> Encrypt(ByteBuffer &, s32);
+	std::unique_ptr<ByteBuffer> Decrypt(ByteBuffer &, s32);
 
-private:
-    u32 m_BlockSize;
-    EVP_CIPHER_CTX *m_EncryptCtx;
-    EVP_CIPHER_CTX *m_DecryptCtx;
-    std::string m_EncSecret;
-    std::string m_EncToken;
-    std::string m_Secret;
+  private:
+	u32 m_BlockSize;
+	EVP_CIPHER_CTX * m_EncryptCtx;
+	EVP_CIPHER_CTX * m_DecryptCtx;
+	std::string m_EncSecret;
+	std::string m_EncToken;
+	std::string m_Secret;
 };
 
 }  // namespace mcidle

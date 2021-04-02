@@ -3,146 +3,125 @@
 #include <networking/protocol/Protocol.hpp>
 #include <networking/types/VarInt.hpp>
 
-namespace mcidle {
+namespace mcidle
+{
 
-Packet::Packet()
-    : m_Id(-1)
-    , m_Protocol(-1)
-    , m_FieldBuf(std::make_unique<ByteBuffer>())
-    , m_RawRecBuf(nullptr)
+Packet::Packet() :
+	m_Id(-1),
+	m_Protocol(-1),
+	m_FieldBuf(std::make_unique<ByteBuffer>()),
+	m_RawRecBuf(nullptr)
 {
 }
 
-Packet::Packet(std::shared_ptr<ByteBuffer> fieldBuf)
-    : m_Id(-1)
-    , m_Protocol(-1)
-    , m_FieldBuf(fieldBuf)
-    , m_RawRecBuf(nullptr)
+Packet::Packet(std::shared_ptr<ByteBuffer> fieldBuf) :
+	m_Id(-1), m_Protocol(-1), m_FieldBuf(fieldBuf), m_RawRecBuf(nullptr)
 {
 }
 
-Packet &Packet::Serialize()
+Packet & Packet::Serialize() { return *this; }
+
+Packet & Packet::SetGameState(std::shared_ptr<mcidle::game::GameState> & state)
 {
-    return *this;
+	m_State = state;
+	return *this;
 }
 
-Packet &Packet::SetGameState(std::shared_ptr<mcidle::game::GameState> &state)
+void Packet::Deserialize(ByteBuffer & buf) {}
+
+Packet & Packet::SetProtocol(s32 protocol)
 {
-    m_State = state;
-    return *this;
+	m_Protocol = protocol;
+	return *this;
 }
 
-void Packet::Deserialize(ByteBuffer &buf)
+Packet & Packet::SetId(s32 id)
 {
+	m_Id = id;
+	return *this;
 }
 
-Packet &Packet::SetProtocol(s32 protocol)
+void Packet::Mutate(mcidle::game::GameState & state) {}
+
+std::shared_ptr<Packet> Packet::Response(Protocol & protocol, s32 compression)
 {
-    m_Protocol = protocol;
-    return *this;
+	return nullptr;
 }
 
-Packet &Packet::SetId(s32 id)
+std::shared_ptr<ByteBuffer> Packet::Buffer() { return m_PacketBuf; }
+
+Packet & Packet::Reserve(std::size_t capacity)
 {
-    m_Id = id;
-    return *this;
+	m_FieldBuf->Reserve(capacity);
+	return *this;
 }
 
-void Packet::Mutate(mcidle::game::GameState &state)
+Packet & Packet::SetRawBuffer(std::shared_ptr<ByteBuffer> buf)
 {
+	m_RawRecBuf = buf;
+	return *this;
 }
 
-std::shared_ptr<Packet> Packet::Response(Protocol &protocol, s32 compression)
+Packet & Packet::SetFieldBuffer(std::shared_ptr<ByteBuffer> buf)
 {
-    return nullptr;
+	m_FieldBuf = buf;
+	return *this;
 }
 
-std::shared_ptr<ByteBuffer> Packet::Buffer()
-{
-    return m_PacketBuf;
-}
+std::shared_ptr<ByteBuffer> Packet::RawBuffer() { return m_RawRecBuf; }
 
-Packet &Packet::Reserve(std::size_t capacity)
-{
-    m_FieldBuf->Reserve(capacity);
-    return *this;
-}
+std::shared_ptr<ByteBuffer> Packet::FieldBuffer() { return m_FieldBuf; }
 
-Packet &Packet::SetRawBuffer(std::shared_ptr<ByteBuffer> buf)
-{
-    m_RawRecBuf = buf;
-    return *this;
-}
-
-Packet &Packet::SetFieldBuffer(std::shared_ptr<ByteBuffer> buf)
-{
-    m_FieldBuf = buf;
-    return *this;
-}
-
-std::shared_ptr<ByteBuffer> Packet::RawBuffer()
-{
-    return m_RawRecBuf;
-}
-
-std::shared_ptr<ByteBuffer> Packet::FieldBuffer()
-{
-    return m_FieldBuf;
-}
-
-s32 Packet::Id()
-{
-    return m_Id;
-}
+s32 Packet::Id() { return m_Id; }
 
 void Packet::Write(s32 compressionThreshold)
 {
-    if (m_FieldBuf == nullptr)
-        throw std::runtime_error("FieldBuf is null on Write()!");
+	if (m_FieldBuf == nullptr)
+		throw std::runtime_error("FieldBuf is null on Write()!");
 
-    if (m_FieldBuf->Size() == 0)
-        throw std::runtime_error(
-            "Cannot write empty packet, serialize fields first!");
+	if (m_FieldBuf->Size() == 0)
+		throw std::runtime_error(
+			"Cannot write empty packet, serialize fields first!");
 
-    ByteBuffer outBuf;
+	ByteBuffer outBuf;
 
-    // The packet's id
-    auto id = VarInt(m_Id);
+	// The packet's id
+	auto id = VarInt(m_Id);
 
-    // Packet ID + Data (FieldBuf)
-    ByteBuffer packetBuf;
+	// Packet ID + Data (FieldBuf)
+	ByteBuffer packetBuf;
 
-    // Set the ByteBuffer to take up exact space
-    packetBuf.Resize(m_FieldBuf->Size() + id.Size());
-    packetBuf << id;
-    packetBuf << *m_FieldBuf;
+	// Set the ByteBuffer to take up exact space
+	packetBuf.Resize(m_FieldBuf->Size() + id.Size());
+	packetBuf << id;
+	packetBuf << *m_FieldBuf;
 
-    std::size_t uncompressedLen = packetBuf.WriteSize();
+	std::size_t uncompressedLen = packetBuf.WriteSize();
 
-    // Packet is compressed
-    if (compressionThreshold > 0 && uncompressedLen >= compressionThreshold)
-    {
-        VarInt dataLength(uncompressedLen);
-        auto compressedData = Compress(packetBuf);
-        VarInt packetLength(compressedData->WriteSize() + dataLength.Size());
-        outBuf.Resize((u64)packetLength.Size() + packetLength.Value());
-        outBuf << packetLength;
-        outBuf << dataLength;
-        outBuf << *compressedData;
-    }
-    else
-    {
-        // Compression is disabled or data length is 0
-        VarInt packetLength(uncompressedLen +
-                            (compressionThreshold >= 0 ? 1 : 0));
-        outBuf.Resize(packetLength.Value());
-        outBuf << packetLength;
-        if (compressionThreshold >= 0)
-            outBuf << VarInt(0);
-        outBuf << packetBuf;
-    }
+	// Packet is compressed
+	if (compressionThreshold > 0 && uncompressedLen >= compressionThreshold)
+	{
+		VarInt dataLength(uncompressedLen);
+		auto compressedData = Compress(packetBuf);
+		VarInt packetLength(compressedData->WriteSize() + dataLength.Size());
+		outBuf.Resize((u64)packetLength.Size() + packetLength.Value());
+		outBuf << packetLength;
+		outBuf << dataLength;
+		outBuf << *compressedData;
+	}
+	else
+	{
+		// Compression is disabled or data length is 0
+		VarInt packetLength(
+			uncompressedLen + (compressionThreshold >= 0 ? 1 : 0));
+		outBuf.Resize(packetLength.Value());
+		outBuf << packetLength;
+		if (compressionThreshold >= 0)
+			outBuf << VarInt(0);
+		outBuf << packetBuf;
+	}
 
-    m_PacketBuf = std::make_shared<ByteBuffer>(std::move(outBuf));
+	m_PacketBuf = std::make_shared<ByteBuffer>(std::move(outBuf));
 }
 
 }  // namespace mcidle

@@ -2,39 +2,24 @@
 
 #include <common/Typedef.hpp>
 
-namespace mcidle {
-
-template <typename T>
-class Var
+namespace mcidle
 {
-public:
-    Var()
-        : m_Value(static_cast<T>(0))
-    {
-    }
 
-    Var(T value)
-        : m_Value(value)
-    {
-    }
+template <typename T> class Var
+{
+  public:
+	Var() : m_Value(static_cast<T>(0)) {}
 
-    void SetValue(T value)
-    {
-        m_Value = value;
-    }
+	Var(T value) : m_Value(value) {}
 
-    T Value() const
-    {
-        return m_Value;
-    }
+	void SetValue(T value) { m_Value = value; }
 
-    bool operator==(const T value) const
-    {
-        return m_Value == value;
-    }
+	T Value() const { return m_Value; }
 
-protected:
-    T m_Value;
+	bool operator==(const T value) const { return m_Value == value; }
+
+  protected:
+	T m_Value;
 };
 
 }  // namespace mcidle

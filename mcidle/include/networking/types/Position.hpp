@@ -2,15 +2,17 @@
 
 #include <networking/ByteBuffer.hpp>
 
-namespace mcidle {
+namespace mcidle
+{
 
-struct Position {
-    s64 X;
-    s64 Y;
-    s64 Z;
+struct Position
+{
+	s64 X;
+	s64 Y;
+	s64 Z;
 };
 
-ByteBuffer &operator>>(ByteBuffer &, Position &);
-ByteBuffer &operator<<(ByteBuffer &, Position &);
+ByteBuffer & operator>>(ByteBuffer &, Position &);
+ByteBuffer & operator<<(ByteBuffer &, Position &);
 
 }  // namespace mcidle

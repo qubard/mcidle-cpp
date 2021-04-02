@@ -46,7 +46,8 @@
 // we can easily swap them in/out to support different protocol numbers
 // and choose the correct protocol accordingly
 
-namespace mcidle {
+namespace mcidle
+{
 
 class Packet;
 
@@ -57,50 +58,51 @@ using PacketMap = std::unordered_map<s32, PacketFactory>;
 
 using ProtocolMap = std::unordered_map<s32, PacketMap>;
 
-namespace state {
-    const s32 HANDSHAKE = 0x03;
-    const s32 PLAY = 0x00;
-    const s32 STATUS = 0x01;
-    const s32 LOGIN = 0x02;
+namespace state
+{
+const s32 HANDSHAKE = 0x03;
+const s32 PLAY = 0x00;
+const s32 STATUS = 0x01;
+const s32 LOGIN = 0x02;
 }  // namespace state
 
 class Protocol
 {
-public:
-    Protocol(s32);
-    Protocol(ProtocolMap, s32, s32);
+  public:
+	Protocol(s32);
+	Protocol(ProtocolMap, s32, s32);
 
-    PacketMap &InboundMap();
+	PacketMap & InboundMap();
 
-    s32 VersionNumber();
+	s32 VersionNumber();
 
-    void SetState(s32);
+	void SetState(s32);
 
-    virtual s32 PacketId(packet::serverbound::EncryptionResponse &);
-    virtual s32 PacketId(packet::serverbound::Handshake &);
-    virtual s32 PacketId(packet::serverbound::LoginStart &);
-    virtual s32 PacketId(packet::serverbound::KeepAlive &);
+	virtual s32 PacketId(packet::serverbound::EncryptionResponse &);
+	virtual s32 PacketId(packet::serverbound::Handshake &);
+	virtual s32 PacketId(packet::serverbound::LoginStart &);
+	virtual s32 PacketId(packet::serverbound::KeepAlive &);
 
-    virtual s32 PacketId(packet::clientbound::EntityLookRelMove &);
-    virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
-    virtual s32 PacketId(packet::clientbound::SetCompression &);
-    virtual s32 PacketId(packet::clientbound::UpdateHealth &);
-    virtual s32 PacketId(packet::clientbound::LoginSuccess &);
-    virtual s32 PacketId(packet::clientbound::JoinGame &);
-    virtual s32 PacketId(packet::clientbound::SpawnPosition &);
-    virtual s32 PacketId(packet::clientbound::PlayerPositionLook &);
-    virtual s32 PacketId(packet::clientbound::KeepAlive &);
-    virtual s32 PacketId(packet::clientbound::ChunkData &);
-    virtual s32 PacketId(packet::clientbound::SetSlot &);
-    virtual s32 PacketId(packet::clientbound::SpawnMob &);
-    virtual s32 PacketId(packet::clientbound::DestroyEntities &);
-    virtual s32 PacketId(packet::clientbound::EntityVelocity &);
+	virtual s32 PacketId(packet::clientbound::EntityLookRelMove &);
+	virtual s32 PacketId(packet::clientbound::EncryptionRequest &);
+	virtual s32 PacketId(packet::clientbound::SetCompression &);
+	virtual s32 PacketId(packet::clientbound::UpdateHealth &);
+	virtual s32 PacketId(packet::clientbound::LoginSuccess &);
+	virtual s32 PacketId(packet::clientbound::JoinGame &);
+	virtual s32 PacketId(packet::clientbound::SpawnPosition &);
+	virtual s32 PacketId(packet::clientbound::PlayerPositionLook &);
+	virtual s32 PacketId(packet::clientbound::KeepAlive &);
+	virtual s32 PacketId(packet::clientbound::ChunkData &);
+	virtual s32 PacketId(packet::clientbound::SetSlot &);
+	virtual s32 PacketId(packet::clientbound::SpawnMob &);
+	virtual s32 PacketId(packet::clientbound::DestroyEntities &);
+	virtual s32 PacketId(packet::clientbound::EntityVelocity &);
 
-protected:
-    ProtocolMap m_InboundMap;
-    // Protocol number
-    s32 m_VersionNumber;
-    s32 m_State;
+  protected:
+	ProtocolMap m_InboundMap;
+	// Protocol number
+	s32 m_VersionNumber;
+	s32 m_State;
 };
 
 }  // namespace mcidle

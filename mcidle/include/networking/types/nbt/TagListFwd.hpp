@@ -1,9 +1,11 @@
 #pragma once
 
-namespace mcidle {
-namespace nbt {
+namespace mcidle
+{
+namespace nbt
+{
 
-    class TagList;
+class TagList;
 
 }  // namespace nbt
 }  // namespace mcidle

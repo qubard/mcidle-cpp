@@ -2,25 +2,28 @@
 
 #include <networking/packet/Packet.hpp>
 
-namespace mcidle {
-namespace packet {
-    namespace serverbound {
+namespace mcidle
+{
+namespace packet
+{
+namespace serverbound
+{
 
-        class LoginStart : public Packet
-        {
-        public:
-            LoginStart();
-            LoginStart(std::string);
+class LoginStart : public Packet
+{
+  public:
+	LoginStart();
+	LoginStart(std::string);
 
-            Packet &Serialize() override;
-            void Deserialize(ByteBuffer &) override;
+	Packet & Serialize() override;
+	void Deserialize(ByteBuffer &) override;
 
-            std::string Username() const;
+	std::string Username() const;
 
-        private:
-            std::string m_Username;
-        };
+  private:
+	std::string m_Username;
+};
 
-    }  // namespace serverbound
+}  // namespace serverbound
 }  // namespace packet
 }  // namespace mcidle
